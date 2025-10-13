@@ -1,11 +1,20 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const status = ref('')
+
+async function getStatus() {
+    const url = 'https://website-backend-eight-tau.vercel.app/status'
+    const response = await fetch(url)
+    const result = await response.json()
+    status.value = result['status']
+}
+</script>
 
 <template>
-    <h1>You did it!</h1>
-    <p>
-        Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-        documentation
-    </p>
+    <h2>Hello world! :3</h2>
+    <p>Status: {{ status }}</p>
+    <button @click="getStatus">Get Status</button>
 </template>
 
 <style scoped></style>
