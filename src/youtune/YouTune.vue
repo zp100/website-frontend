@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import YouTubePlayer from './components/YouTubePlayer.vue'
 
 const track_list = ref([])
+const is_player_loaded = ref(false)
 
 onMounted(async () => {
     const api_url = import.meta.env.VITE_BACKEND_URL
@@ -11,6 +13,10 @@ onMounted(async () => {
     
     track_list.value = result['tracks']
 })
+
+function load_player() {
+    is_player_loaded.value = true
+}
 </script>
 
 <template>
@@ -22,4 +28,11 @@ onMounted(async () => {
             <li>{{track}}</li>
         </template>
     </ul>
+
+    <template v-if="is_player_loaded">
+        <YouTubePlayer />
+    </template>
+    <template v-else>
+        <button @click="load_player">Load Player</button>
+    </template>
 </template>

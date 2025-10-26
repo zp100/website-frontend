@@ -1,9 +1,8 @@
 /// <reference types="vite/client" />
-
-interface ImportMetaEnv {
-    readonly VITE_BACKEND_URL: string
-}
+/// <reference types="youtube" />
 
 interface ImportMeta {
-    readonly env: ImportMetaEnv
+    readonly env: {
+        readonly VITE_BACKEND_URL: string
+    }
 }
