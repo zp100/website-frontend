@@ -1,6 +1,6 @@
-import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
-import Home from './views/Home.vue'
-import YouTune from './views/YouTune.vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import Home from './home/Home.vue'
+import YouTune from './youtune/YouTune.vue'
 
 export const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),

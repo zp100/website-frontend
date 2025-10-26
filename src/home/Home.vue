@@ -21,6 +21,6 @@ async function get_status() {
 
 <template>
     <h2>Hello world! :3</h2>
-    <p>Status: {{ server_status }}</p>
+    <p>Status: {{server_status}}</p>
     <button @click="get_status">Get Status</button>
 </template>

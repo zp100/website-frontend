@@ -19,7 +19,7 @@ onMounted(async () => {
     <h4>Tracks</h4>
     <ul>
         <template v-for="track in track_list">
-            <li>{{ track }}</li>
+            <li>{{track}}</li>
         </template>
     </ul>
 </template>
