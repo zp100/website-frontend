@@ -14,7 +14,7 @@ onMounted(async () => {
     track_list.value = result['tracks']
 })
 
-function load_player() {
+function load_player(): void {
     is_player_loaded.value = true
 }
 </script>

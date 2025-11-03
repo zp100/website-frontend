@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 const server_status = ref('N/A')
 
-async function get_status() {
+async function get_status(): Promise<void> {
     server_status.value = 'Loading...'
 
     const api_url = import.meta.env.VITE_BACKEND_URL

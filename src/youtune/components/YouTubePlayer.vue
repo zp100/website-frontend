@@ -4,11 +4,11 @@ import YouTube from 'vue3-youtube'
 
 const youtube = ref<YT.Player>()
 
-function play_video() {
+function play_video(): void {
     get_player().playVideo()
 }
 
-function get_player() {
+function get_player(): YT.Player {
     if (youtube.value === undefined) {
         throw new Error('YouTube player not loaded')
     }
