@@ -177,7 +177,7 @@ function popup(message: string): void {
             </div>
 
             <div id="found-words">
-                <div v-for="word in found_words" class="answer" :class="{ pangram: is_pangram(word) }">
+                <div v-for="word in found_words.toSorted()" class="answer" :class="{ pangram: is_pangram(word) }">
                     {{ word.toLocaleUpperCase() }}
                 </div>
             </div>
