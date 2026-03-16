@@ -227,6 +227,11 @@ function popup(message: string): void {
                 @click="guess.push(letter)"
             >
                 {{ letter.toLocaleUpperCase() }}
+                <div class="letter-counter">
+                    <div>
+                        0
+                    </div>
+                </div>
             </button>
         </div>
 
@@ -281,6 +286,7 @@ function popup(message: string): void {
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
+    align-items: center;
 }
 
 #found-words {
@@ -410,12 +416,38 @@ button {
 }
 
 .option-letter {
+    position: relative;
     width: var(--button-unit);
     height: var(--button-unit);
     font-size: x-large;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
 
     &.key-letter {
         color: yellow;
+    }
+}
+
+.letter-counter {
+    position: absolute;
+    width: 100%;
+    height: 0;
+    bottom: -2px;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+
+    div {
+        width: max-content;
+        color: var(--off-white);
+        background-color: var(--border-color);
+        padding: 0 3px;
+        border-radius: var(--roundness);
+
+        font-size: small;
     }
 }
 
