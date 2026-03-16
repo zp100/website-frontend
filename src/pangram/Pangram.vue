@@ -60,14 +60,11 @@ let key_letter: string
 let answer_word_list: string[]
 function set_puzzle(): void {
     while (true) {
-        const try_puzzle_letters = sample(puzzle_list).split('')
-        const try_key_letter = sample(try_puzzle_letters)
-        const try_answer_word_list = word_list.filter((word) => is_valid(word, try_puzzle_letters, try_key_letter))
+        puzzle_letters = sample(puzzle_list).split('')
+        key_letter = sample(puzzle_letters)
+        answer_word_list = word_list.filter((word) => is_valid(word, puzzle_letters, key_letter))
 
-        if (try_answer_word_list.length >= 20 && try_answer_word_list.length <= 40) {
-            puzzle_letters = try_puzzle_letters
-            key_letter = try_key_letter
-            answer_word_list = try_answer_word_list
+        if (answer_word_list.length >= 20 && answer_word_list.length <= 40) {
             is_loaded.value = true
             return
         }
