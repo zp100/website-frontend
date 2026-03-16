@@ -29,11 +29,18 @@ async function get_word_list(): Promise<WordListResponse> {
 
 let puzzle_letters: string[]
 let key_letter: string
+let answer_word_list: string[]
 function set_puzzle(): void {
-    const try_puzzle_letters = sample(puzzle_list).split('')
-    const try_key_letter = sample(try_puzzle_letters)
-    const answer_word_list = word_list.filter((word) => is_valid(word, try_puzzle_letters, try_key_letter))
-    console.log({ try_puzzle_letters, try_key_letter, answer_word_list })
+    while (true) {
+        puzzle_letters = sample(puzzle_list).split('')
+        key_letter = sample(puzzle_letters)
+        answer_word_list = word_list.filter((word) => is_valid(word, puzzle_letters, key_letter))
+
+        if (answer_word_list.length >= 10 && answer_word_list.length <= 50) {
+            console.log({ puzzle_letters, key_letter, answer_word_list })
+            return
+        }
+    }
 }
 
 
