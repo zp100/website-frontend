@@ -349,7 +349,7 @@ function popup(message: string): void {
 }
 
 #cursor {
-    height: 1.3em;
+    height: 1.4em;
     width: 4px;
     border-radius: 2px;
     background-color: var(--border-color);
