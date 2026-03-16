@@ -70,6 +70,7 @@ function set_puzzle(): void {
             key_letter.value = try_key_letter
             answer_word_list.value = try_answer_word_list
 
+            set_letter_counts()
             total_score = answer_word_list.value.reduce((score, word) => score + get_score(word), 0)
             is_loaded.value = true
             return
@@ -81,7 +82,7 @@ function set_puzzle(): void {
 function sample<T>(items: T[]): T {
     const index = Math.floor(Math.random() * items.length)
     const choice = items[index]
-    if (!choice) {
+    if (choice === undefined) {
         throw new Error(`Index ${index} is out of bounds of array ${items}.`)
     }
 
@@ -109,6 +110,20 @@ function is_valid(word: string, puzzle_letters: string[], key_letter: string): b
 function get_score(word: string): number {
     const base_score = word.length * (word.length + 1) / 2
     return (is_pangram(word) ? base_score * 2 : base_score)
+}
+
+
+const letter_counts = ref<Record<string, number>>({})
+function set_letter_counts(): void {
+    answer_word_list.value.forEach((word) => {
+        word.split('').forEach((letter) => {
+            if (letter_counts.value[letter] !== undefined) {
+                letter_counts.value[letter] += 1
+            } else {
+                letter_counts.value[letter] = 1
+            }
+        })
+    })
 }
 
 
@@ -162,6 +177,12 @@ function submit_guess(): void {
         popup('Not in word list')
         return
     }
+
+    guess_letters.forEach((letter) => {
+        if (letter_counts.value[letter] !== undefined) {
+            letter_counts.value[letter] -= 1
+        }
+    })
 
     found_words.value.push(guess_word)
     score.value += get_score(guess_word)
@@ -229,7 +250,7 @@ function popup(message: string): void {
                 {{ letter.toLocaleUpperCase() }}
                 <div class="letter-counter">
                     <div>
-                        0
+                        {{ letter_counts[letter] }}
                     </div>
                 </div>
             </button>
