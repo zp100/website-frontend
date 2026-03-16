@@ -130,6 +130,7 @@ function shuffle_letters(): void {
 
 const found_words = ref<string[]>([])
 const score = ref(0)
+const percent = ref(0)
 function submit_guess(): void {
     const guess_letters = guess.value
     guess.value = []
@@ -164,6 +165,7 @@ function submit_guess(): void {
 
     found_words.value.push(guess_word)
     score.value += get_score(guess_word)
+    percent.value = Math.floor(100 * score.value / total_score)
 }
 
 
@@ -185,7 +187,10 @@ function popup(message: string): void {
         <div id="word-box">
             <div id="score">
                 <div>
-                    {{ score }}
+                    Score: {{ score }} ({{ percent }}%)
+                    <span id="progress-bar">
+                        <span :style="{ width: `${percent}%` }"></span>
+                    </span>
                 </div>
             </div>
 
@@ -308,6 +313,22 @@ function popup(message: string): void {
         background-color: var(--border-color);
         padding: 5px 8px;
         border-radius: var(--roundness);
+    }
+}
+
+#progress-bar {
+    display: inline-block;
+    width: 100px;
+    height: 15px;
+    border-radius: var(--roundness);
+    background-color: #222;
+    margin-bottom: -2px;
+
+    span {
+        display: block;
+        height: 15px;
+        border-radius: var(--roundness);
+        background-color: yellow;
     }
 }
 
