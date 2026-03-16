@@ -99,43 +99,70 @@ function is_valid(word: string, puzzle_letters: string[], key_letter: string): b
 }
 
 
+const found_words = ref<string[]>([])
 function submit_guess(): void {
     const guess_letters = guess.value
     guess.value = []
 
     if (!guess_letters.includes(key_letter.value)) {
-        window.alert('must contain key letter')
+        popup('Must contain key letter')
         return
     }
 
     if (guess_letters.length < 4) {
-        window.alert('too short lmao')
+        popup('Must be at least 4 letters long')
         return
     }
 
     const is_bad_input = guess_letters.some((letter) => !puzzle_letters.value.includes(letter))
     if (is_bad_input) {
-        window.alert('invalid letters bruh')
+        popup('Must use listed letters')
         return
     }
 
     const guess_word = guess_letters.join('')
-    if (word_list.includes(guess_word)) {
-        window.alert('word found!')
-        return
-    } else {
-        window.alert('not in word list')
+
+    if (found_words.value.includes(guess_word)) {
+        popup('Already found')
         return
     }
+
+    if (!word_list.includes(guess_word)) {
+        popup('Not in word list')
+        return
+    }
+
+    found_words.value.push(guess_word)
 }
 
 
+const popup_message = ref('')
+const is_showing_popup = ref(false)
+function popup(message: string): void {
+    popup_message.value = message
+    is_showing_popup.value = true
+    setTimeout(() => is_showing_popup.value = false, 3000)
+}
 </script>
 
 
 
 <template>
     <div id="game">
+        <div id="word-box">
+            <div id="found-words">
+                <div v-for="word in found_words" class="answer">
+                    {{ word.toLocaleUpperCase() }}
+                </div>
+            </div>
+
+            <div v-show="is_showing_popup" id="popup">
+                <div id="popup-message">
+                    {{ popup_message }}
+                </div>
+            </div>
+        </div>
+
         <div id="input">
             <div
                 v-for="letter in guess"
@@ -177,6 +204,9 @@ function submit_guess(): void {
 
 <style scoped>
 #game {
+    --bg-color: #222;
+    --off-white: #ddd;
+
     width: 100vw;
     height: 100vh;
     background-color: #111;
@@ -188,13 +218,58 @@ function submit_guess(): void {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+#word-box {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+}
+
+#found-words {
+    width: 390px;
+    height: 500px;
+    border-radius: 2px;
+    outline: 2px solid var(--bg-color);
+    padding: 10px;
+
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+.answer {
+    margin: 10px;
+    color: var(--off-white);
+}
+
+#popup {
+    position: absolute;
+    width: 100%;
+    height: 0;
+    bottom: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+
+    #popup-message {
+        width: max-content;
+        color: var(--off-white);
+        background-color: var(--bg-color);
+        padding: 5px 8px;
+        border-radius: 2px;
+    }
+}
+
 #input {
-    margin: 10  px;
+    margin: 20px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    gap: 3px;
 }
 
 .guess-letter {
@@ -206,7 +281,7 @@ function submit_guess(): void {
     }
 
     &.invalid-letter {
-        color: #333;
+        color: var(--bg-color);
     }
 }
 
@@ -214,18 +289,18 @@ function submit_guess(): void {
     height: 1.2em;
     width: 4px;
     border-radius: 2px;
-    background-color: #333;
+    background-color: var(--bg-color);
 }
 
 button {
     border: none;
     border-radius: 5px;
-    background-color: #222;
-    color: #ddd;
+    background-color: var(--bg-color);
+    color: var(--off-white);
     cursor: pointer;
 
     &:hover {
-        outline: 2px solid #444;
+        outline: 2px solid #333;
     }
 }
 
