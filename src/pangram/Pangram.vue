@@ -224,7 +224,6 @@ function popup(message: string): void {
 
 <style scoped>
 #game {
-    --bg-color: #222;
     --border-color: #333;
     --off-white: #ddd;
     --gap-size: 10px;
@@ -339,7 +338,7 @@ function popup(message: string): void {
 button {
     border: none;
     border-radius: 5px;
-    background-color: var(--bg-color);
+    background-color: #222;
     color: var(--off-white);
     cursor: pointer;
 
