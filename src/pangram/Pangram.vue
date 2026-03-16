@@ -99,6 +99,17 @@ function is_valid(word: string, puzzle_letters: string[], key_letter: string): b
 }
 
 
+function shuffle_letters(): void {
+    for (let i = puzzle_letters.value.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1))
+
+        let temp = puzzle_letters.value[i]
+        puzzle_letters.value[i] = puzzle_letters.value[j] as string;
+        puzzle_letters.value[j] = temp as string;
+    }
+}
+
+
 const found_words = ref<string[]>([])
 function submit_guess(): void {
     const guess_letters = guess.value
@@ -193,14 +204,17 @@ function popup(message: string): void {
         </div>
 
         <div id="actions">
+            <button class="action-btn" @click="shuffle_letters()">
+                <font-awesome-icon icon="fa-solid fa-shuffle" />
+            </button>
             <button class="action-btn" @click="guess.length = 0">
-                <font-awesome-icon icon="fa-regular fa-trash-can" />
+                <font-awesome-icon icon="fa-solid fa-trash-can" />
             </button>
             <button class="action-btn" @click="guess.pop()">
-                <font-awesome-icon icon="fa-regular fa-square-caret-left" />
+                <font-awesome-icon icon="fa-solid fa-delete-left" />
             </button>
             <button class="action-btn" @click="submit_guess()">
-                <font-awesome-icon icon="fa-regular fa-circle-right" />
+                <font-awesome-icon icon="fa-solid fa-circle-chevron-right" />
             </button>
         </div>
     </div>
@@ -216,7 +230,7 @@ function popup(message: string): void {
     --gap-size: 10px;
     --total-width: 350px;
     --button-unit: calc((var(--total-width) - 6 * var(--gap-size)) / 7);
-    --wide-button-unit: calc((var(--total-width) - 2 * var(--gap-size)) / 3);
+    --wide-button-unit: calc((var(--total-width) - 3 * var(--gap-size)) / 4);
 
     width: 100vw;
     height: 100vh;
