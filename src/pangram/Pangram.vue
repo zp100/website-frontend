@@ -211,6 +211,7 @@ function popup(message: string): void {
 <style scoped>
 #game {
     --bg-color: #222;
+    --border-color: #333;
     --off-white: #ddd;
     --gap-size: 10px;
     --total-width: 350px;
@@ -237,10 +238,10 @@ function popup(message: string): void {
 
 #found-words {
     width: calc(var(--total-width) - 20px);
-    height: calc(var(--total-width) - 20px);
+    height: 260px;
     border-radius: 2px;
     outline: 2px solid var(--bg-color);
-    padding: 10px;
+    padding: 15px;
 
     display: flex;
     flex-flow: row wrap;
@@ -269,7 +270,7 @@ function popup(message: string): void {
 }
 
 .answer {
-    margin: 10px;
+    margin: 5px 10px;
     color: var(--off-white);
 }
 
@@ -298,7 +299,7 @@ function popup(message: string): void {
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
-    gap: 3px;
+    gap: 2px;
 }
 
 .guess-letter {
@@ -306,19 +307,19 @@ function popup(message: string): void {
     font-size: xx-large;
 
     &.key-letter {
-        color: #ff0;
+        color: yellow;
     }
 
     &.invalid-letter {
-        color: var(--bg-color);
+        color: var(--border-color);
     }
 }
 
 #cursor {
-    height: 1.2em;
+    height: 1.3em;
     width: 4px;
     border-radius: 2px;
-    background-color: var(--bg-color);
+    background-color: var(--border-color);
 }
 
 button {
@@ -329,7 +330,7 @@ button {
     cursor: pointer;
 
     &:hover {
-        outline: 2px solid #333;
+        outline: 2px solid var(--border-color);
     }
 }
 
@@ -347,7 +348,7 @@ button {
     font-size: x-large;
 
     &.key-letter {
-        color: #ff0;
+        color: yellow;
     }
 }
 
