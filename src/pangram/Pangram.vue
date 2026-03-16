@@ -149,10 +149,12 @@ function submit_guess(): void {
 
 const popup_message = ref('')
 const is_showing_popup = ref(false)
+let timeout_id: number | undefined = undefined;
 function popup(message: string): void {
+    clearTimeout(timeout_id)
     popup_message.value = message
     is_showing_popup.value = true
-    setTimeout(() => is_showing_popup.value = false, 3000)
+    timeout_id = setTimeout(() => is_showing_popup.value = false, 3000)
 }
 </script>
 
@@ -204,16 +206,16 @@ function popup(message: string): void {
         </div>
 
         <div id="actions">
-            <button class="action-btn" @click="shuffle_letters()">
+            <button class="action-btn" @keydown.prevent="" @click="shuffle_letters()">
                 <font-awesome-icon icon="fa-solid fa-shuffle" />
             </button>
-            <button class="action-btn" @click="guess.length = 0">
+            <button class="action-btn" @keydown.prevent="" @click="guess.length = 0">
                 <font-awesome-icon icon="fa-solid fa-trash-can" />
             </button>
-            <button class="action-btn" @click="guess.pop()">
+            <button class="action-btn" @keydown.prevent="" @click="guess.pop()">
                 <font-awesome-icon icon="fa-solid fa-delete-left" />
             </button>
-            <button class="action-btn" @click="submit_guess()">
+            <button class="action-btn" @keydown.prevent="" @click="submit_guess()">
                 <font-awesome-icon icon="fa-solid fa-circle-chevron-right" />
             </button>
         </div>
