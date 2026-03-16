@@ -5,3 +5,9 @@ import { RouterView } from 'vue-router'
 <template>
     <RouterView />
 </template>
+
+<style>
+body {
+    margin: 0;
+}
+</style>

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from './home/Home.vue'
+import Pangram from './pangram/Pangram.vue'
 import YouTune from './youtune/YouTune.vue'
 
 export const router = createRouter({
@@ -9,6 +10,11 @@ export const router = createRouter({
             path: '/',
             name: 'home',
             component: Home,
+        },
+        {
+            path: '/pangram',
+            name: 'pangram',
+            component: Pangram,
         },
         {
             path: '/youtune',
