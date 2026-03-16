@@ -55,16 +55,22 @@ async function get_word_list(): Promise<WordListResponse> {
 
 
 const is_loaded = ref(false)
-let puzzle_letters: string[]
-let key_letter: string
-let answer_word_list: string[]
+const puzzle_letters = ref<string[]>([])
+const key_letter = ref('')
+const answer_word_list = ref<string[]>([])
+let total_score: number
 function set_puzzle(): void {
     while (true) {
-        puzzle_letters = sample(puzzle_list).split('')
-        key_letter = sample(puzzle_letters)
-        answer_word_list = word_list.filter((word) => is_valid(word, puzzle_letters, key_letter))
+        const try_puzzle_letters = sample(puzzle_list).split('')
+        const try_key_letter = sample(try_puzzle_letters)
+        const try_answer_word_list = word_list.filter((word) => is_valid(word, try_puzzle_letters, try_key_letter))
 
-        if (answer_word_list.length >= 20 && answer_word_list.length <= 40) {
+        if (try_answer_word_list.length >= 20 && try_answer_word_list.length <= 40) {
+            puzzle_letters.value = try_puzzle_letters
+            key_letter.value = try_key_letter
+            answer_word_list.value = try_answer_word_list
+
+            total_score = answer_word_list.value.reduce((score, word) => score + get_score(word), 0)
             is_loaded.value = true
             return
         }
@@ -100,28 +106,35 @@ function is_valid(word: string, puzzle_letters: string[], key_letter: string): b
 }
 
 
+function get_score(word: string): number {
+    const base_score = word.length * (word.length + 1) / 2
+    return (is_pangram(word) ? base_score * 2 : base_score)
+}
+
+
 function is_pangram(word: string): boolean {
-    return new Set(word.split('')).isSupersetOf(new Set(puzzle_letters))
+    return new Set(word.split('')).isSupersetOf(new Set(puzzle_letters.value))
 }
 
 
 function shuffle_letters(): void {
-    for (let i = puzzle_letters.length - 1; i > 0; i--) {
+    for (let i = puzzle_letters.value.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1))
 
-        let temp = puzzle_letters[i]
-        puzzle_letters[i] = puzzle_letters[j] as string;
-        puzzle_letters[j] = temp as string;
+        let temp = puzzle_letters.value[i]
+        puzzle_letters.value[i] = puzzle_letters.value[j] as string;
+        puzzle_letters.value[j] = temp as string;
     }
 }
 
 
 const found_words = ref<string[]>([])
+const score = ref(0)
 function submit_guess(): void {
     const guess_letters = guess.value
     guess.value = []
 
-    if (!guess_letters.includes(key_letter)) {
+    if (!guess_letters.includes(key_letter.value)) {
         popup('Must contain key letter')
         return
     }
@@ -131,7 +144,7 @@ function submit_guess(): void {
         return
     }
 
-    const is_bad_input = guess_letters.some((letter) => !puzzle_letters.includes(letter))
+    const is_bad_input = guess_letters.some((letter) => !puzzle_letters.value.includes(letter))
     if (is_bad_input) {
         popup('Must use listed letters')
         return
@@ -150,6 +163,7 @@ function submit_guess(): void {
     }
 
     found_words.value.push(guess_word)
+    score.value += get_score(guess_word)
 }
 
 
@@ -169,9 +183,9 @@ function popup(message: string): void {
 <template>
     <div v-if="is_loaded" id="game">
         <div id="word-box">
-            <div id="word-count">
+            <div id="score">
                 <div>
-                    {{ found_words.length }} / {{ answer_word_list.length }}
+                    {{ score }}
                 </div>
             </div>
 
@@ -278,7 +292,7 @@ function popup(message: string): void {
     align-content: flex-start;
 }
 
-#word-count {
+#score {
     position: absolute;
     width: 100%;
     height: 0;
