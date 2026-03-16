@@ -64,7 +64,7 @@ function set_puzzle(): void {
         const try_key_letter = sample(try_puzzle_letters)
         const try_answer_word_list = word_list.filter((word) => is_valid(word, try_puzzle_letters, try_key_letter))
 
-        if (try_answer_word_list.length >= 15 && try_answer_word_list.length <= 30) {
+        if (try_answer_word_list.length >= 20 && try_answer_word_list.length <= 40) {
             puzzle_letters.value = try_puzzle_letters
             key_letter.value = try_key_letter
             answer_word_list.value = try_answer_word_list
