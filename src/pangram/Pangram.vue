@@ -187,7 +187,7 @@ function popup(message: string): void {
         <div id="word-box">
             <div id="score">
                 <div>
-                    Score: {{ score }} ({{ percent }}%)
+                    Words: {{ found_words.length }} &bull; Score: {{ score }} ({{ percent }}%)
                     <span id="progress-bar">
                         <span :style="{ width: `${percent}%` }"></span>
                     </span>
@@ -318,7 +318,7 @@ function popup(message: string): void {
 
 #progress-bar {
     display: inline-block;
-    width: 100px;
+    width: 50px;
     height: 15px;
     border-radius: var(--roundness);
     background-color: #222;
