@@ -101,6 +101,11 @@ function is_valid(word: string, puzzle_letters: string[], key_letter: string): b
 }
 
 
+function is_pangram(word: string): boolean {
+    return new Set(word.split('')).isSupersetOf(new Set(puzzle_letters.value))
+}
+
+
 function shuffle_letters(): void {
     for (let i = puzzle_letters.value.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1))
@@ -172,7 +177,7 @@ function popup(message: string): void {
             </div>
 
             <div id="found-words">
-                <div v-for="word in found_words" class="answer">
+                <div v-for="word in found_words" class="answer" :class="{ pangram: is_pangram(word) }">
                     {{ word.toLocaleUpperCase() }}
                 </div>
             </div>
@@ -238,6 +243,7 @@ function popup(message: string): void {
     --off-white: #ddd;
     --gap-size: 10px;
     --total-width: 350px;
+    --roundness: 2px;
     --button-unit: calc((var(--total-width) - 6 * var(--gap-size)) / 7);
     --wide-button-unit: calc((var(--total-width) - 3 * var(--gap-size)) / 4);
 
@@ -260,9 +266,9 @@ function popup(message: string): void {
 }
 
 #found-words {
-    width: calc(var(--total-width) - 20px);
+    width: calc(var(--total-width) - 30px);
     height: 260px;
-    border-radius: 2px;
+    border-radius: var(--roundness);
     outline: 2px solid var(--border-color);
     padding: 15px;
 
@@ -288,13 +294,17 @@ function popup(message: string): void {
         color: var(--off-white);
         background-color: var(--border-color);
         padding: 5px 8px;
-        border-radius: 2px;
+        border-radius: var(--roundness);
     }
 }
 
 .answer {
     margin: 5px 10px;
     color: var(--off-white);
+
+    &.pangram {
+        color: yellow;
+    }
 }
 
 #popup {
@@ -312,7 +322,7 @@ function popup(message: string): void {
         color: var(--off-white);
         background-color: var(--border-color);
         padding: 5px 8px;
-        border-radius: 2px;
+        border-radius: var(--roundness);
     }
 }
 
@@ -347,12 +357,12 @@ function popup(message: string): void {
 
 button {
     border: none;
-    border-radius: 5px;
+    border-radius: var(--roundness);
     background-color: #222;
     color: var(--off-white);
     cursor: pointer;
 
-    &:hover {
+    &:active {
         outline: 2px solid var(--border-color);
     }
 }
