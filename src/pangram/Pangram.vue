@@ -254,7 +254,7 @@ function popup(message: string): void {
     width: calc(var(--total-width) - 20px);
     height: 260px;
     border-radius: 2px;
-    outline: 2px solid var(--bg-color);
+    outline: 2px solid var(--border-color);
     padding: 15px;
 
     display: flex;
@@ -277,7 +277,7 @@ function popup(message: string): void {
     div {
         width: max-content;
         color: var(--off-white);
-        background-color: var(--bg-color);
+        background-color: var(--border-color);
         padding: 5px 8px;
         border-radius: 2px;
     }
@@ -301,7 +301,7 @@ function popup(message: string): void {
     div {
         width: max-content;
         color: var(--off-white);
-        background-color: var(--bg-color);
+        background-color: var(--border-color);
         padding: 5px 8px;
         border-radius: 2px;
     }
