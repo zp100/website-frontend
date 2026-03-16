@@ -61,7 +61,7 @@ function set_puzzle(): void {
         const try_key_letter = sample(try_puzzle_letters)
         const try_answer_word_list = word_list.filter((word) => is_valid(word, try_puzzle_letters, try_key_letter))
 
-        if (try_answer_word_list.length >= 10 && try_answer_word_list.length <= 50) {
+        if (try_answer_word_list.length >= 15 && try_answer_word_list.length <= 30) {
             puzzle_letters.value = try_puzzle_letters
             key_letter.value = try_key_letter
             answer_word_list.value = try_answer_word_list
@@ -150,6 +150,12 @@ function popup(message: string): void {
 <template>
     <div id="game">
         <div id="word-box">
+            <div id="word-count">
+                <div>
+                    {{ found_words.length }} / {{ answer_word_list.length }}
+                </div>
+            </div>
+
             <div id="found-words">
                 <div v-for="word in found_words" class="answer">
                     {{ word.toLocaleUpperCase() }}
@@ -157,7 +163,7 @@ function popup(message: string): void {
             </div>
 
             <div v-show="is_showing_popup" id="popup">
-                <div id="popup-message">
+                <div>
                     {{ popup_message }}
                 </div>
             </div>
@@ -239,6 +245,25 @@ function popup(message: string): void {
     align-content: flex-start;
 }
 
+#word-count {
+    position: absolute;
+    width: 100%;
+    height: 0;
+    top: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+
+    div {
+        width: max-content;
+        color: var(--off-white);
+        background-color: var(--bg-color);
+        padding: 5px 8px;
+        border-radius: 2px;
+    }
+}
+
 .answer {
     margin: 10px;
     color: var(--off-white);
@@ -254,7 +279,7 @@ function popup(message: string): void {
     justify-content: center;
     align-items: center;
 
-    #popup-message {
+    div {
         width: max-content;
         color: var(--off-white);
         background-color: var(--bg-color);
