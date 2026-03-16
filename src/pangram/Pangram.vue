@@ -27,15 +27,17 @@ window.addEventListener('keydown', (ev: KeyboardEvent) => {
 })
 
 
+let min_len: number
 let word_list: string[]
 let puzzle_list: string[]
 onMounted(async () => {
-    ({ word_list, puzzle_list } = await get_word_list())
+    ({ min_len, word_list, puzzle_list } = await get_word_list())
     set_puzzle()
 })
 
 
 type WordListResponse = {
+    min_len: number
     word_list: string[]
     puzzle_list: string[]
 }
@@ -127,8 +129,8 @@ function submit_guess(): void {
         return
     }
 
-    if (guess_letters.length < 4) {
-        popup('Must be at least 4 letters long')
+    if (guess_letters.length < min_len) {
+        popup(`Must be at least ${min_len} letters long`)
         return
     }
 
@@ -254,7 +256,7 @@ function popup(message: string): void {
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
-    gap: var(--gap-size);
+    gap: 20px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
