@@ -55,9 +55,9 @@ async function get_word_list(): Promise<WordListResponse> {
 
 
 const is_loaded = ref(false)
-const puzzle_letters = ref<string[]>([])
-const key_letter = ref('')
-const answer_word_list = ref<string[]>([])
+let puzzle_letters: string[]
+let key_letter: string
+let answer_word_list: string[]
 function set_puzzle(): void {
     while (true) {
         const try_puzzle_letters = sample(puzzle_list).split('')
@@ -65,9 +65,9 @@ function set_puzzle(): void {
         const try_answer_word_list = word_list.filter((word) => is_valid(word, try_puzzle_letters, try_key_letter))
 
         if (try_answer_word_list.length >= 20 && try_answer_word_list.length <= 40) {
-            puzzle_letters.value = try_puzzle_letters
-            key_letter.value = try_key_letter
-            answer_word_list.value = try_answer_word_list
+            puzzle_letters = try_puzzle_letters
+            key_letter = try_key_letter
+            answer_word_list = try_answer_word_list
             is_loaded.value = true
             return
         }
@@ -104,17 +104,17 @@ function is_valid(word: string, puzzle_letters: string[], key_letter: string): b
 
 
 function is_pangram(word: string): boolean {
-    return new Set(word.split('')).isSupersetOf(new Set(puzzle_letters.value))
+    return new Set(word.split('')).isSupersetOf(new Set(puzzle_letters))
 }
 
 
 function shuffle_letters(): void {
-    for (let i = puzzle_letters.value.length - 1; i > 0; i--) {
+    for (let i = puzzle_letters.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1))
 
-        let temp = puzzle_letters.value[i]
-        puzzle_letters.value[i] = puzzle_letters.value[j] as string;
-        puzzle_letters.value[j] = temp as string;
+        let temp = puzzle_letters[i]
+        puzzle_letters[i] = puzzle_letters[j] as string;
+        puzzle_letters[j] = temp as string;
     }
 }
 
@@ -124,7 +124,7 @@ function submit_guess(): void {
     const guess_letters = guess.value
     guess.value = []
 
-    if (!guess_letters.includes(key_letter.value)) {
+    if (!guess_letters.includes(key_letter)) {
         popup('Must contain key letter')
         return
     }
@@ -134,7 +134,7 @@ function submit_guess(): void {
         return
     }
 
-    const is_bad_input = guess_letters.some((letter) => !puzzle_letters.value.includes(letter))
+    const is_bad_input = guess_letters.some((letter) => !puzzle_letters.includes(letter))
     if (is_bad_input) {
         popup('Must use listed letters')
         return
