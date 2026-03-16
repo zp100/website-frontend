@@ -212,6 +212,10 @@ function popup(message: string): void {
 #game {
     --bg-color: #222;
     --off-white: #ddd;
+    --gap-size: 10px;
+    --total-width: 350px;
+    --button-unit: calc((var(--total-width) - 6 * var(--gap-size)) / 7);
+    --wide-button-unit: calc((var(--total-width) - 2 * var(--gap-size)) / 3);
 
     width: 100vw;
     height: 100vh;
@@ -220,7 +224,7 @@ function popup(message: string): void {
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: var(--gap-size);
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -232,8 +236,8 @@ function popup(message: string): void {
 }
 
 #found-words {
-    width: 390px;
-    height: 500px;
+    width: calc(var(--total-width) - 20px);
+    height: calc(var(--total-width) - 20px);
     border-radius: 2px;
     outline: 2px solid var(--bg-color);
     padding: 10px;
@@ -334,13 +338,13 @@ button {
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: var(--gap-size);
 }
 
 .option-letter {
-    width: 50px;
-    height: 50px;
-    font-size: xx-large;
+    width: var(--button-unit);
+    height: var(--button-unit);
+    font-size: x-large;
 
     &.key-letter {
         color: #ff0;
@@ -352,12 +356,12 @@ button {
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: var(--gap-size);
 }
 
 .action-btn {
-    width: 130px;
-    height: 50px;
+    width: var(--wide-button-unit);
+    height: var(--button-unit);
     font-size: x-large;
 }
 </style>
