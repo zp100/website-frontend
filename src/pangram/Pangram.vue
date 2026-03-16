@@ -52,6 +52,7 @@ async function get_word_list(): Promise<WordListResponse> {
 }
 
 
+const is_loaded = ref(false)
 const puzzle_letters = ref<string[]>([])
 const key_letter = ref('')
 const answer_word_list = ref<string[]>([])
@@ -65,6 +66,7 @@ function set_puzzle(): void {
             puzzle_letters.value = try_puzzle_letters
             key_letter.value = try_key_letter
             answer_word_list.value = try_answer_word_list
+            is_loaded.value = true
             return
         }
     }
@@ -161,7 +163,7 @@ function popup(message: string): void {
 
 
 <template>
-    <div id="game">
+    <div v-if="is_loaded" id="game">
         <div id="word-box">
             <div id="word-count">
                 <div>
@@ -218,6 +220,12 @@ function popup(message: string): void {
             <button class="action-btn" @keydown.prevent="" @click="submit_guess()">
                 <font-awesome-icon icon="fa-solid fa-circle-chevron-right" />
             </button>
+        </div>
+    </div>
+
+    <div v-else id="game">
+        <div id="spinner">
+            <font-awesome-icon icon="fa-solid fa-spinner" />
         </div>
     </div>
 </template>
@@ -379,5 +387,21 @@ button {
     width: var(--wide-button-unit);
     height: var(--button-unit);
     font-size: x-large;
+}
+
+#spinner {
+    color: white;
+    font-size: xx-large;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(1turn);
+    }
 }
 </style>
