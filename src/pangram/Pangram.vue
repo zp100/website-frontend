@@ -158,33 +158,32 @@ const score = ref(0)
 const percent = ref(0)
 function submit_guess(): void {
     const guess_letters = guess.value
+    const guess_word = guess_letters.join('')
     guess.value = []
-
-    if (!guess_letters.includes(key_letter.value)) {
-        popup('Must contain key letter')
-        return
-    }
 
     if (guess_letters.length < min_len) {
         popup(`Must be at least ${min_len} letters long`)
         return
     }
 
-    const is_bad_input = guess_letters.some((letter) => !puzzle_letters.value.includes(letter))
-    if (is_bad_input) {
-        popup('Must use listed letters')
+    if (!word_list.includes(guess_word)) {
+        popup('Not in word list')
         return
     }
-
-    const guess_word = guess_letters.join('')
 
     if (found_words.value.includes(guess_word)) {
         popup('Already found')
         return
     }
 
-    if (!word_list.includes(guess_word)) {
-        popup('Not in word list')
+    if (!guess_letters.includes(key_letter.value)) {
+        popup('Must contain key letter')
+        return
+    }
+
+    const is_bad_input = guess_letters.some((letter) => !puzzle_letters.value.includes(letter))
+    if (is_bad_input) {
+        popup('Must use listed letters')
         return
     }
 
@@ -217,8 +216,8 @@ function popup(message: string): void {
     <div v-if="is_loaded" id="game">
         <div id="word-box">
             <div id="score">
-                <div>
-                    Words: {{ found_words.length }} &bull; Score: {{ score }} ({{ percent }}%)
+                <div :title="`${score} out of ${total_score} (${percent}%), ${total_score - score} remaining`">
+                    Words: {{ found_words.length }} &bull; Score: {{ score }}
                     <span id="progress-bar">
                         <span :style="{ width: `${percent}%` }"></span>
                     </span>
@@ -322,7 +321,7 @@ function popup(message: string): void {
 
 #found-words {
     width: calc(var(--total-width) - 30px);
-    height: 260px;
+    height: 290px;
     border-radius: var(--roundness);
     outline: 2px solid var(--border-color);
     padding: 15px;
@@ -356,14 +355,14 @@ function popup(message: string): void {
 #progress-bar {
     display: inline-block;
     width: 50px;
-    height: 15px;
+    height: 12px;
     border-radius: var(--roundness);
     background-color: #222;
-    margin-bottom: -2px;
+    margin-bottom: -1px;
 
     span {
         display: block;
-        height: 15px;
+        height: 100%;
         border-radius: var(--roundness);
         background-color: yellow;
     }
@@ -465,7 +464,7 @@ button {
     position: absolute;
     width: 100%;
     height: 0;
-    bottom: -3px;
+    bottom: -4px;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
