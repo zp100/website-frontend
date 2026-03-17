@@ -5,6 +5,16 @@ import { onMounted, ref } from 'vue'
 // Update guess when keys are pressed.
 const guess = ref<string[]>([])
 window.addEventListener('keydown', (ev: KeyboardEvent) => {
+    if (ev.key === 'Shift') {
+        shuffle_letters()
+        return
+    }
+
+    if (ev.key === 'Escape') {
+        guess.value.length = 0
+        return
+    }
+
     if (ev.key === 'Backspace') {
         guess.value.pop()
         return
@@ -257,16 +267,16 @@ function popup(message: string): void {
         </div>
 
         <div id="actions">
-            <button class="action-btn" @keydown.prevent="" @click="shuffle_letters()">
+            <button class="action-btn" title="Shuffle letters (Shift)" @keydown.prevent="" @click="shuffle_letters()">
                 <font-awesome-icon icon="fa-solid fa-shuffle" />
             </button>
-            <button class="action-btn" @keydown.prevent="" @click="guess.length = 0">
+            <button class="action-btn" title="Clear (Esc)" @keydown.prevent="" @click="guess.length = 0">
                 <font-awesome-icon icon="fa-solid fa-trash-can" />
             </button>
-            <button class="action-btn" @keydown.prevent="" @click="guess.pop()">
+            <button class="action-btn" title="Backspace" @keydown.prevent="" @click="guess.pop()">
                 <font-awesome-icon icon="fa-solid fa-delete-left" />
             </button>
-            <button class="action-btn" @keydown.prevent="" @click="submit_guess()">
+            <button class="action-btn" title="Submit word (Enter)" @keydown.prevent="" @click="submit_guess()">
                 <font-awesome-icon icon="fa-solid fa-circle-chevron-right" />
             </button>
         </div>
@@ -455,7 +465,7 @@ button {
     position: absolute;
     width: 100%;
     height: 0;
-    bottom: -2px;
+    bottom: -3px;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
