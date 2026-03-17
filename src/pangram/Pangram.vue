@@ -27,12 +27,14 @@ window.addEventListener('keydown', (ev: KeyboardEvent) => {
 })
 
 
+const is_loaded = ref(false)
 let min_len: number
 let word_list: string[]
 let puzzle_list: string[]
 onMounted(async () => {
     ({ min_len, word_list, puzzle_list } = await get_word_list())
     set_puzzle()
+    is_loaded.value = true
 })
 
 
@@ -54,7 +56,6 @@ async function get_word_list(): Promise<WordListResponse> {
 }
 
 
-const is_loaded = ref(false)
 const puzzle_letters = ref<string[]>([])
 const key_letter = ref('')
 const answer_word_list = ref<string[]>([])
@@ -72,7 +73,6 @@ function set_puzzle(): void {
 
             set_letter_counts()
             total_score = answer_word_list.value.reduce((score, word) => score + get_score(word), 0)
-            is_loaded.value = true
             return
         }
     }
