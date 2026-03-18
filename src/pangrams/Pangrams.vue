@@ -252,8 +252,18 @@ function popup(message: string): void {
             </div>
 
             <div id="found-words">
-                <div v-for="word in found_words.toSorted()" class="answer" :class="{ pangram: is_pangram(word) }">
-                    {{ word.toLocaleUpperCase() }}
+                <div v-for="word in found_words.toSorted().map((word) => word.toLocaleUpperCase())" class="answer" :class="{ pangram: is_pangram(word) }">
+                    <span v-if="word.startsWith(guess.join('').toLocaleUpperCase())">
+                        <span class="substring">
+                            {{ word.slice(0, guess.length) }}
+                        </span>
+                        <span>
+                            {{ word.slice(guess.length) }}
+                        </span>
+                    </span>
+                    <span v-else>
+                        {{ word }}
+                    </span>
                 </div>
             </div>
 
@@ -405,6 +415,10 @@ function popup(message: string): void {
 
     &.pangram {
         color: yellow;
+    }
+
+    .substring {
+        background-color: var(--border-color);
     }
 }
 
