@@ -170,8 +170,11 @@ const found_words = ref<string[]>([])
 const score = ref(0)
 const percent = ref(0)
 function submit_guess(): void {
+    if (guess.value.length === 0) {
+        return
+    }
+
     const guess_letters = guess.value
-    const guess_word = guess_letters.join('')
     guess.value = []
 
     if (guess_letters.length < min_len) {
@@ -179,6 +182,7 @@ function submit_guess(): void {
         return
     }
 
+    const guess_word = guess_letters.join('')
     if (!word_list.includes(guess_word)) {
         popup('Not in word list')
         return
