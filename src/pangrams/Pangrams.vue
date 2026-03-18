@@ -47,11 +47,12 @@ onMounted(async () => {
 })
 
 
-let word_list_response: {
+type WordListResponse = {
     min_len: number;
     word_list: string[];
     puzzle_list: string[];
 }
+let word_list_response: WordListResponse
 async function fetch_word_list(): Promise<void> {
     const api_url = import.meta.env.VITE_BACKEND_URL
     const word_list_url = `${api_url}/pangrams/word_list`
@@ -64,24 +65,31 @@ async function fetch_word_list(): Promise<void> {
 }
 
 
-const puzzle_letters = ref<string[]>([])
-const key_letter = ref('')
-const answer_word_list = ref<string[]>([])
+type Puzzle = {
+    letters: string[]
+    key_letter: string
+    answer_word_list: string[]
+}
+const puzzle = ref<Puzzle>({
+    letters: [],
+    key_letter: '',
+    answer_word_list: [],
+})
 let total_score: number
 function set_puzzle(): void {
     while (true) {
-        const try_puzzle_letters = sample(word_list_response.puzzle_list).split('')
-        const try_key_letter = sample(try_puzzle_letters)
+        const try_letters = sample(word_list_response.puzzle_list).split('')
+        const try_key_letter = sample(try_letters)
         const try_answer_word_list = word_list_response.word_list.filter((word) =>
-            is_valid(word, try_puzzle_letters, try_key_letter))
+            is_valid(word, try_letters, try_key_letter))
 
         if (try_answer_word_list.length >= 10 && try_answer_word_list.length <= 60) {
-            puzzle_letters.value = try_puzzle_letters
-            key_letter.value = try_key_letter
-            answer_word_list.value = try_answer_word_list
+            puzzle.value.letters = try_letters
+            puzzle.value.key_letter = try_key_letter
+            puzzle.value.answer_word_list = try_answer_word_list
 
             set_letter_counts()
-            total_score = answer_word_list.value.reduce((score, word) => score + get_score(word), 0)
+            total_score = puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0)
             return
         }
     }
@@ -99,16 +107,16 @@ function sample<T>(items: T[]): T {
 }
 
 
-function is_valid(word: string, puzzle_letters: string[], key_letter: string): boolean {
-    const letters = new Set(word.split(''))
+function is_valid(word: string, letters: string[], key_letter: string): boolean {
+    const word_letters = new Set(word.split(''))
 
-    if (!letters.has(key_letter)) {
+    if (!word_letters.has(key_letter)) {
         return false
     }
 
     const alphabet = new Set('abcdefghijklmnopqrstuvwxyz'.split(''))
-    const invalid_letters = alphabet.difference(new Set(puzzle_letters))
-    if (!letters.isDisjointFrom(invalid_letters)) {
+    const invalid_letters = alphabet.difference(new Set(letters))
+    if (!word_letters.isDisjointFrom(invalid_letters)) {
         return false
     }
 
@@ -124,7 +132,7 @@ function get_score(word: string): number {
 
 const letter_counts = ref<Record<string, number>>({})
 function set_letter_counts(): void {
-    answer_word_list.value.forEach((word) => {
+    puzzle.value.answer_word_list.forEach((word) => {
         word.split('').forEach((letter) => {
             if (letter_counts.value[letter] !== undefined) {
                 letter_counts.value[letter] += 1
@@ -138,14 +146,14 @@ function set_letter_counts(): void {
 
 function show_stats(): void {
     popup(`
-        ${answer_word_list.value.length - found_words.value.length} word(s) remaining,
+        ${puzzle.value.answer_word_list.length - found_words.value.length} word(s) remaining,
         ${total_score - score.value} score remaining`
     )
 }
 
 
 function is_pangram(word: string): boolean {
-    return new Set(word.split('')).isSupersetOf(new Set(puzzle_letters.value))
+    return new Set(word.split('')).isSupersetOf(new Set(puzzle.value.letters))
 }
 
 
@@ -161,12 +169,12 @@ function display(word: string): string {
 
 
 function shuffle_letters(): void {
-    for (let i = puzzle_letters.value.length - 1; i > 0; i--) {
+    for (let i = puzzle.value.letters.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1))
 
-        let temp = puzzle_letters.value[i]
-        puzzle_letters.value[i] = puzzle_letters.value[j] as string;
-        puzzle_letters.value[j] = temp as string;
+        let temp = puzzle.value.letters[i]
+        puzzle.value.letters[i] = puzzle.value.letters[j] as string;
+        puzzle.value.letters[j] = temp as string;
     }
 }
 
@@ -198,12 +206,12 @@ function submit_guess(): void {
         return
     }
 
-    if (!guess_letters.includes(key_letter.value)) {
+    if (!guess_letters.includes(puzzle.value.key_letter)) {
         popup('Must contain key letter')
         return
     }
 
-    const is_bad_input = guess_letters.some((letter) => !puzzle_letters.value.includes(letter))
+    const is_bad_input = guess_letters.some((letter) => !puzzle.value.letters.includes(letter))
     if (is_bad_input) {
         popup('Must use listed letters')
         return
@@ -218,7 +226,7 @@ function submit_guess(): void {
     const word_score = get_score(guess_word)
     score.value += word_score
     found_words.value.push(guess_word)
-    if (found_words.value.length === answer_word_list.value.length) {
+    if (found_words.value.length === puzzle.value.answer_word_list.length) {
         popup('All words found!')
     } else {
         popup(`+${word_score}`)
@@ -249,7 +257,7 @@ function popup(message: string): void {
         <div id="word-box">
             <div id="score">
                 <div :style="{ cursor: 'pointer' }" @click="show_stats()">
-                    Words: {{ found_words.length }}/{{ answer_word_list.length }}
+                    Words: {{ found_words.length }}/{{ puzzle.answer_word_list.length }}
                     &bull;
                     Score: {{ score }}/{{ total_score }}
                     <span id="progress-bar">
@@ -285,7 +293,7 @@ function popup(message: string): void {
             <div
                 v-for="letter in guess"
                 class="guess-letter"
-                :class="{ 'key-letter': letter === key_letter, 'invalid-letter': !puzzle_letters.includes(letter) }"
+                :class="{ 'key-letter': letter === puzzle.key_letter, 'invalid-letter': !puzzle.letters.includes(letter) }"
             >
                 {{ letter.toLocaleUpperCase() }}
             </div>
@@ -295,9 +303,9 @@ function popup(message: string): void {
 
         <div id="options">
             <button
-                v-for="letter in puzzle_letters"
+                v-for="letter in puzzle.letters"
                 class="option-letter"
-                :class="{ 'key-letter': letter === key_letter }"
+                :class="{ 'key-letter': letter === puzzle.key_letter }"
                 @click="guess.push(letter)"
             >
                 {{ letter.toLocaleUpperCase() }}
