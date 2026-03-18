@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 
 // Update guess when keys are pressed.
@@ -142,7 +142,7 @@ function set_letter_counts(): void {
 }
 
 
-function show_stats() {
+function show_stats(): void {
     popup(`
         ${answer_word_list.value.length - found_words.value.length} words remaining,
         ${total_score - score.value} score remaining`
@@ -152,6 +152,12 @@ function show_stats() {
 
 function is_pangram(word: string): boolean {
     return new Set(word.split('')).isSupersetOf(new Set(puzzle_letters.value))
+}
+
+
+function is_substring_of_guess(word: string): boolean {
+    const guess_word = guess.value.join('')
+    return word.startsWith(guess_word.toLocaleUpperCase())
 }
 
 
@@ -167,8 +173,9 @@ function shuffle_letters(): void {
 
 
 const found_words = ref<string[]>([])
+const found_words_display = computed(() => found_words.value.map((word) => word.toLocaleUpperCase()).toSorted())
 const score = ref(0)
-const percent = ref(0)
+const percent = computed(() => Math.floor(100 * score.value / total_score))
 function submit_guess(): void {
     if (guess.value.length === 0) {
         return
@@ -214,7 +221,6 @@ function submit_guess(): void {
 
     const word_score = get_score(guess_word)
     score.value += word_score
-    percent.value = Math.floor(100 * score.value / total_score)
     popup(`+${word_score}`)
 }
 
@@ -252,8 +258,8 @@ function popup(message: string): void {
             </div>
 
             <div id="found-words">
-                <div v-for="word in found_words.toSorted().map((word) => word.toLocaleUpperCase())" class="answer" :class="{ pangram: is_pangram(word) }">
-                    <span v-if="word.startsWith(guess.join('').toLocaleUpperCase())">
+                <div v-for="word in found_words_display" class="answer" :class="{ pangram: is_pangram(word) }">
+                    <span v-if="is_substring_of_guess(word)">
                         <span class="substring">
                             {{ word.slice(0, guess.length) }}
                         </span>
