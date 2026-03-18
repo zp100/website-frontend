@@ -355,10 +355,9 @@ function popup(message: string): void {
 #progress-bar {
     display: inline-block;
     width: 50px;
-    height: 12px;
+    height: 11px;
     border-radius: var(--roundness);
     background-color: #222;
-    margin-bottom: -0.5px;
 
     span {
         display: block;
