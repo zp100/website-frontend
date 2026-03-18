@@ -221,11 +221,14 @@ function submit_guess(): void {
         }
     })
 
-    found_words.value.push(guess_word)
-
     const word_score = get_score(guess_word)
     score.value += word_score
-    popup(`+${word_score}`)
+    found_words.value.push(guess_word)
+    if (found_words.value.length === answer_word_list.value.length) {
+        popup('All words found!')
+    } else {
+        popup(`+${word_score}`)
+    }
 }
 
 
