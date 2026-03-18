@@ -42,7 +42,12 @@ let min_len: number
 let word_list: string[]
 let puzzle_list: string[]
 onMounted(async () => {
-    ({ min_len, word_list, puzzle_list } = await get_word_list())
+    document.title = 'Pangrams'
+
+    const word_list_response = await get_word_list()
+    min_len = word_list_response.min_len
+    word_list = word_list_response.word_list
+    puzzle_list = word_list_response.puzzle_list
     set_puzzle()
     is_loaded.value = true
 })
