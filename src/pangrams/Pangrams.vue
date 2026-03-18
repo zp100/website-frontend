@@ -144,7 +144,7 @@ function set_letter_counts(): void {
 
 function show_stats(): void {
     popup(`
-        ${answer_word_list.value.length - found_words.value.length} words remaining,
+        ${answer_word_list.value.length - found_words.value.length} word(s) remaining,
         ${total_score - score.value} score remaining`
     )
 }
