@@ -157,7 +157,12 @@ function is_pangram(word: string): boolean {
 
 function is_substring_of_guess(word: string): boolean {
     const guess_word = guess.value.join('')
-    return word.startsWith(guess_word.toLocaleUpperCase())
+    return word.startsWith(guess_word)
+}
+
+
+function display(word: string): string {
+    return word.toLocaleUpperCase()
 }
 
 
@@ -173,7 +178,6 @@ function shuffle_letters(): void {
 
 
 const found_words = ref<string[]>([])
-const found_words_display = computed(() => found_words.value.map((word) => word.toLocaleUpperCase()).toSorted())
 const score = ref(0)
 const percent = computed(() => Math.floor(100 * score.value / total_score))
 function submit_guess(): void {
@@ -258,17 +262,17 @@ function popup(message: string): void {
             </div>
 
             <div id="found-words">
-                <div v-for="word in found_words_display" class="answer" :class="{ pangram: is_pangram(word) }">
+                <div v-for="word in found_words.toSorted()" class="answer" :class="{ pangram: is_pangram(word) }">
                     <span v-if="is_substring_of_guess(word)">
                         <span class="substring">
-                            {{ word.slice(0, guess.length) }}
+                            {{ display(word.slice(0, guess.length)) }}
                         </span>
                         <span>
-                            {{ word.slice(guess.length) }}
+                            {{ display(word.slice(guess.length)) }}
                         </span>
                     </span>
                     <span v-else>
-                        {{ word }}
+                        {{ display(word) }}
                     </span>
                 </div>
             </div>
