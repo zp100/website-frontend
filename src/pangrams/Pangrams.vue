@@ -142,6 +142,14 @@ function set_letter_counts(): void {
 }
 
 
+function show_stats() {
+    popup(`
+        ${answer_word_list.value.length - found_words.value.length} words remaining,
+        ${total_score - score.value} score remaining`
+    )
+}
+
+
 function is_pangram(word: string): boolean {
     return new Set(word.split('')).isSupersetOf(new Set(puzzle_letters.value))
 }
@@ -199,8 +207,11 @@ function submit_guess(): void {
     })
 
     found_words.value.push(guess_word)
-    score.value += get_score(guess_word)
+
+    const word_score = get_score(guess_word)
+    score.value += word_score
     percent.value = Math.floor(100 * score.value / total_score)
+    popup(`+${word_score}`)
 }
 
 
@@ -209,9 +220,14 @@ const is_showing_popup = ref(false)
 let timeout_id: number | undefined = undefined;
 function popup(message: string): void {
     clearTimeout(timeout_id)
-    popup_message.value = message
-    is_showing_popup.value = true
-    timeout_id = setTimeout(() => is_showing_popup.value = false, 3000)
+    is_showing_popup.value = false
+
+    // Wait a moment for the old popup to disappear.
+    setTimeout(() => {
+        popup_message.value = message
+        is_showing_popup.value = true
+        timeout_id = setTimeout(() => is_showing_popup.value = false, 5000)
+    }, 0)
 }
 </script>
 
@@ -221,8 +237,10 @@ function popup(message: string): void {
     <div v-if="is_loaded" id="game">
         <div id="word-box">
             <div id="score">
-                <div :title="`${score} out of ${total_score} (${percent}%), ${total_score - score} remaining`">
-                    Words: {{ found_words.length }} &bull; Score: {{ score }}
+                <div :style="{ cursor: 'pointer' }" @click="show_stats()">
+                    Words: {{ found_words.length }}/{{ answer_word_list.length }}
+                    &bull;
+                    Score: {{ score }}/{{ total_score }}
                     <span id="progress-bar">
                         <span :style="{ width: `${percent}%` }"></span>
                     </span>
@@ -297,8 +315,11 @@ function popup(message: string): void {
 
 <style scoped>
 #game {
+    --off-black: #111;
+    --bg-color: #222;
     --border-color: #333;
     --off-white: #ddd;
+
     --gap-size: 10px;
     --total-width: 350px;
     --roundness: 2px;
@@ -307,7 +328,7 @@ function popup(message: string): void {
 
     width: 100vw;
     height: 100vh;
-    background-color: #111;
+    background-color: var(--off-black);
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
@@ -362,7 +383,8 @@ function popup(message: string): void {
     width: 50px;
     height: 11px;
     border-radius: var(--roundness);
-    background-color: #222;
+    outline: 1px solid var(--off-black);
+    background-color: var(--bg-color);
 
     span {
         display: block;
@@ -390,6 +412,7 @@ function popup(message: string): void {
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
+    animation: fade-in 50ms linear;
 
     div {
         width: max-content;
@@ -397,6 +420,16 @@ function popup(message: string): void {
         background-color: var(--border-color);
         padding: 5px 8px;
         border-radius: var(--roundness);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
     }
 }
 
@@ -432,7 +465,7 @@ function popup(message: string): void {
 button {
     border: none;
     border-radius: var(--roundness);
-    background-color: #222;
+    background-color: var(--bg-color);
     color: var(--off-white);
     cursor: pointer;
 
