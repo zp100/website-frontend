@@ -463,6 +463,7 @@ function popup(message: string): void {
 #cursor {
     height: 1.4em;
     width: 4px;
+    margin: 0 -2px;
     border-radius: 2px;
     background-color: var(--border-color);
 }
