@@ -55,7 +55,7 @@ type WordListResponse = {
 }
 async function get_word_list(): Promise<WordListResponse> {
     const api_url = import.meta.env.VITE_BACKEND_URL
-    const word_list_url = `${api_url}/pangram/word_list`
+    const word_list_url = `${api_url}/pangrams/word_list`
     try {
         const response = await fetch(word_list_url)
         const result = await response.json() as WordListResponse
@@ -358,7 +358,7 @@ function popup(message: string): void {
     height: 12px;
     border-radius: var(--roundness);
     background-color: #222;
-    margin-bottom: -1px;
+    margin-bottom: -0.5px;
 
     span {
         display: block;
