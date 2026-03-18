@@ -38,33 +38,26 @@ window.addEventListener('keydown', (ev: KeyboardEvent) => {
 
 
 const is_loaded = ref(false)
-let min_len: number
-let word_list: string[]
-let puzzle_list: string[]
 onMounted(async () => {
     document.title = 'Pangrams'
 
-    const word_list_response = await get_word_list()
-    min_len = word_list_response.min_len
-    word_list = word_list_response.word_list
-    puzzle_list = word_list_response.puzzle_list
+    await fetch_word_list()
     set_puzzle()
     is_loaded.value = true
 })
 
 
-type WordListResponse = {
-    min_len: number
-    word_list: string[]
-    puzzle_list: string[]
+let word_list_response: {
+    min_len: number;
+    word_list: string[];
+    puzzle_list: string[];
 }
-async function get_word_list(): Promise<WordListResponse> {
+async function fetch_word_list(): Promise<void> {
     const api_url = import.meta.env.VITE_BACKEND_URL
     const word_list_url = `${api_url}/pangrams/word_list`
     try {
         const response = await fetch(word_list_url)
-        const result = await response.json() as WordListResponse
-        return result
+        word_list_response = await response.json()
     } catch (e: any) {
         throw new Error(e.message)
     }
@@ -77,9 +70,10 @@ const answer_word_list = ref<string[]>([])
 let total_score: number
 function set_puzzle(): void {
     while (true) {
-        const try_puzzle_letters = sample(puzzle_list).split('')
+        const try_puzzle_letters = sample(word_list_response.puzzle_list).split('')
         const try_key_letter = sample(try_puzzle_letters)
-        const try_answer_word_list = word_list.filter((word) => is_valid(word, try_puzzle_letters, try_key_letter))
+        const try_answer_word_list = word_list_response.word_list.filter((word) =>
+            is_valid(word, try_puzzle_letters, try_key_letter))
 
         if (try_answer_word_list.length >= 10 && try_answer_word_list.length <= 60) {
             puzzle_letters.value = try_puzzle_letters
@@ -188,13 +182,13 @@ function submit_guess(): void {
     const guess_letters = guess.value
     guess.value = []
 
-    if (guess_letters.length < min_len) {
-        popup(`Must be at least ${min_len} letters long`)
+    if (guess_letters.length < word_list_response.min_len) {
+        popup(`Must be at least ${word_list_response.min_len} letters long`)
         return
     }
 
     const guess_word = guess_letters.join('')
-    if (!word_list.includes(guess_word)) {
+    if (!word_list_response.word_list.includes(guess_word)) {
         popup('Not in word list')
         return
     }
