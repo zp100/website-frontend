@@ -267,71 +267,76 @@ function popup(message: string): void {
 
 
 <template>
-    <div v-if="is_loaded" id="game">
-        <div id="word-box">
-            <div id="score">
-                <div :style="{ cursor: 'pointer' }" @click="show_stats()">
-                    Words: {{ found_words.length }}/{{ puzzle.answer_word_list.length }}
-                    &bull;
-                    Score: {{ score }}/{{ total_score }}
-                    <span id="progress-bar">
-                        <span :style="{ width: `${percent}%` }"></span>
-                    </span>
+    <div id="game">
+        <template v-if="is_loaded">
+            <div id="word-box">
+                <div id="score">
+                    <div :style="{ cursor: 'pointer' }" @click="show_stats()">
+                        Words: {{ found_words.length }}/{{ puzzle.answer_word_list.length }}
+                        &bull;
+                        Score: {{ score }}/{{ total_score }}
+                        <span id="progress-bar">
+                            <span :style="{ width: `${percent}%` }"></span>
+                        </span>
+                    </div>
                 </div>
+
+                <div id="found-words">
+                    <template v-for="word in found_words_sorted" :key="word">
+                        <Answer
+                            :found_word="word"
+                            :is_pangram="is_pangram(word)"
+                            :guess_word="guess_word"
+                        />
+                    </template>
+                </div>
+
+                <template v-show="is_showing_popup">
+                    <div id="popup">
+                        <div>
+                            {{ popup_message }}
+                        </div>
+                    </div>
+                </template>
             </div>
 
-            <div id="found-words">
-                <template v-for="word in found_words_sorted" :key="word">
-                    <Answer
-                        :found_word="word"
-                        :is_pangram="is_pangram(word)"
-                        :guess_word="guess_word"
+            <div id="input">
+                <template v-for="letter in guess">
+                    <div
+                        class="guess-letter"
+                        :class="{ 'key-letter': letter === puzzle.key_letter, 'invalid-letter': !puzzle.letters.includes(letter) }"
+                    >
+                        {{ letter.toLocaleUpperCase() }}
+                    </div>
+                </template>
+
+                <div id="cursor" class="guess-letter"></div>
+            </div>
+
+            <div id="options">
+                <template v-for="letter in puzzle.letters">
+                    <OptionButton
+                        :letter="letter"
+                        :is_key_letter="letter === puzzle.key_letter"
+                        :count="letter_counts[letter]"
+                        @click="guess.push(letter)"
                     />
                 </template>
             </div>
 
-            <div v-show="is_showing_popup" id="popup">
-                <div>
-                    {{ popup_message }}
-                </div>
+            <div id="actions">
+                <ActionButton title="Shuffle letters (Shift)" icon="shuffle" @click="shuffle_letters()" />
+                <ActionButton title="Clear (Esc)" icon="trash-can" @click="clear_guess()" />
+                <ActionButton title="Backspace" icon="delete-left" @click="backspace_guess()" />
+                <ActionButton title="Submit word (Enter)" icon="circle-chevron-right" @click="submit_guess()" />
             </div>
-        </div>
+        </template>
 
-        <div id="input">
-            <div
-                v-for="letter in guess"
-                class="guess-letter"
-                :class="{ 'key-letter': letter === puzzle.key_letter, 'invalid-letter': !puzzle.letters.includes(letter) }"
-            >
-                {{ letter.toLocaleUpperCase() }}
+        <template v-else>
+            <div id="spinner">
+                <FontAwesomeIcon icon="fa-solid fa-spinner" />
             </div>
-
-            <div id="cursor" class="guess-letter"></div>
-        </div>
-
-        <div id="options">
-            <template v-for="letter in puzzle.letters">
-                <OptionButton
-                    :letter="letter"
-                    :is_key_letter="letter === puzzle.key_letter"
-                    :count="letter_counts[letter]"
-                    @click="guess.push(letter)"
-                />
-            </template>
-        </div>
-
-        <div id="actions">
-            <ActionButton title="Shuffle letters (Shift)" icon="shuffle" @click="shuffle_letters()" />
-            <ActionButton title="Clear (Esc)" icon="trash-can" @click="clear_guess()" />
-            <ActionButton title="Backspace" icon="delete-left" @click="backspace_guess()" />
-            <ActionButton title="Submit word (Enter)" icon="circle-chevron-right" @click="submit_guess()" />
-        </div>
-    </div>
-
-    <div v-else id="game">
-        <div id="spinner">
-            <FontAwesomeIcon icon="fa-solid fa-spinner" />
-        </div>
+        </template>
     </div>
 </template>
 
