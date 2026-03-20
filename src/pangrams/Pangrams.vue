@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import Answer from './components/Answer.vue'
 
 
 // Update guess when keys are pressed.
 const guess = ref<string[]>([])
+const guess_word = computed(() => guess.value.join(''))
 window.addEventListener('keydown', (ev: KeyboardEvent) => {
     if (ev.key === 'Shift') {
         shuffle_letters()
@@ -166,17 +168,6 @@ function is_pangram(word: string): boolean {
 }
 
 
-function is_substring_of_guess(word: string): boolean {
-    const guess_word = guess.value.join('')
-    return word.startsWith(guess_word)
-}
-
-
-function display(word: string): string {
-    return word.toLocaleUpperCase()
-}
-
-
 function shuffle_letters(): void {
     for (let i = puzzle.value.letters.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1))
@@ -189,6 +180,7 @@ function shuffle_letters(): void {
 
 
 const found_words = ref<string[]>([])
+const found_words_sorted = computed(() => found_words.value.toSorted())
 const score = ref(0)
 const percent = computed(() => Math.floor(100 * score.value / total_score))
 function submit_guess(): void {
@@ -276,19 +268,13 @@ function popup(message: string): void {
             </div>
 
             <div id="found-words">
-                <div v-for="word in found_words.toSorted()" class="answer" :class="{ pangram: is_pangram(word) }">
-                    <span v-if="is_substring_of_guess(word)">
-                        <span class="substring">
-                            {{ display(word.slice(0, guess.length)) }}
-                        </span>
-                        <span>
-                            {{ display(word.slice(guess.length)) }}
-                        </span>
-                    </span>
-                    <span v-else>
-                        {{ display(word) }}
-                    </span>
-                </div>
+                <template v-for="word in found_words_sorted" :key="word">
+                    <Answer
+                        :found_word="word"
+                        :is_pangram="is_pangram(word)"
+                        :guess_word="guess_word"
+                    />
+                </template>
             </div>
 
             <div v-show="is_showing_popup" id="popup">
@@ -430,19 +416,6 @@ function popup(message: string): void {
         height: 100%;
         border-radius: var(--roundness);
         background-color: yellow;
-    }
-}
-
-.answer {
-    margin: 5px 10px;
-    color: var(--off-white);
-
-    &.pangram {
-        color: yellow;
-    }
-
-    .substring {
-        background-color: var(--border-color);
     }
 }
 
