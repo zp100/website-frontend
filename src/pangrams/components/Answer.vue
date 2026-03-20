@@ -35,11 +35,10 @@ const is_guess_prefix = computed(() => props.found_word.startsWith(props.guess_w
 .answer {
     margin: 5px 10px;
     color: var(--off-white);
-}
 
-
-.pangram {
-    color: yellow;
+    &.pangram {
+        color: yellow;
+    }
 }
 
 
