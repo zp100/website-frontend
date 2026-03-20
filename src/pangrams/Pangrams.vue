@@ -4,9 +4,9 @@ import ActionButton from './components/ActionButton.vue'
 import Answer from './components/Answer.vue'
 import GuessLetter from './components/GuessLetter.vue'
 import OptionButton from './components/OptionButton.vue'
-import ProgressBar from './components/ProgressBar.vue'
 import ResetButton from './components/ResetButton.vue'
 import Spinner from './components/Spinner.vue'
+import Stats from './components/Stats.vue'
 
 
 const is_loaded = ref(false)
@@ -232,7 +232,6 @@ function backspace_guess(): void {
 
 
 const found_words_sorted = computed(() => puzzle.value.found_words.toSorted())
-const percent = computed(() => Math.floor(100 * puzzle.value.score / total_score))
 function submit_guess(): void {
     if (guess.value.length === 0) {
         return
@@ -306,14 +305,12 @@ function popup(message: string): void {
             <ResetButton @reset="reset_puzzle()" />
 
             <div id="word-box">
-                <div id="score">
-                    <div :style="{ cursor: 'pointer' }" @click="show_stats()">
-                        Words: {{ puzzle.found_words.length }}/{{ puzzle.answer_word_list.length }}
-                        &bull;
-                        Score: {{ puzzle.score }}/{{ total_score }}
-                        <ProgressBar :progress_percent="percent" />
-                    </div>
-                </div>
+                <Stats
+                    :words="puzzle.found_words.length"
+                    :words_total="puzzle.answer_word_list.length"
+                    :score="puzzle.score"
+                    :score_total="total_score"
+                />
 
                 <div id="found-words">
                     <template v-for="word in found_words_sorted" :key="word">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-    progress_percent: number
+    percent: number
 }>()
 </script>
 
@@ -8,7 +8,7 @@ const props = defineProps<{
 
 <template>
     <span class="progress-bar">
-        <span :style="{ width: `${progress_percent}%` }"></span>
+        <span class="progress" :class="{ full: percent === 100 }" :style="{ width: `${percent}%` }"></span>
     </span>
 </template>
 
@@ -22,11 +22,16 @@ const props = defineProps<{
     border-radius: var(--roundness);
     outline: 1px solid var(--off-black);
     background-color: var(--bg-color);
+}
 
-    span {
-        display: block;
-        height: 100%;
-        border-radius: var(--roundness);
+
+.progress {
+    display: block;
+    height: 100%;
+    border-radius: var(--roundness);
+    background-color: var(--off-white);
+
+    &.full {
         background-color: yellow;
     }
 }
