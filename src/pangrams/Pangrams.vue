@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { computed, onMounted, ref } from 'vue'
 import ActionButton from './components/ActionButton.vue'
 import Answer from './components/Answer.vue'
+import GuessLetter from './components/GuessLetter.vue'
 import OptionButton from './components/OptionButton.vue'
 
 
@@ -302,15 +303,14 @@ function popup(message: string): void {
 
             <div id="input">
                 <template v-for="letter in guess">
-                    <div
-                        class="guess-letter"
-                        :class="{ 'key-letter': letter === puzzle.key_letter, 'invalid-letter': !puzzle.letters.includes(letter) }"
-                    >
-                        {{ letter.toLocaleUpperCase() }}
-                    </div>
+                    <GuessLetter
+                        :letter="letter"
+                        :is_key="letter === puzzle.key_letter"
+                        :is_invalid="!puzzle.letters.includes(letter)"
+                    />
                 </template>
 
-                <div id="cursor" class="guess-letter"></div>
+                <div id="cursor"></div>
             </div>
 
             <div id="options">
@@ -354,6 +354,7 @@ function popup(message: string): void {
     --roundness: 2px;
     --button-unit: calc((var(--total-width) - 6 * var(--gap-size)) / 7);
     --wide-button-unit: calc((var(--total-width) - 3 * var(--gap-size)) / 4);
+    --guess-font-size: xx-large;
 
     width: 100vw;
     height: 100vh;
@@ -463,21 +464,8 @@ function popup(message: string): void {
     gap: 2px;
 }
 
-.guess-letter {
-    color: white;
-    font-size: xx-large;
-
-    &.key-letter {
-        color: yellow;
-    }
-
-    &.invalid-letter {
-        color: var(--border-color);
-    }
-}
-
 #cursor {
-    height: 1.4em;
+    height: 45px;
     width: 4px;
     margin: 0 -2px;
     border-radius: 2px;
@@ -514,7 +502,7 @@ button {
 
 #spinner {
     color: white;
-    font-size: xx-large;
+    font-size: var(--guess-font-size);
     animation: spin 2s linear infinite;
 }
 
