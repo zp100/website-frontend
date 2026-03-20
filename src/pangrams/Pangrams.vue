@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { computed, onMounted, ref } from 'vue'
+import ActionButton from './components/ActionButton.vue'
 import Answer from './components/Answer.vue'
+import OptionButton from './components/OptionButton.vue'
 
 
 // Update guess when keys are pressed.
@@ -13,12 +16,12 @@ window.addEventListener('keydown', (ev: KeyboardEvent) => {
     }
 
     if (ev.key === 'Escape') {
-        guess.value.length = 0
+        clear_guess()
         return
     }
 
     if (ev.key === 'Backspace') {
-        guess.value.pop()
+        backspace_guess()
         return
     }
 
@@ -179,6 +182,16 @@ function shuffle_letters(): void {
 }
 
 
+function clear_guess(): void {
+    guess.value.length = 0
+}
+
+
+function backspace_guess(): void {
+    guess.value.pop()
+}
+
+
 const found_words = ref<string[]>([])
 const found_words_sorted = computed(() => found_words.value.toSorted())
 const score = ref(0)
@@ -297,40 +310,27 @@ function popup(message: string): void {
         </div>
 
         <div id="options">
-            <button
-                v-for="letter in puzzle.letters"
-                class="option-letter"
-                :class="{ 'key-letter': letter === puzzle.key_letter }"
-                @click="guess.push(letter)"
-            >
-                {{ letter.toLocaleUpperCase() }}
-                <div class="letter-counter">
-                    <div>
-                        {{ letter_counts[letter] }}
-                    </div>
-                </div>
-            </button>
+            <template v-for="letter in puzzle.letters">
+                <OptionButton
+                    :letter="letter"
+                    :is_key_letter="letter === puzzle.key_letter"
+                    :count="letter_counts[letter]"
+                    @click="guess.push(letter)"
+                />
+            </template>
         </div>
 
         <div id="actions">
-            <button class="action-btn" title="Shuffle letters (Shift)" @keydown.prevent="" @click="shuffle_letters()">
-                <font-awesome-icon icon="fa-solid fa-shuffle" />
-            </button>
-            <button class="action-btn" title="Clear (Esc)" @keydown.prevent="" @click="guess.length = 0">
-                <font-awesome-icon icon="fa-solid fa-trash-can" />
-            </button>
-            <button class="action-btn" title="Backspace" @keydown.prevent="" @click="guess.pop()">
-                <font-awesome-icon icon="fa-solid fa-delete-left" />
-            </button>
-            <button class="action-btn" title="Submit word (Enter)" @keydown.prevent="" @click="submit_guess()">
-                <font-awesome-icon icon="fa-solid fa-circle-chevron-right" />
-            </button>
+            <ActionButton title="Shuffle letters (Shift)" icon="shuffle" @click="shuffle_letters()" />
+            <ActionButton title="Clear (Esc)" icon="trash-can" @click="clear_guess()" />
+            <ActionButton title="Backspace" icon="delete-left" @click="backspace_guess()" />
+            <ActionButton title="Submit word (Enter)" icon="circle-chevron-right" @click="submit_guess()" />
         </div>
     </div>
 
     <div v-else id="game">
         <div id="spinner">
-            <font-awesome-icon icon="fa-solid fa-spinner" />
+            <FontAwesomeIcon icon="fa-solid fa-spinner" />
         </div>
     </div>
 </template>
@@ -499,54 +499,12 @@ button {
     gap: var(--gap-size);
 }
 
-.option-letter {
-    position: relative;
-    width: var(--button-unit);
-    height: var(--button-unit);
-    font-size: x-large;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    align-items: center;
-
-    &.key-letter {
-        color: yellow;
-    }
-}
-
-.letter-counter {
-    position: absolute;
-    width: 100%;
-    height: 0;
-    bottom: -4px;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    align-items: center;
-
-    div {
-        width: max-content;
-        color: var(--off-white);
-        background-color: var(--border-color);
-        padding: 0 3px;
-        border-radius: var(--roundness);
-
-        font-size: small;
-    }
-}
-
 #actions {
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
     gap: var(--gap-size);
-}
-
-.action-btn {
-    width: var(--wide-button-unit);
-    height: var(--button-unit);
-    font-size: x-large;
 }
 
 #spinner {
