@@ -7,7 +7,7 @@ const props = defineProps<{
     is_pangram: boolean
     guess_word: string
 }>()
-const display_answer = computed(() => props.found_word.toLocaleUpperCase())
+const display_found_word = computed(() => props.found_word.toLocaleUpperCase())
 const is_guess_prefix = computed(() => props.found_word.startsWith(props.guess_word))
 </script>
 
@@ -17,14 +17,14 @@ const is_guess_prefix = computed(() => props.found_word.startsWith(props.guess_w
     <div class="answer" :class="{ pangram: is_pangram }">
         <template v-if="is_guess_prefix">
             <span class="prefix">
-                {{ display_answer.slice(0, guess_word.length) }}
+                {{ display_found_word.slice(0, guess_word.length) }}
             </span>
             <span>
-                {{ display_answer.slice(guess_word.length) }}
+                {{ display_found_word.slice(guess_word.length) }}
             </span>
         </template>
         <template v-else>
-            {{ display_answer }}
+            {{ display_found_word }}
         </template>
     </div>
 </template>
