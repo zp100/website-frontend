@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { computed, onMounted, ref } from 'vue'
 import ActionButton from './components/ActionButton.vue'
 import Answer from './components/Answer.vue'
 import GuessLetter from './components/GuessLetter.vue'
 import OptionButton from './components/OptionButton.vue'
+import Spinner from './components/Spinner.vue'
 
 
 // Update guess when keys are pressed.
@@ -333,9 +333,7 @@ function popup(message: string): void {
         </template>
 
         <template v-else>
-            <div id="spinner">
-                <FontAwesomeIcon icon="fa-solid fa-spinner" />
-            </div>
+            <Spinner />
         </template>
     </div>
 </template>
@@ -498,21 +496,5 @@ button {
     justify-content: center;
     align-items: center;
     gap: var(--gap-size);
-}
-
-#spinner {
-    color: white;
-    font-size: var(--guess-font-size);
-    animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0);
-    }
-
-    to {
-        transform: rotate(1turn);
-    }
 }
 </style>
