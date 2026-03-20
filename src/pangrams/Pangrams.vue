@@ -8,8 +8,6 @@ import ProgressBar from './components/ProgressBar.vue'
 import Spinner from './components/Spinner.vue'
 
 
-
-const is_loaded = ref(false)
 type WordListResponse = {
     min_len: number;
     word_list: string[];
@@ -26,6 +24,8 @@ const puzzle = ref<Puzzle>({
     key_letter: '',
     answer_word_list: [],
 })
+let total_score: number
+const is_loaded = ref(false)
 onMounted(async () => {
     document.title = 'Pangrams'
     register_key_handler()
@@ -97,7 +97,6 @@ async function fetch_word_list(): Promise<void> {
 }
 
 
-let total_score: number
 function set_puzzle(): void {
     while (true) {
         const try_letters = sample(word_list_response.puzzle_list).split('')
