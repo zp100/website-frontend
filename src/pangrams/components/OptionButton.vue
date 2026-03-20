@@ -38,7 +38,7 @@ const display_letter = computed(() => props.letter.toLocaleUpperCase())
     position: relative;
     width: var(--button-unit);
     height: var(--button-unit);
-    font-size: x-large;
+    font-size: var(--button-font-size);
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;

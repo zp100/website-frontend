@@ -30,6 +30,6 @@ const emit = defineEmits<{
 .action-btn {
     width: var(--wide-button-unit);
     height: var(--button-unit);
-    font-size: x-large;
+    font-size: var(--button-font-size);
 }
 </style>

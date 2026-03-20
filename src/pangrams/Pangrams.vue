@@ -5,49 +5,15 @@ import Answer from './components/Answer.vue'
 import GuessLetter from './components/GuessLetter.vue'
 import OptionButton from './components/OptionButton.vue'
 import ProgressBar from './components/ProgressBar.vue'
+import ResetButton from './components/ResetButton.vue'
 import Spinner from './components/Spinner.vue'
 
 
-type WordListResponse = {
-    min_len: number;
-    word_list: string[];
-    puzzle_list: string[];
-}
-let word_list_response: WordListResponse
-type Puzzle = {
-    letters: string[]
-    key_letter: string
-    answer_word_list: string[]
-    found_words: string[]
-    score: number
-}
-const puzzle = ref<Puzzle>({
-    letters: [],
-    key_letter: '',
-    answer_word_list: [],
-    found_words: [],
-    score: 0,
-})
-let total_score: number
 const is_loaded = ref(false)
 onMounted(async () => {
     document.title = 'Pangrams'
     register_key_handler()
-
-    const local_word_list_response = window.localStorage.getItem('word_list_response')
-    const local_puzzle = window.localStorage.getItem('puzzle')
-    if (local_word_list_response && local_puzzle) {
-        word_list_response = JSON.parse(local_word_list_response)
-        puzzle.value = JSON.parse(local_puzzle)
-    } else {
-        await fetch_word_list()
-        set_puzzle()
-        window.localStorage.setItem('word_list_response', JSON.stringify(word_list_response))
-        window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
-    }
-
-    set_letter_counts()
-    total_score = puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0)
+    setup(true)
     is_loaded.value = true
 })
 
@@ -89,6 +55,52 @@ function register_key_handler() {
 }
 
 
+type WordListResponse = {
+    min_len: number;
+    word_list: string[];
+    puzzle_list: string[];
+}
+let word_list_response: WordListResponse
+type Puzzle = {
+    letters: string[]
+    key_letter: string
+    answer_word_list: string[]
+    found_words: string[]
+    score: number
+}
+const puzzle = ref<Puzzle>({
+    letters: [],
+    key_letter: '',
+    answer_word_list: [],
+    found_words: [],
+    score: 0,
+})
+let total_score: number
+async function setup(check_storage: boolean): Promise<void> {
+    let is_puzzle_ready = false
+
+    if (check_storage) {
+        const local_word_list_response = window.localStorage.getItem('word_list_response')
+        const local_puzzle = window.localStorage.getItem('puzzle')
+        if (local_word_list_response && local_puzzle) {
+            word_list_response = JSON.parse(local_word_list_response)
+            puzzle.value = JSON.parse(local_puzzle)
+            is_puzzle_ready = true
+        }
+    }
+
+    if (!is_puzzle_ready) {
+        await fetch_word_list()
+        set_puzzle()
+        window.localStorage.setItem('word_list_response', JSON.stringify(word_list_response))
+        window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
+    }
+
+    set_letter_counts()
+    total_score = puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0)
+}
+
+
 async function fetch_word_list(): Promise<void> {
     const api_url = import.meta.env.VITE_BACKEND_URL
     const word_list_url = `${api_url}/pangrams/word_list`
@@ -112,6 +124,8 @@ function set_puzzle(): void {
             puzzle.value.letters = try_letters
             puzzle.value.key_letter = try_key_letter
             puzzle.value.answer_word_list = try_answer_word_list
+            puzzle.value.found_words = []
+            puzzle.value.score = 0
             return
         }
     }
@@ -163,6 +177,11 @@ function set_letter_counts(): void {
             }
         })
     })
+}
+
+
+function reset_puzzle(): void {
+    setup(false)
 }
 
 
@@ -277,6 +296,8 @@ function popup(message: string): void {
 <template>
     <div id="game">
         <template v-if="is_loaded">
+            <ResetButton @click="reset_puzzle()" />
+
             <div id="word-box">
                 <div id="score">
                     <div :style="{ cursor: 'pointer' }" @click="show_stats()">
@@ -358,6 +379,7 @@ function popup(message: string): void {
     --button-unit: calc((var(--total-width) - 6 * var(--gap-size)) / 7);
     --wide-button-unit: calc((var(--total-width) - 3 * var(--gap-size)) / 4);
     --guess-font-size: xx-large;
+    --button-font-size: x-large;
 
     width: 100vw;
     height: 100vh;
