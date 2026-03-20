@@ -318,7 +318,7 @@ function popup(message: string): void {
                     </template>
                 </div>
 
-                <template v-show="is_showing_popup">
+                <template v-if="is_showing_popup">
                     <div id="popup">
                         <div>
                             {{ popup_message }}
