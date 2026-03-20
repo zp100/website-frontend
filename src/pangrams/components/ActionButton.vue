@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import GenericButton from './GenericButton.vue';
 
 
 const props = defineProps<{
@@ -14,14 +15,13 @@ const emit = defineEmits<{
 
 
 <template>
-    <button
+    <GenericButton
         class="puzzle-btn action-btn"
         :title="title"
-        @keydown.prevent=""
         @click="emit('click')"
     >
         <FontAwesomeIcon :icon="`fa-solid fa-${icon}`" />
-    </button>
+    </GenericButton>
 </template>
 
 

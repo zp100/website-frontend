@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import GenericButton from './GenericButton.vue';
 
 
 const emit = defineEmits<{
@@ -10,9 +11,13 @@ const emit = defineEmits<{
 
 
 <template>
-    <button id="reset-btn" title="Load new puzzle" @click="emit('click')">
+    <GenericButton
+        id="reset-btn"
+        title="Load new puzzle"
+        @click="emit('click')"
+    >
         <FontAwesomeIcon icon="fa-solid fa-rotate" />
-    </button>
+    </GenericButton>
 </template>
 
 

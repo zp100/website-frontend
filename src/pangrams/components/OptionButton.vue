@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import GenericButton from './GenericButton.vue';
 
 
 const props = defineProps<{
@@ -16,10 +17,9 @@ const display_letter = computed(() => props.letter.toLocaleUpperCase())
 
 
 <template>
-    <button
+    <GenericButton
         class="puzzle-btn option-btn"
         :class="{ 'key-letter': is_key_letter }"
-        @keydown.prevent=""
         @click="emit('click')"
     >
         {{ display_letter }}
@@ -28,7 +28,7 @@ const display_letter = computed(() => props.letter.toLocaleUpperCase())
                 {{ count }}
             </div>
         </div>
-    </button>
+    </GenericButton>
 </template>
 
 
