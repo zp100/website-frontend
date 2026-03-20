@@ -18,11 +18,15 @@ type Puzzle = {
     letters: string[]
     key_letter: string
     answer_word_list: string[]
+    found_words: string[]
+    score: number
 }
 const puzzle = ref<Puzzle>({
     letters: [],
     key_letter: '',
     answer_word_list: [],
+    found_words: [],
+    score: 0,
 })
 let total_score: number
 const is_loaded = ref(false)
@@ -32,13 +36,9 @@ onMounted(async () => {
 
     const local_word_list_response = window.localStorage.getItem('word_list_response')
     const local_puzzle = window.localStorage.getItem('puzzle')
-    const local_found_words = window.localStorage.getItem('found_words')
-    const local_score = window.localStorage.getItem('score')
-    if (local_word_list_response && local_puzzle && local_found_words && local_score) {
+    if (local_word_list_response && local_puzzle) {
         word_list_response = JSON.parse(local_word_list_response)
         puzzle.value = JSON.parse(local_puzzle)
-        found_words.value = JSON.parse(local_found_words)
-        score.value = JSON.parse(local_score)
     } else {
         await fetch_word_list()
         set_puzzle()
@@ -168,8 +168,8 @@ function set_letter_counts(): void {
 
 function show_stats(): void {
     popup(`
-        ${puzzle.value.answer_word_list.length - found_words.value.length} word(s) remaining,
-        ${total_score - score.value} score remaining`
+        ${puzzle.value.answer_word_list.length - puzzle.value.found_words.length} word(s) remaining,
+        ${total_score - puzzle.value.score} score remaining`
     )
 }
 
@@ -200,10 +200,8 @@ function backspace_guess(): void {
 }
 
 
-const found_words = ref<string[]>([])
-const found_words_sorted = computed(() => found_words.value.toSorted())
-const score = ref(0)
-const percent = computed(() => Math.floor(100 * score.value / total_score))
+const found_words_sorted = computed(() => puzzle.value.found_words.toSorted())
+const percent = computed(() => Math.floor(100 * puzzle.value.score / total_score))
 function submit_guess(): void {
     if (guess.value.length === 0) {
         return
@@ -223,7 +221,7 @@ function submit_guess(): void {
         return
     }
 
-    if (found_words.value.includes(guess_word)) {
+    if (puzzle.value.found_words.includes(guess_word)) {
         popup('Already found')
         return
     }
@@ -246,16 +244,15 @@ function submit_guess(): void {
     })
 
     const word_score = get_score(guess_word)
-    score.value += word_score
-    found_words.value.push(guess_word)
-    if (found_words.value.length === puzzle.value.answer_word_list.length) {
+    puzzle.value.score += word_score
+    puzzle.value.found_words.push(guess_word)
+    if (puzzle.value.found_words.length === puzzle.value.answer_word_list.length) {
         popup('All words found!')
     } else {
         popup(`+${word_score}`)
     }
 
-    window.localStorage.setItem('found_words', JSON.stringify(found_words.value))
-    window.localStorage.setItem('score', JSON.stringify(score.value))
+    window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
 }
 
 
@@ -283,9 +280,9 @@ function popup(message: string): void {
             <div id="word-box">
                 <div id="score">
                     <div :style="{ cursor: 'pointer' }" @click="show_stats()">
-                        Words: {{ found_words.length }}/{{ puzzle.answer_word_list.length }}
+                        Words: {{ puzzle.found_words.length }}/{{ puzzle.answer_word_list.length }}
                         &bull;
-                        Score: {{ score }}/{{ total_score }}
+                        Score: {{ puzzle.score }}/{{ total_score }}
                         <ProgressBar :progress_percent="percent" />
                     </div>
                 </div>
