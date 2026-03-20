@@ -8,41 +8,6 @@ import ProgressBar from './components/ProgressBar.vue'
 import Spinner from './components/Spinner.vue'
 
 
-// Update guess when keys are pressed.
-const guess = ref<string[]>([])
-const guess_word = computed(() => guess.value.join(''))
-window.addEventListener('keydown', (ev: KeyboardEvent) => {
-    if (ev.key === 'Shift') {
-        shuffle_letters()
-        return
-    }
-
-    if (ev.key === 'Escape') {
-        clear_guess()
-        return
-    }
-
-    if (ev.key === 'Backspace') {
-        backspace_guess()
-        return
-    }
-
-    if (ev.key === 'Enter') {
-        submit_guess()
-        return
-    }
-
-    if (ev.repeat) {
-        return
-    }
-
-    const isLetter = /^[A-Za-z]$/.test(ev.key)
-    if (isLetter) {
-        guess.value.push(ev.key)
-        return
-    }
-})
-
 
 const is_loaded = ref(false)
 type WordListResponse = {
@@ -63,6 +28,7 @@ const puzzle = ref<Puzzle>({
 })
 onMounted(async () => {
     document.title = 'Pangrams'
+    register_key_handler()
 
     const local_word_list_response = window.localStorage.getItem('word_list_response')
     const local_puzzle = window.localStorage.getItem('puzzle')
@@ -80,6 +46,43 @@ onMounted(async () => {
     total_score = puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0)
     is_loaded.value = true
 })
+
+
+const guess = ref<string[]>([])
+const guess_word = computed(() => guess.value.join(''))
+function register_key_handler() {
+    window.addEventListener('keydown', (ev: KeyboardEvent) => {
+        if (ev.key === 'Shift') {
+            shuffle_letters()
+            return
+        }
+
+        if (ev.key === 'Escape') {
+            clear_guess()
+            return
+        }
+
+        if (ev.key === 'Backspace') {
+            backspace_guess()
+            return
+        }
+
+        if (ev.key === 'Enter') {
+            submit_guess()
+            return
+        }
+
+        if (ev.repeat) {
+            return
+        }
+
+        const isLetter = /^[A-Za-z]$/.test(ev.key)
+        if (isLetter) {
+            guess.value.push(ev.key)
+            return
+        }
+    })
+}
 
 
 async function fetch_word_list(): Promise<void> {
