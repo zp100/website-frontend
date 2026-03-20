@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
+
 const props = defineProps<{
-    letter: string
+    option_letter: string
     is_key_letter: boolean
     count: number | undefined
 }>()
 const emit = defineEmits<{
     click: []
 }>()
+const display_option_letter = computed(() => props.option_letter.toLocaleUpperCase())
 </script>
 
 
@@ -18,7 +22,7 @@ const emit = defineEmits<{
         @keydown.prevent=""
         @click="emit('click')"
     >
-        {{ letter.toLocaleUpperCase() }}
+        {{ display_option_letter }}
         <div class="letter-counter">
             <div>
                 {{ count }}

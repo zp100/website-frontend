@@ -316,7 +316,7 @@ function popup(message: string): void {
             <div id="options">
                 <template v-for="letter in puzzle.letters">
                     <OptionButton
-                        :letter="letter"
+                        :option_letter="letter"
                         :is_key_letter="letter === puzzle.key_letter"
                         :count="letter_counts[letter]"
                         @click="guess.push(letter)"
