@@ -8,9 +8,6 @@ const props = defineProps<{
     is_key_letter: boolean
     count: number | undefined
 }>()
-const emit = defineEmits<{
-    click: []
-}>()
 const display_letter = computed(() => props.letter.toLocaleUpperCase())
 </script>
 
@@ -18,9 +15,8 @@ const display_letter = computed(() => props.letter.toLocaleUpperCase())
 
 <template>
     <GenericButton
-        class="puzzle-btn option-btn"
+        class="option-btn"
         :class="{ 'key-letter': is_key_letter }"
-        @click="emit('click')"
     >
         {{ display_letter }}
         <div class="letter-counter">

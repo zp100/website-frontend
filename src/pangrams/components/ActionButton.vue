@@ -7,18 +7,14 @@ const props = defineProps<{
     title: string
     icon: string
 }>()
-const emit = defineEmits<{
-    click: []
-}>()
 </script>
 
 
 
 <template>
     <GenericButton
-        class="puzzle-btn action-btn"
+        class="action-btn"
         :title="title"
-        @click="emit('click')"
     >
         <FontAwesomeIcon :icon="`fa-solid fa-${icon}`" />
     </GenericButton>

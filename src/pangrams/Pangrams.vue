@@ -305,7 +305,7 @@ function popup(message: string): void {
             <ResetButton @reset="reset_puzzle()" />
 
             <div id="word-box">
-                <Stats
+                <Stats @click="show_stats()"
                     :words="puzzle.found_words.length"
                     :words_total="puzzle.answer_word_list.length"
                     :score="puzzle.score"
@@ -483,18 +483,6 @@ function popup(message: string): void {
     margin: 0 -2px;
     border-radius: 2px;
     background-color: var(--border-color);
-}
-
-.puzzle-btn {
-    border: none;
-    border-radius: var(--roundness);
-    background-color: var(--bg-color);
-    color: var(--off-white);
-    cursor: pointer;
-
-    &:active {
-        outline: 2px solid var(--border-color);
-    }
 }
 
 #options {

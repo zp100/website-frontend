@@ -9,9 +9,6 @@ const props = defineProps<{
     score: number
     score_total: number
 }>()
-const emit = defineEmits<{
-    click: []
-}>()
 const percent = computed(() => Math.floor(100 * props.score / props.score_total))
 </script>
 
@@ -19,7 +16,7 @@ const percent = computed(() => Math.floor(100 * props.score / props.score_total)
 
 <template>
     <div id="stats">
-        <div class="popup" @click="emit('click')">
+        <div class="popup">
             <div>
                 Words:
                 <span :class="{ full: percent === 100 }">
