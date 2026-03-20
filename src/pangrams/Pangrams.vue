@@ -4,6 +4,7 @@ import ActionButton from './components/ActionButton.vue'
 import Answer from './components/Answer.vue'
 import GuessLetter from './components/GuessLetter.vue'
 import OptionButton from './components/OptionButton.vue'
+import ProgressBar from './components/ProgressBar.vue'
 import Spinner from './components/Spinner.vue'
 
 
@@ -276,9 +277,7 @@ function popup(message: string): void {
                         Words: {{ found_words.length }}/{{ puzzle.answer_word_list.length }}
                         &bull;
                         Score: {{ score }}/{{ total_score }}
-                        <span id="progress-bar">
-                            <span :style="{ width: `${percent}%` }"></span>
-                        </span>
+                        <ProgressBar :progress_percent="percent" />
                     </div>
                 </div>
 
@@ -404,22 +403,6 @@ function popup(message: string): void {
         background-color: var(--border-color);
         padding: 5px 8px;
         border-radius: var(--roundness);
-    }
-}
-
-#progress-bar {
-    display: inline-block;
-    width: 50px;
-    height: 11px;
-    border-radius: var(--roundness);
-    outline: 1px solid var(--off-black);
-    background-color: var(--bg-color);
-
-    span {
-        display: block;
-        height: 100%;
-        border-radius: var(--roundness);
-        background-color: yellow;
     }
 }
 
