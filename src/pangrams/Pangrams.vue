@@ -13,7 +13,7 @@ const is_loaded = ref(false)
 onMounted(async () => {
     document.title = 'Pangrams'
     register_key_handler()
-    setup(true)
+    await setup(true)
     is_loaded.value = true
 })
 
@@ -180,8 +180,10 @@ function set_letter_counts(): void {
 }
 
 
-function reset_puzzle(): void {
-    setup(false)
+async function reset_puzzle(): Promise<void> {
+    is_loaded.value = false
+    await setup(false)
+    is_loaded.value = true
 }
 
 
@@ -296,7 +298,7 @@ function popup(message: string): void {
 <template>
     <div id="game">
         <template v-if="is_loaded">
-            <ResetButton @click="reset_puzzle()" />
+            <ResetButton @reset="reset_puzzle()" />
 
             <div id="word-box">
                 <div id="score">
@@ -402,7 +404,7 @@ function popup(message: string): void {
 
 #found-words {
     width: calc(var(--total-width) - 30px);
-    height: 290px;
+    height: 250px;
     overflow-y: auto;
     border-radius: var(--roundness);
     outline: 2px solid var(--border-color);
