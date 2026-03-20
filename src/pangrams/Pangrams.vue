@@ -32,9 +32,13 @@ onMounted(async () => {
 
     const local_word_list_response = window.localStorage.getItem('word_list_response')
     const local_puzzle = window.localStorage.getItem('puzzle')
-    if (local_word_list_response && local_puzzle) {
+    const local_found_words = window.localStorage.getItem('found_words')
+    const local_score = window.localStorage.getItem('score')
+    if (local_word_list_response && local_puzzle && local_found_words && local_score) {
         word_list_response = JSON.parse(local_word_list_response)
         puzzle.value = JSON.parse(local_puzzle)
+        found_words.value = JSON.parse(local_found_words)
+        score.value = JSON.parse(local_score)
     } else {
         await fetch_word_list()
         set_puzzle()
@@ -249,6 +253,9 @@ function submit_guess(): void {
     } else {
         popup(`+${word_score}`)
     }
+
+    window.localStorage.setItem('found_words', JSON.stringify(found_words.value))
+    window.localStorage.setItem('score', JSON.stringify(score.value))
 }
 
 
