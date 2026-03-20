@@ -17,7 +17,7 @@ const display_letter = computed(() => props.letter.toLocaleUpperCase())
 
 <template>
     <button
-        class="option-btn"
+        class="puzzle-btn option-btn"
         :class="{ 'key-letter': is_key_letter }"
         @keydown.prevent=""
         @click="emit('click')"

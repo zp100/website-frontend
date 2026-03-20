@@ -459,7 +459,7 @@ function popup(message: string): void {
     background-color: var(--border-color);
 }
 
-button {
+.puzzle-btn {
     border: none;
     border-radius: var(--roundness);
     background-color: var(--bg-color);

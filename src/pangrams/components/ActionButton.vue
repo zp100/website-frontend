@@ -15,7 +15,7 @@ const emit = defineEmits<{
 
 <template>
     <button
-        class="action-btn"
+        class="puzzle-btn action-btn"
         :title="title"
         @keydown.prevent=""
         @click="emit('click')"
