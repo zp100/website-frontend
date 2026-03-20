@@ -168,12 +168,22 @@ function get_score(word: string): number {
 
 const letter_counts = ref<Record<string, number>>({})
 function set_letter_counts(): void {
+    letter_counts.value = {}
+
     puzzle.value.answer_word_list.forEach((word) => {
         word.split('').forEach((letter) => {
             if (letter_counts.value[letter] !== undefined) {
                 letter_counts.value[letter] += 1
             } else {
                 letter_counts.value[letter] = 1
+            }
+        })
+    })
+
+    puzzle.value.found_words.forEach((word) => {
+        word.split('').forEach((letter) => {
+            if (letter_counts.value[letter] !== undefined) {
+                letter_counts.value[letter] -= 1
             }
         })
     })
@@ -258,12 +268,6 @@ function submit_guess(): void {
         return
     }
 
-    guess_letters.forEach((letter) => {
-        if (letter_counts.value[letter] !== undefined) {
-            letter_counts.value[letter] -= 1
-        }
-    })
-
     const word_score = get_score(guess_word)
     puzzle.value.score += word_score
     puzzle.value.found_words.push(guess_word)
@@ -273,6 +277,7 @@ function submit_guess(): void {
         popup(`+${word_score}`)
     }
 
+    set_letter_counts()
     window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
 }
 
