@@ -38,21 +38,43 @@ window.addEventListener('keydown', (ev: KeyboardEvent) => {
 
 
 const is_loaded = ref(false)
-onMounted(async () => {
-    document.title = 'Pangrams'
-
-    await fetch_word_list()
-    set_puzzle()
-    is_loaded.value = true
-})
-
-
 type WordListResponse = {
     min_len: number;
     word_list: string[];
     puzzle_list: string[];
 }
 let word_list_response: WordListResponse
+type Puzzle = {
+    letters: string[]
+    key_letter: string
+    answer_word_list: string[]
+}
+const puzzle = ref<Puzzle>({
+    letters: [],
+    key_letter: '',
+    answer_word_list: [],
+})
+onMounted(async () => {
+    document.title = 'Pangrams'
+
+    const local_word_list_response = window.localStorage.getItem('word_list_response')
+    const local_puzzle = window.localStorage.getItem('puzzle')
+    if (local_word_list_response && local_puzzle) {
+        word_list_response = JSON.parse(local_word_list_response)
+        puzzle.value = JSON.parse(local_puzzle)
+    } else {
+        await fetch_word_list()
+        set_puzzle()
+        window.localStorage.setItem('word_list_response', JSON.stringify(word_list_response))
+        window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
+    }
+
+    set_letter_counts()
+    total_score = puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0)
+    is_loaded.value = true
+})
+
+
 async function fetch_word_list(): Promise<void> {
     const api_url = import.meta.env.VITE_BACKEND_URL
     const word_list_url = `${api_url}/pangrams/word_list`
@@ -65,16 +87,6 @@ async function fetch_word_list(): Promise<void> {
 }
 
 
-type Puzzle = {
-    letters: string[]
-    key_letter: string
-    answer_word_list: string[]
-}
-const puzzle = ref<Puzzle>({
-    letters: [],
-    key_letter: '',
-    answer_word_list: [],
-})
 let total_score: number
 function set_puzzle(): void {
     while (true) {
@@ -87,9 +99,6 @@ function set_puzzle(): void {
             puzzle.value.letters = try_letters
             puzzle.value.key_letter = try_key_letter
             puzzle.value.answer_word_list = try_answer_word_list
-
-            set_letter_counts()
-            total_score = puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0)
             return
         }
     }
