@@ -200,13 +200,24 @@ async function reset_puzzle(): Promise<void> {
 function show_stats(): void {
     popup(`
         ${puzzle.value.answer_word_list.length - puzzle.value.found_words.length} word(s) remaining,
-        ${total_score - puzzle.value.score} score remaining`
-    )
+        ${total_score - puzzle.value.score} score remaining
+    `)
 }
 
 
 function is_pangram(word: string): boolean {
     return new Set(word.split('')).isSupersetOf(new Set(puzzle.value.letters))
+}
+
+
+function move_letter(old_index: number, new_index: number): void {
+    if (new_index === old_index || new_index < 0 || new_index >= puzzle.value.letters.length) {
+        return
+    }
+
+    const removed = puzzle.value.letters.splice(old_index, 1)
+    const letter = removed[0] as string
+    puzzle.value.letters.splice(new_index, 0, letter)
 }
 
 
@@ -344,12 +355,14 @@ function popup(message: string): void {
             </div>
 
             <div id="options">
-                <template v-for="letter in puzzle.letters">
+                <template v-for="(letter, index) in puzzle.letters" :key="letter">
                     <OptionButton
                         :letter="letter"
                         :is_key_letter="letter === puzzle.key_letter"
                         :count="letter_counts[letter]"
+                        :index="index"
                         @click="guess.push(letter)"
+                        @drag="move_letter"
                     />
                 </template>
             </div>
