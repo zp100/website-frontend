@@ -47,7 +47,7 @@ watch(() => props.messages.length, () => {
     align-items: center;
 
     bottom: 0;
-    animation: fade-in 50ms linear;
+    animation: fade-in 100ms linear;
 }
 
 
