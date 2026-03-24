@@ -7,21 +7,21 @@ const props = defineProps<{
     letter: string
     is_key_letter: boolean
     count: number | undefined
-    index: number
 }>()
 const emit = defineEmits<{
     click: []
-    drag: [old_index: number, new_index: number]
+    drag: [spaces: number]
 }>()
 const display_letter = computed(() => props.letter.toLocaleUpperCase())
 
 
-const button_dist = ref(NaN)
+let button_dist: number
 onMounted(() => {
-    const button_el = document.querySelector('.option-btn') as HTMLButtonElement
-    const width = parseFloat(window.getComputedStyle(button_el).getPropertyValue('width'))
-    const gap_size = parseFloat(window.getComputedStyle(button_el).getPropertyValue('--gap-size'))
-    button_dist.value = width + gap_size
+    const button_el_list = document.querySelectorAll('.option-btn')
+    if (button_el_list.length < 2) {
+        throw new Error('Buttons not found!')
+    }
+    button_dist = button_el_list[1]!.getBoundingClientRect().x - button_el_list[0]!.getBoundingClientRect().x
 })
 
 
@@ -34,16 +34,17 @@ function maybe_click(): void {
 
 
 function start_dragging(ev: MouseEvent): void {
-    const start_index = props.index
-    const start_x = ev.clientX
+    const button_el = ev.target as HTMLButtonElement
     const drag_controller = new AbortController()
 
     window.addEventListener('pointermove', (ev) => {
-        const offset = ev.clientX - start_x
-        const places = Math.round(offset / button_dist.value)
-        const new_index = start_index + places
-        if (new_index !== props.index) {
-            emit('drag', props.index, new_index)
+        // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
+        const rect = button_el.getBoundingClientRect()
+        const center_x = rect.x + (rect.width / 2)
+
+        const spaces = Math.round((ev.clientX - center_x) / button_dist)
+        if (spaces !== 0) {
+            emit('drag', spaces)
             is_dragging.value = true
         }
     }, { signal: drag_controller.signal })

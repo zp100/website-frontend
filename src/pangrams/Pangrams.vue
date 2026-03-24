@@ -210,13 +210,14 @@ function is_pangram(word: string): boolean {
 }
 
 
-function move_letter(old_index: number, new_index: number): void {
-    if (new_index === old_index || new_index < 0 || new_index >= puzzle.value.letters.length) {
+function move_letter(old_index: number, spaces: number): void {
+    const new_index = old_index + spaces
+    if (new_index < 0 || new_index >= puzzle.value.letters.length) {
         return
     }
 
     const removed = puzzle.value.letters.splice(old_index, 1)
-    const letter = removed[0] as string
+    const letter = removed[0]!
     puzzle.value.letters.splice(new_index, 0, letter)
 }
 
@@ -226,8 +227,8 @@ function shuffle_letters(): void {
         let j = Math.floor(Math.random() * (i + 1))
 
         let temp = puzzle.value.letters[i]
-        puzzle.value.letters[i] = puzzle.value.letters[j] as string;
-        puzzle.value.letters[j] = temp as string;
+        puzzle.value.letters[i] = puzzle.value.letters[j]!;
+        puzzle.value.letters[j] = temp!;
     }
 }
 
@@ -360,9 +361,8 @@ function popup(message: string): void {
                         :letter="letter"
                         :is_key_letter="letter === puzzle.key_letter"
                         :count="letter_counts[letter]"
-                        :index="index"
                         @click="guess.push(letter)"
-                        @drag="move_letter"
+                        @drag="(spaces) => move_letter(index, spaces)"
                     />
                 </template>
             </div>
