@@ -198,8 +198,9 @@ async function reset_puzzle(): Promise<void> {
 }
 
 
+const popup_messages = ref<string[]>([])
 function show_stats(): void {
-    set_popup(`
+    popup_messages.value.push(`
         ${puzzle.value.answer_word_list.length - puzzle.value.found_words.length} word(s) remaining,
         ${total_score - puzzle.value.score} score remaining
     `)
@@ -254,29 +255,29 @@ function submit_guess(): void {
     guess.value = []
 
     if (guess_letters.length < word_list_response.min_len) {
-        set_popup(`Must be at least ${word_list_response.min_len} letters long`)
+        popup_messages.value.push(`Must be at least ${word_list_response.min_len} letters long`)
         return
     }
 
     const guess_word = guess_letters.join('')
     if (!word_list_response.word_list.includes(guess_word)) {
-        set_popup('Not in word list')
+        popup_messages.value.push('Not in word list')
         return
     }
 
     if (puzzle.value.found_words.includes(guess_word)) {
-        set_popup('Already found')
+        popup_messages.value.push('Already found')
         return
     }
 
     if (!guess_letters.includes(puzzle.value.key_letter)) {
-        set_popup('Must contain key letter')
+        popup_messages.value.push('Must contain key letter')
         return
     }
 
     const is_bad_input = guess_letters.some((letter) => !puzzle.value.letters.includes(letter))
     if (is_bad_input) {
-        set_popup('Must use listed letters')
+        popup_messages.value.push('Must use listed letters')
         return
     }
 
@@ -284,19 +285,13 @@ function submit_guess(): void {
     puzzle.value.score += word_score
     puzzle.value.found_words.push(guess_word)
     if (puzzle.value.found_words.length === puzzle.value.answer_word_list.length) {
-        set_popup('All words found!')
+        popup_messages.value.push('All words found!')
     } else {
-        set_popup(`+${word_score}`)
+        popup_messages.value.push(`+${word_score}`)
     }
 
     set_letter_counts()
     window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
-}
-
-
-const popup_messages = ref<string[]>([])
-function set_popup(message: string): void {
-    popup_messages.value.push(message)
 }
 </script>
 
