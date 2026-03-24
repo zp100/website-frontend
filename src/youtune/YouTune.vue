@@ -10,7 +10,7 @@ onMounted(async () => {
     const tracks_url = `${api_url}/youtune/tracks`
     const response = await fetch(tracks_url)
     const result = await response.json()
-    
+
     track_list.value = result['tracks']
 })
 

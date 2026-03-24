@@ -12,7 +12,7 @@ function get_player(): YT.Player {
     if (youtube.value === undefined) {
         throw new Error('YouTube player not loaded')
     }
-    
+
     return youtube.value
 }
 </script>
