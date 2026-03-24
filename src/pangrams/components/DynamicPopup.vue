@@ -3,15 +3,14 @@ import { ref, watch } from 'vue';
 
 
 const props = defineProps<{
-    // Popup must be an object instead of just a string, so that change detection recognizes if the message is set to 
-    // a value it already has.
-    popup: { message: string }
+    message: string
+    trigger: boolean
 }>()
 
 
 const is_showing_popup = ref(false)
 let timeout_id: number
-watch(() => props.popup, () => {
+watch(() => props.trigger, () => {
     clearTimeout(timeout_id)
     is_showing_popup.value = false
 
@@ -29,7 +28,7 @@ watch(() => props.popup, () => {
     <div id="popup-box">
         <template v-if="is_showing_popup">
             <div class="popup">
-                {{ popup.message }}
+                {{ message }}
             </div>
         </template>
     </div>
