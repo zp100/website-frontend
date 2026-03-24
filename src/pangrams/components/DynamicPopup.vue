@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 
 const props = defineProps<{
-    message: string
-    trigger: boolean
+    messages: string[]
 }>()
+const new_message = computed(() => props.messages.at(-1) ?? '')
 
 
 const is_showing_popup = ref(false)
 let timeout_id: number
-watch(() => props.trigger, () => {
+watch(() => props.messages.length, () => {
     clearTimeout(timeout_id)
     is_showing_popup.value = false
 
@@ -28,7 +28,7 @@ watch(() => props.trigger, () => {
     <div id="popup-box">
         <template v-if="is_showing_popup">
             <div class="popup">
-                {{ message }}
+                {{ new_message }}
             </div>
         </template>
     </div>

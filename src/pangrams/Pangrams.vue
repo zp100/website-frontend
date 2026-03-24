@@ -294,11 +294,9 @@ function submit_guess(): void {
 }
 
 
-const popup_message = ref('')
-const popup_trigger = ref(false)
+const popup_messages = ref<string[]>([])
 function set_popup(message: string): void {
-    popup_message.value = message
-    popup_trigger.value = !popup_trigger.value
+    popup_messages.value.push(message)
 }
 </script>
 
@@ -328,8 +326,7 @@ function set_popup(message: string): void {
                 </div>
 
                 <DynamicPopup
-                    :message="popup_message"
-                    :trigger="popup_trigger"
+                    :messages="popup_messages"
                 />
             </div>
 
