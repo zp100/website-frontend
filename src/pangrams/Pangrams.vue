@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import ActionButton from './components/ActionButton.vue'
 import Answer from './components/Answer.vue'
+import DynamicPopup from './components/DynamicPopup.vue'
 import GuessLetter from './components/GuessLetter.vue'
 import OptionButton from './components/OptionButton.vue'
 import ResetButton from './components/ResetButton.vue'
@@ -198,7 +199,7 @@ async function reset_puzzle(): Promise<void> {
 
 
 function show_stats(): void {
-    popup(`
+    set_popup(`
         ${puzzle.value.answer_word_list.length - puzzle.value.found_words.length} word(s) remaining,
         ${total_score - puzzle.value.score} score remaining
     `)
@@ -253,29 +254,29 @@ function submit_guess(): void {
     guess.value = []
 
     if (guess_letters.length < word_list_response.min_len) {
-        popup(`Must be at least ${word_list_response.min_len} letters long`)
+        set_popup(`Must be at least ${word_list_response.min_len} letters long`)
         return
     }
 
     const guess_word = guess_letters.join('')
     if (!word_list_response.word_list.includes(guess_word)) {
-        popup('Not in word list')
+        set_popup('Not in word list')
         return
     }
 
     if (puzzle.value.found_words.includes(guess_word)) {
-        popup('Already found')
+        set_popup('Already found')
         return
     }
 
     if (!guess_letters.includes(puzzle.value.key_letter)) {
-        popup('Must contain key letter')
+        set_popup('Must contain key letter')
         return
     }
 
     const is_bad_input = guess_letters.some((letter) => !puzzle.value.letters.includes(letter))
     if (is_bad_input) {
-        popup('Must use listed letters')
+        set_popup('Must use listed letters')
         return
     }
 
@@ -283,9 +284,9 @@ function submit_guess(): void {
     puzzle.value.score += word_score
     puzzle.value.found_words.push(guess_word)
     if (puzzle.value.found_words.length === puzzle.value.answer_word_list.length) {
-        popup('All words found!')
+        set_popup('All words found!')
     } else {
-        popup(`+${word_score}`)
+        set_popup(`+${word_score}`)
     }
 
     set_letter_counts()
@@ -293,19 +294,9 @@ function submit_guess(): void {
 }
 
 
-const popup_message = ref('')
-const is_showing_popup = ref(false)
-let timeout_id: number | undefined = undefined;
-function popup(message: string): void {
-    clearTimeout(timeout_id)
-    is_showing_popup.value = false
-
-    // Wait a moment for the old popup to disappear.
-    setTimeout(() => {
-        popup_message.value = message
-        is_showing_popup.value = true
-        timeout_id = setTimeout(() => is_showing_popup.value = false, 5000)
-    }, 0)
+const popup = ref({ message: '' })
+function set_popup(message: string): void {
+    popup.value = { message }
 }
 </script>
 
@@ -334,13 +325,9 @@ function popup(message: string): void {
                     </template>
                 </div>
 
-                <template v-if="is_showing_popup">
-                    <div id="popup">
-                        <div>
-                            {{ popup_message }}
-                        </div>
-                    </div>
-                </template>
+                <DynamicPopup
+                    :popup="popup"
+                />
             </div>
 
             <div id="input">

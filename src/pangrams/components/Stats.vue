@@ -47,11 +47,12 @@ const percent = computed(() => Math.floor(100 * props.score / props.score_total)
     position: absolute;
     width: 100%;
     height: 0;
-    top: 0;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
+
+    top: 0;
 }
 
 
