@@ -62,4 +62,15 @@ watch(() => props.messages.length, () => {
     align-items: center;
     gap: 8px;
 }
+
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
 </style>

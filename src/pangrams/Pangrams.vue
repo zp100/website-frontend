@@ -391,6 +391,7 @@ function submit_guess(): void {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+
 #word-box {
     position: relative;
     display: flex;
@@ -398,6 +399,7 @@ function submit_guess(): void {
     justify-content: center;
     align-items: center;
 }
+
 
 #found-words {
     width: calc(var(--total-width) - 30px);
@@ -413,6 +415,7 @@ function submit_guess(): void {
     align-items: flex-start;
     align-content: flex-start;
 }
+
 
 #score {
     position: absolute;
@@ -433,35 +436,6 @@ function submit_guess(): void {
     }
 }
 
-#popup {
-    position: absolute;
-    width: 100%;
-    height: 0;
-    bottom: 0;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    align-items: center;
-    animation: fade-in 50ms linear;
-
-    div {
-        width: max-content;
-        color: var(--off-white);
-        background-color: var(--border-color);
-        padding: 5px 8px;
-        border-radius: var(--roundness);
-    }
-}
-
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
 
 #input {
     margin: 20px;
@@ -472,6 +446,7 @@ function submit_guess(): void {
     gap: 2px;
 }
 
+
 #cursor {
     height: 45px;
     width: 4px;
@@ -480,6 +455,7 @@ function submit_guess(): void {
     background-color: var(--border-color);
 }
 
+
 #options {
     display: flex;
     flex-flow: row nowrap;
@@ -487,6 +463,7 @@ function submit_guess(): void {
     align-items: center;
     gap: var(--gap-size);
 }
+
 
 #actions {
     display: flex;
