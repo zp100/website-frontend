@@ -38,7 +38,7 @@ function start_dragging(ev: MouseEvent): void {
     const start_x = ev.clientX
     const drag_controller = new AbortController()
 
-    window.addEventListener('mousemove', (ev) => {
+    window.addEventListener('pointermove', (ev) => {
         const offset = ev.clientX - start_x
         const places = Math.round(offset / button_dist.value)
         const new_index = start_index + places
@@ -48,7 +48,7 @@ function start_dragging(ev: MouseEvent): void {
         }
     }, { signal: drag_controller.signal })
 
-    window.addEventListener('mouseup', () => {
+    window.addEventListener('pointerup', () => {
         drag_controller.abort()
         setTimeout(() => is_dragging.value = false, 0)
     }, { signal: drag_controller.signal })
@@ -62,7 +62,7 @@ function start_dragging(ev: MouseEvent): void {
         class="option-btn"
         :class="{ 'key-letter': is_key_letter }"
         @click="maybe_click()"
-        @mousedown="start_dragging($event)"
+        @pointerdown="start_dragging($event)"
     >
         {{ display_letter }}
         <div class="letter-counter">
