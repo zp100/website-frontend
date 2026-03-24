@@ -17,7 +17,7 @@ watch(() => props.messages.length, () => {
     // Wait a moment for the old popup to disappear.
     setTimeout(() => {
         is_showing_popup.value = true
-        timeout_id = setTimeout(() => is_showing_popup.value = false, 5000)
+        timeout_id = setTimeout(() => is_showing_popup.value = false, 4000)
     }, 0)
 })
 </script>
@@ -25,13 +25,13 @@ watch(() => props.messages.length, () => {
 
 
 <template>
-    <div id="popup-box">
-        <template v-if="is_showing_popup">
+    <template v-if="is_showing_popup">
+        <div id="popup-box">
             <div class="popup">
                 {{ new_message }}
             </div>
-        </template>
-    </div>
+        </div>
+    </template>
 </template>
 
 
@@ -47,7 +47,7 @@ watch(() => props.messages.length, () => {
     align-items: center;
 
     bottom: 0;
-    animation: fade-in 100ms linear;
+    animation: fade-in 2s linear 2 alternate forwards;
 }
 
 
@@ -65,11 +65,12 @@ watch(() => props.messages.length, () => {
 
 
 @keyframes fade-in {
-    from {
+    0% {
         opacity: 0;
     }
 
-    to {
+    /* 100ms */
+    5% {
         opacity: 1;
     }
 }
