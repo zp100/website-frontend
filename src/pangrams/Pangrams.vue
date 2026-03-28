@@ -372,7 +372,7 @@ function submit_guess(): void {
     --border-color: #333;
     --off-white: #ddd;
 
-    --gap-size: 10px;
+    --gap-size: 5px;
     --total-width: 350px;
     --roundness: 2px;
     --button-unit: calc((var(--total-width) - 6 * var(--gap-size)) / 7);
