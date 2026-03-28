@@ -15,6 +15,7 @@ watch(() => props.messages.length, () => {
         () => is_showing_popup.value = true,
         () => is_showing_popup.value = false,
         4000,
+        true
     )
 })
 </script>
