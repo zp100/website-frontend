@@ -3,16 +3,12 @@ import { onMounted } from 'vue';
 import GenericButton from './GenericButton.vue';
 
 
-type Action = 'cancel' | 'close' | 'reset'
-type ActionButton = {
-    action: Action
-    label: string
-}
+type Action = 'cancel' | 'negative' | 'affirmative'
 
 
 const props = defineProps<{
     message: string
-    action_buttons: ActionButton[]
+    action_buttons: Partial<Record<Action, string>>
 }>()
 const emit = defineEmits<{
     [K in Action]: []
@@ -32,11 +28,13 @@ onMounted(() => {
 
 function select_action(action: Action): void {
     dialog_el.close()
+
+    // Why is this necessary?
     if (action === 'cancel') {
         emit(action)
-    } else if (action === 'close') {
+    } else if (action === 'negative') {
         emit(action)
-    } else if (action === 'reset') {
+    } else if (action === 'affirmative') {
         emit(action)
     }
 }
@@ -51,9 +49,9 @@ function select_action(action: Action): void {
         </p>
 
         <div class="button-row">
-            <template v-for="action_button in action_buttons">
-                <GenericButton @click="select_action(action_button.action)">
-                    {{ action_button.label }}
+            <template v-for="(label, action) in action_buttons">
+                <GenericButton @click="select_action(action)">
+                    {{ label }}
                 </GenericButton>
             </template>
         </div>

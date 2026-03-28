@@ -34,12 +34,9 @@ function reset(): void {
                 Are you sure you want to reset?
                 New letters and words will be randomly picked.
             "
-            :action_buttons="[
-                { action: 'cancel', label: 'Cancel' },
-                { action: 'reset', label: 'Reset' },
-            ]"
+            :action_buttons="{ cancel: 'Close', affirmative: 'Reset' }"
             @cancel="show_dialog = false"
-            @reset="reset()"
+            @affirmative="reset()"
         />
     </template>
 </template>
