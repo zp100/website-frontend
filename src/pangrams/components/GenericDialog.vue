@@ -9,7 +9,7 @@ type Action = 'cancel' | 'negative' | 'affirmative'
 const props = defineProps<{
     title?: string
     subtitle?: string
-    message: string
+    message?: string
     action_buttons: Partial<Record<Action, string>>
 }>()
 const emit = defineEmits<{
