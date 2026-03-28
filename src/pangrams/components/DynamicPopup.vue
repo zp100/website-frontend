@@ -12,8 +12,8 @@ const new_message = computed(() => props.messages.at(-1) ?? '')
 const is_showing_popup = ref(false)
 watch(() => props.messages.length, () => {
     autoTimeout(
-        () => is_showing_popup.value = false,
         () => is_showing_popup.value = true,
+        () => is_showing_popup.value = false,
         4000,
     )
 })

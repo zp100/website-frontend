@@ -41,8 +41,8 @@ function start_dragging(ev: MouseEvent): void {
 
     const unwatch = watch(() => props.index, (index, old_index) => {
         autoTimeout(
-            () => button_el.classList.remove('slide-from-left', 'slide-from-right'),
             () => button_el.classList.add(index - old_index > 0 ? 'slide-from-left' : 'slide-from-right'),
+            () => button_el.classList.remove('slide-from-left', 'slide-from-right'),
             100,
         )
     })
