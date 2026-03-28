@@ -24,8 +24,23 @@ onMounted(() => {
         throw new Error('Dialog not found!')
     }
     dialog_el = el
+
+    register_key_handler()
     dialog_el.showModal()
 })
+
+
+function register_key_handler() {
+    dialog_el.addEventListener('keydown', (ev: KeyboardEvent) => {
+        if (ev.key === 'Escape') {
+            ev.stopPropagation()
+            ev.preventDefault()
+
+            dialog_el.close()
+            emit('cancel')
+        }
+    })
+}
 
 
 function select_action(action: Action): void {
