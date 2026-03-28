@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{
     click: []
-    drag: [spaces: number]
+    drag: [ spaces: number ]
 }>()
 const display_letter = computed(() => props.letter.toLocaleUpperCase())
 
