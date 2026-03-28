@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import GenericButton from './GenericButton.vue';
 
 
@@ -7,6 +7,7 @@ const props = defineProps<{
     letter: string
     is_key_letter: boolean
     count: number | undefined
+    index: number
 }>()
 const emit = defineEmits<{
     click: []
@@ -36,6 +37,10 @@ function maybe_click(): void {
 function start_dragging(ev: MouseEvent): void {
     const button_el = ev.target as HTMLButtonElement
     const drag_controller = new AbortController()
+    const unwatch = watch(() => props.index, (index, old_index) => {
+        button_el.classList.add(index - old_index > 0 ? 'slide-from-left' : 'slide-from-right')
+        setTimeout(() => button_el.classList.remove('slide-from-left', 'slide-from-right'), 100)
+    })
 
     window.addEventListener('pointermove', (ev) => {
         // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
@@ -50,8 +55,9 @@ function start_dragging(ev: MouseEvent): void {
     }, { signal: drag_controller.signal })
 
     window.addEventListener('pointerup', () => {
-        drag_controller.abort()
+        unwatch()
         setTimeout(() => is_dragging.value = false, 0)
+        drag_controller.abort()
     }, { signal: drag_controller.signal })
 }
 </script>
@@ -89,6 +95,38 @@ function start_dragging(ev: MouseEvent): void {
 
     &.key-letter {
         color: yellow;
+    }
+
+    &.slide-from-left {
+        z-index: 1;
+        animation: slide-from-left 100ms ease-out;
+    }
+
+    &.slide-from-right {
+        z-index: 1;
+        animation: slide-from-right 100ms ease-out;
+    }
+}
+
+
+@keyframes slide-from-left {
+    from {
+        transform: translateX(-20px);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+
+@keyframes slide-from-right {
+    from {
+        transform: translateX(20px);
+    }
+
+    to {
+        transform: translateX(0);
     }
 }
 
