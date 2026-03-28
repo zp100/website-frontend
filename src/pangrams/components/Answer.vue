@@ -38,7 +38,7 @@ async function fetch_definition(): Promise<void> {
 }
 
 
-const title = computed(() => definition.value?.headword.replaceAll('*', '&bull;'))
+const title = computed(() => definition.value?.headword.replaceAll('*', '•'))
 const subtitle = computed(() => {
     let text = `/${definition.value?.pronunciation}/ – ${definition.value?.functional_label}`
     if (props.found_word !== definition.value?.stem) {

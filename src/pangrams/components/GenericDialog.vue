@@ -105,7 +105,7 @@ function select_action(action: Action): void {
 
 
 .subtitle {
-    color: #777;
+    color: #888;
 }
 
 
