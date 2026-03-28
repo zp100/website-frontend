@@ -43,7 +43,7 @@ function register_key_handler() {
             return
         }
 
-        if (ev.repeat) {
+        if (ev.repeat || ev.altKey || ev.ctrlKey || ev.metaKey) {
             return
         }
 
