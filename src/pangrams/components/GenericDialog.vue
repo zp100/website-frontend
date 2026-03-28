@@ -7,6 +7,8 @@ type Action = 'cancel' | 'negative' | 'affirmative'
 
 
 const props = defineProps<{
+    title?: string
+    subtitle?: string
     message: string
     action_buttons: Partial<Record<Action, string>>
 }>()
@@ -44,6 +46,18 @@ function select_action(action: Action): void {
 
 <template>
     <dialog class="dlg">
+        <template v-if="title">
+            <h2 class="title">
+                {{ title }}
+            </h2>
+        </template>
+
+        <template v-if="subtitle">
+            <span class="subtitle">
+                {{ subtitle }}
+            </span>
+        </template>
+
         <p>
             {{ message }}
         </p>
@@ -67,6 +81,16 @@ function select_action(action: Action): void {
     background-color: var(--off-black);
     border: 1px solid var(--off-white);
     border-radius: var(--roundness);
+}
+
+
+.title {
+    margin-bottom: 5px;
+}
+
+
+.subtitle {
+    color: #777;
 }
 
 
