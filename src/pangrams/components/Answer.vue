@@ -23,7 +23,7 @@ type Definition = {
     stem: string
     pronunciation: string
     functional_label: string
-    def: string
+    definitions: string[]
 }
 const definition = ref<Definition | null>(null)
 async function fetch_definition(): Promise<void> {
@@ -46,7 +46,7 @@ const subtitle = computed(() => {
     }
     return text
 })
-const message = computed(() => definition.value?.def.replace(/\W+$/, ''))
+const message = computed(() => definition.value?.definitions.map((def) => def.replace(/[:;]+$/, '')))
 </script>
 
 
