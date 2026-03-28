@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { autoTimeout } from '@/util';
 import { computed, onMounted, ref, watch } from 'vue';
 import GenericButton from './GenericButton.vue';
 
@@ -37,9 +38,13 @@ function maybe_click(): void {
 function start_dragging(ev: MouseEvent): void {
     const button_el = ev.target as HTMLButtonElement
     const drag_controller = new AbortController()
+
     const unwatch = watch(() => props.index, (index, old_index) => {
-        button_el.classList.add(index - old_index > 0 ? 'slide-from-left' : 'slide-from-right')
-        setTimeout(() => button_el.classList.remove('slide-from-left', 'slide-from-right'), 100)
+        autoTimeout(
+            () => button_el.classList.remove('slide-from-left', 'slide-from-right'),
+            () => button_el.classList.add(index - old_index > 0 ? 'slide-from-left' : 'slide-from-right'),
+            100,
+        )
     })
 
     window.addEventListener('pointermove', (ev) => {

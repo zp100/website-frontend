@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { autoTimeout } from '@/util';
 import { computed, ref, watch } from 'vue';
 
 
@@ -9,16 +10,12 @@ const new_message = computed(() => props.messages.at(-1) ?? '')
 
 
 const is_showing_popup = ref(false)
-let timeout_id: number
 watch(() => props.messages.length, () => {
-    clearTimeout(timeout_id)
-    is_showing_popup.value = false
-
-    // Wait a moment for the old popup to disappear.
-    setTimeout(() => {
-        is_showing_popup.value = true
-        timeout_id = setTimeout(() => is_showing_popup.value = false, 4000)
-    }, 0)
+    autoTimeout(
+        () => is_showing_popup.value = false,
+        () => is_showing_popup.value = true,
+        4000,
+    )
 })
 </script>
 
