@@ -143,7 +143,7 @@ async function fetch_definition(): Promise<void> {
 
 .header-line {
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
     align-items: baseline;
     gap: 8px;
 
