@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import GenericButton from './GenericButton.vue';
 
 
@@ -7,15 +7,11 @@ type Action = 'cancel' | 'negative' | 'affirmative'
 
 
 const props = defineProps<{
-    title?: string
-    subtitle?: string
-    message?: string | string[]
     action_buttons: Partial<Record<Action, string>>
 }>()
 const emit = defineEmits<{
     [K in Action]: []
 }>()
-const message_list = computed(() => Array.isArray(props.message) ? props.message : [ props.message ])
 
 
 let dialog_el: HTMLDialogElement
@@ -62,23 +58,7 @@ function select_action(action: Action): void {
 
 <template>
     <dialog class="dlg">
-        <template v-if="title">
-            <h2 class="title">
-                {{ title }}
-            </h2>
-        </template>
-
-        <template v-if="subtitle">
-            <span class="subtitle">
-                {{ subtitle }}
-            </span>
-        </template>
-
-        <template v-for="message in message_list">
-            <p>
-                {{ message }}
-            </p>
-        </template>
+        <slot></slot>
 
         <div class="button-row">
             <template v-for="(label, action) in action_buttons">
@@ -99,16 +79,6 @@ function select_action(action: Action): void {
     background-color: var(--off-black);
     border: 1px solid var(--off-white);
     border-radius: var(--roundness);
-}
-
-
-.title {
-    margin-bottom: 5px;
-}
-
-
-.subtitle {
-    color: #888;
 }
 
 

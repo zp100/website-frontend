@@ -19,13 +19,12 @@ onMounted(async () => {
 
 
 type Definition = {
-    summary: {
+    variants: Array<{
         id: string
-        syllables?: string
         pronunciation?: string
         category?: string
-    }
-    definitions: string[]
+        defs: string[]
+    }>
 }
 const definition = ref<Definition | null>(null)
 async function fetch_definition(): Promise<void> {
@@ -34,23 +33,6 @@ async function fetch_definition(): Promise<void> {
     const response = await fetch(define_url)
     definition.value = await response.json()
 }
-
-
-const title = computed(() => definition.value?.summary.syllables?.replaceAll('*', '•'))
-const subtitle = computed(() => {
-    const text: string[] = []
-    if (props.found_word !== definition.value?.summary.id) {
-        text.push(`from "${props.found_word}"`)
-    }
-    if (definition.value?.summary.pronunciation) {
-        text.push(`/${definition.value?.summary.pronunciation}/`)
-    }
-    if (definition.value?.summary.category) {
-        text.push(definition.value?.summary.category)
-    }
-    return text.join(' – ')
-})
-const message = computed(() => definition.value?.definitions.map((def) => def.replace(/[:;]+$/, '')))
 </script>
 
 
@@ -72,12 +54,55 @@ const message = computed(() => definition.value?.definitions.map((def) => def.re
 
     <template v-if="show_dialog">
         <GenericDialog
-            :title="title"
-            :subtitle="subtitle"
-            :message="message"
             :action_buttons="{ cancel: 'Close' }"
             @cancel="show_dialog = false"
-        />
+        >
+            <template v-if="definition">
+                <template v-for="variant in definition?.variants">
+                    <div class="header-line">
+                        <template v-if="variant.id !== found_word">
+                            <span class="header-extra">
+                                {{ found_word }} →
+                            </span>
+                        </template>
+
+                        <span class="header-main">
+                            {{ variant.id }}
+                        </span>
+
+                        <template v-if="variant.pronunciation">
+                            <span class="header-extra">
+                                /{{ variant.pronunciation }}/
+                            </span>
+                        </template>
+
+                        <template v-if="variant.category">
+                            <span class="header-extra">
+                                {{ variant.category }}
+                            </span>
+                        </template>
+                    </div>
+
+                    <template v-for="def in variant.defs">
+                        <p>
+                            {{ def.replace(/[:;]+$/, '$1 <...>') }}
+                        </p>
+                    </template>
+                </template>
+
+                <template v-if="definition?.variants.length === 0">
+                    <p>
+                        No definitions found
+                    </p>
+                </template>
+            </template>
+
+            <template v-else>
+                <p>
+                    Loading...
+                </p>
+            </template>
+        </GenericDialog>
     </template>
 </template>
 
@@ -97,5 +122,25 @@ const message = computed(() => definition.value?.definitions.map((def) => def.re
 
 .prefix {
     background-color: var(--border-color);
+}
+
+
+.header-line {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: baseline;
+    gap: 10px;
+}
+
+
+.header-main {
+    color: var(--off-white);
+    font-size: larger;
+    font-weight: bold;
+}
+
+
+.header-extra {
+    color: #888;
 }
 </style>

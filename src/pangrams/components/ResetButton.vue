@@ -30,14 +30,15 @@ function reset(): void {
 
     <template v-if="show_dialog">
         <GenericDialog
-            message="
-                Are you sure you want to reset?
-                New letters and words will be randomly picked.
-            "
             :action_buttons="{ cancel: 'Cancel', affirmative: 'Reset' }"
             @cancel="show_dialog = false"
             @affirmative="reset()"
-        />
+        >
+            <p>
+                Are you sure you want to reset?
+                New letters and words will be randomly picked.
+            </p>
+        </GenericDialog>
     </template>
 </template>
 
