@@ -60,34 +60,50 @@ async function fetch_definition(): Promise<void> {
             <template v-if="definition">
                 <template v-for="variant in definition?.variants">
                     <div class="header-line">
-                        <template v-if="variant.id !== found_word">
-                            <span class="header-extra">
-                                "{{ found_word }}" from
-                            </span>
-                        </template>
-
-                        <span class="header-main">
+                        <div class="header-main">
                             {{ variant.id }}
-                        </span>
+                        </div>
 
                         <template v-if="variant.pronunciation">
-                            <span class="header-extra">
+                            <div>
+                                &bull;
+                            </div>
+
+                            <div>
                                 /{{ variant.pronunciation }}/
-                            </span>
+                            </div>
                         </template>
 
                         <template v-if="variant.category">
-                            <span class="header-extra">
+                            <div>
+                                &bull;
+                            </div>
+
+                            <div>
                                 {{ variant.category }}
-                            </span>
+                            </div>
+                        </template>
+
+                        <template v-if="variant.id !== found_word">
+                            <div>
+                                &bull;
+                            </div>
+
+                            <div>
+                                as "{{ found_word }}"
+                            </div>
                         </template>
                     </div>
 
-                    <template v-for="def in variant.defs">
-                        <p>
-                            {{ def.replace(/[:;]+$/, '$1 <...>') }}
-                        </p>
-                    </template>
+                    <ul>
+                        <template v-for="def in variant.defs">
+                            <li>
+                                <p>
+                                    {{ def.replace(/:$/, ': <...>') }}
+                                </p>
+                            </li>
+                        </template>
+                    </ul>
                 </template>
 
                 <template v-if="definition?.variants.length === 0">
@@ -127,9 +143,11 @@ async function fetch_definition(): Promise<void> {
 
 .header-line {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     align-items: baseline;
-    gap: 10px;
+    gap: 8px;
+
+    color: #888;
 }
 
 
@@ -140,7 +158,8 @@ async function fetch_definition(): Promise<void> {
 }
 
 
-.header-extra {
-    color: #888;
+ul {
+    padding-left: 20px;
+    list-style-type: circle;
 }
 </style>
