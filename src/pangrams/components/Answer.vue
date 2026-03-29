@@ -19,32 +19,36 @@ onMounted(async () => {
 
 
 type Definition = {
-    headword: string
-    stem: string
-    pronunciation: string
-    functional_label: string
+    summary: {
+        id: string
+        syllables?: string
+        pronunciation?: string
+        category?: string
+    }
     definitions: string[]
 }
 const definition = ref<Definition | null>(null)
 async function fetch_definition(): Promise<void> {
     const api_url = import.meta.env.VITE_BACKEND_URL
     const define_url = `${api_url}/pangrams/define/${props.found_word}`
-    try {
-        const response = await fetch(define_url)
-        definition.value = await response.json()
-    } catch (e: any) {
-        throw new Error(e.message)
-    }
+    const response = await fetch(define_url)
+    definition.value = await response.json()
 }
 
 
-const title = computed(() => definition.value?.headword.replaceAll('*', '•'))
+const title = computed(() => definition.value?.summary.syllables?.replaceAll('*', '•'))
 const subtitle = computed(() => {
-    let text = `/${definition.value?.pronunciation}/ – ${definition.value?.functional_label}`
-    if (props.found_word !== definition.value?.stem) {
-        text = `from "${props.found_word}" – ` + text
+    const text: string[] = []
+    if (props.found_word !== definition.value?.summary.id) {
+        text.push(`from "${props.found_word}"`)
     }
-    return text
+    if (definition.value?.summary.pronunciation) {
+        text.push(`/${definition.value?.summary.pronunciation}/`)
+    }
+    if (definition.value?.summary.category) {
+        text.push(definition.value?.summary.category)
+    }
+    return text.join(' – ')
 })
 const message = computed(() => definition.value?.definitions.map((def) => def.replace(/[:;]+$/, '')))
 </script>

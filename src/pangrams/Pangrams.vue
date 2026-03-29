@@ -105,12 +105,8 @@ async function setup(check_storage: boolean): Promise<void> {
 async function fetch_word_list(): Promise<void> {
     const api_url = import.meta.env.VITE_BACKEND_URL
     const word_list_url = `${api_url}/pangrams/word_list`
-    try {
-        const response = await fetch(word_list_url)
-        word_list_response = await response.json()
-    } catch (e: any) {
-        throw new Error(e.message)
-    }
+    const response = await fetch(word_list_url)
+    word_list_response = await response.json()
 }
 
 
