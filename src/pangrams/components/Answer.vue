@@ -62,7 +62,7 @@ async function fetch_definition(): Promise<void> {
                     <div class="header-line">
                         <template v-if="variant.id !== found_word">
                             <span class="header-extra">
-                                {{ found_word }} →
+                                "{{ found_word }}" from
                             </span>
                         </template>
 
