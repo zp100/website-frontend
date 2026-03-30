@@ -22,11 +22,12 @@ type Definition = {
     variants: Array<{
         id: string
         pronunciation?: string
-        category?: string
+        category: string
         defs: string[]
     }>
 }
 const definition = ref<Definition | null>(null)
+const main_variant = computed(() => definition.value?.variants[0] ?? null)
 async function fetch_definition(): Promise<void> {
     const api_url = import.meta.env.VITE_BACKEND_URL
     const define_url = `${api_url}/pangrams/define/${props.found_word}`
@@ -58,33 +59,19 @@ async function fetch_definition(): Promise<void> {
             @cancel="show_dialog = false"
         >
             <template v-if="definition">
-                <template v-for="variant in definition?.variants">
+                <template v-if="main_variant">
                     <div class="header-line">
                         <div class="header-main">
-                            {{ variant.id }}
+                            {{ main_variant.id }}
                         </div>
 
-                        <template v-if="variant.pronunciation">
+                        <template v-if="main_variant.pronunciation">
                             <div>
-                                &bull;
-                            </div>
-
-                            <div>
-                                /{{ variant.pronunciation }}/
+                                /{{ main_variant.pronunciation }}/
                             </div>
                         </template>
 
-                        <template v-if="variant.category">
-                            <div>
-                                &bull;
-                            </div>
-
-                            <div>
-                                {{ variant.category }}
-                            </div>
-                        </template>
-
-                        <template v-if="variant.id !== found_word">
+                        <template v-if="main_variant.id !== found_word">
                             <div>
                                 &bull;
                             </div>
@@ -95,18 +82,24 @@ async function fetch_definition(): Promise<void> {
                         </template>
                     </div>
 
-                    <ul>
-                        <template v-for="def in variant.defs">
-                            <li>
-                                <p>
-                                    {{ def.replace(/:$/, ': <...>') }}
-                                </p>
-                            </li>
-                        </template>
-                    </ul>
+                    <template v-for="variant in definition.variants">
+                        <p>
+                            {{ variant.category }}
+                        </p>
+
+                        <ul>
+                            <template v-for="def in variant.defs">
+                                <li>
+                                    <p>
+                                        {{ def.replace(/:$/, ': <...>') }}
+                                    </p>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
                 </template>
 
-                <template v-if="definition?.variants.length === 0">
+                <template v-else>
                     <p>
                         No definitions found
                     </p>
