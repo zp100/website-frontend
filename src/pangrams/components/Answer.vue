@@ -67,6 +67,10 @@ async function fetch_definition(): Promise<void> {
 
                         <template v-if="main_variant.pronunciation">
                             <div>
+                                &bull;
+                            </div>
+
+                            <div>
                                 /{{ main_variant.pronunciation }}/
                             </div>
                         </template>
@@ -130,7 +134,7 @@ async function fetch_definition(): Promise<void> {
 
 
 .prefix {
-    background-color: var(--border-color);
+    background-color: var(--muted);
 }
 
 
@@ -140,13 +144,12 @@ async function fetch_definition(): Promise<void> {
     align-items: baseline;
     gap: 8px;
 
-    color: #888;
+    color: var(--muted);
 }
 
 
 .header-main {
     color: var(--off-white);
-    font-size: larger;
     font-weight: bold;
 }
 

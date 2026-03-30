@@ -367,6 +367,7 @@ function submit_guess(): void {
     --off-black: #111;
     --bg-color: #222;
     --border-color: #333;
+    --muted: #777;
     --off-white: #ddd;
 
     --gap-size: 5px;
