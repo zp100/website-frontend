@@ -370,7 +370,7 @@ function submit_guess(): void {
     --muted: #777;
     --off-white: #ddd;
 
-    --gap-size: 5px;
+    --gap-size: 4px;
     --total-width: 350px;
     --roundness: 2px;
     --button-unit: calc((var(--total-width) - 6 * var(--gap-size)) / 7);
@@ -441,14 +441,14 @@ function submit_guess(): void {
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
-    gap: 2px;
+    gap: 1px;
 }
 
 
 #cursor {
     height: 45px;
     width: 4px;
-    margin: 0 -2px;
+    margin: 0 -1px;
     border-radius: 2px;
     background-color: var(--border-color);
 }
