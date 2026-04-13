@@ -126,9 +126,21 @@ async function fetch_definition(): Promise<void> {
     margin: 5px 10px;
     color: var(--off-white);
     cursor: pointer;
+    animation: flash-in 500ms linear;
 
     &.pangram {
         color: yellow;
+    }
+}
+
+
+@keyframes flash-in {
+    from {
+        background-color: var(--muted);
+    }
+
+    to {
+        background-color: transparent;
     }
 }
 
