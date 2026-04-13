@@ -117,7 +117,7 @@ function set_puzzle(): void {
         const try_answer_word_list = word_list_response.word_list.filter((word) =>
             is_valid(word, try_letters, try_key_letter))
 
-        if (try_answer_word_list.length >= 10 && try_answer_word_list.length <= 60) {
+        if (try_answer_word_list.length >= 15 && try_answer_word_list.length <= 50) {
             puzzle.value.letters = try_letters
             puzzle.value.key_letter = try_key_letter
             puzzle.value.answer_word_list = try_answer_word_list
