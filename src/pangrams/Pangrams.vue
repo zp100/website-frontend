@@ -62,18 +62,11 @@ type WordListResponse = {
     puzzle_list: string[];
 }
 let word_list_response: WordListResponse
-type Puzzle = {
-    letters: string[]
-    key_letter: string
-    answer_word_list: string[]
-    found_words: string[]
-    score: number
-}
-const puzzle = ref<Puzzle>({
-    letters: [],
+const puzzle = ref({
+    letters: [] as string[],
     key_letter: '',
-    answer_word_list: [],
-    found_words: [],
+    answer_word_list: [] as string[],
+    found_words: [] as string[],
     score: 0,
 })
 let total_score: number
