@@ -362,8 +362,8 @@ function submit_guess(): void {
 
 
 
-<style scoped>
-#game {
+<style>
+:root {
     --off-black: #111;
     --bg-color: #222;
     --border-color: #333;
@@ -378,15 +378,19 @@ function submit_guess(): void {
     --guess-font-size: xx-large;
     --button-font-size: x-large;
 
-    width: 100vw;
-    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+#game {
+    width: 100svw;
+    height: 100svh;
     background-color: var(--off-black);
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
     gap: 20px;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 
