@@ -37,16 +37,17 @@ function maybe_click(): void {
 
 const generic_button = useTemplateRef('generic-button')
 const button_el = computed(() => generic_button.value?.button_el)
+watch(() => props.index, (index, old_index) => {
+    autoTimeout(
+        () => button_el.value?.classList.add(index - old_index > 0 ? 'slide-from-left' : 'slide-from-right'),
+        () => button_el.value?.classList.remove('slide-from-left', 'slide-from-right'),
+        100,
+    )
+})
+
+
 function start_dragging(): void {
     const drag_controller = new AbortController()
-
-    const unwatch = watch(() => props.index, (index, old_index) => {
-        autoTimeout(
-            () => button_el.value?.classList.add(index - old_index > 0 ? 'slide-from-left' : 'slide-from-right'),
-            () => button_el.value?.classList.remove('slide-from-left', 'slide-from-right'),
-            100,
-        )
-    })
 
     function move(ev: PointerEvent) {
         // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
@@ -61,7 +62,6 @@ function start_dragging(): void {
     }
 
     function end() {
-        unwatch()
         button_el.value!.classList.remove('slide-from-left', 'slide-from-right')
         setTimeout(() => is_dragging.value = false, 0)
         drag_controller.abort()
