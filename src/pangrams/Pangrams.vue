@@ -332,7 +332,6 @@ function submit_guess(): void {
                         :letter="letter"
                         :is_key_letter="letter === puzzle.key_letter"
                         :count="letter_counts[letter]"
-                        :index="index"
                         @click="guess.push(letter)"
                         @drag="(spaces) => move_letter(index, spaces)"
                     />
