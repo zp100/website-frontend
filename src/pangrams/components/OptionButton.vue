@@ -27,14 +27,6 @@ onMounted(() => {
 })
 
 
-const is_dragging = ref(false)
-function maybe_click(): void {
-    if (!is_dragging.value) {
-        emit('click')
-    }
-}
-
-
 const generic_button = useTemplateRef('generic-button')
 const button_el = computed(() => generic_button.value?.button_el)
 watch(() => props.index, (index, old_index) => {
@@ -46,12 +38,24 @@ watch(() => props.index, (index, old_index) => {
 })
 
 
+const is_dragging = ref(false)
+function maybe_click(): void {
+    if (!is_dragging.value) {
+        emit('click')
+    }
+}
+
+
 function start_dragging(): void {
     const drag_controller = new AbortController()
 
     function move(ev: PointerEvent) {
+        if (!button_el.value) {
+            return
+        }
+
         // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
-        const rect = button_el.value!.getBoundingClientRect()
+        const rect = button_el.value.getBoundingClientRect()
         const center_x = rect.x + (rect.width / 2)
 
         const spaces = Math.round((ev.clientX - center_x) / button_dist)
@@ -62,7 +66,7 @@ function start_dragging(): void {
     }
 
     function end() {
-        button_el.value!.classList.remove('slide-from-left', 'slide-from-right')
+        button_el.value?.classList.remove('slide-from-left', 'slide-from-right')
         setTimeout(() => is_dragging.value = false, 0)
         drag_controller.abort()
     }
