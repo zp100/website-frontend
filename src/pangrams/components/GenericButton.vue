@@ -1,5 +1,17 @@
+<script setup lang="ts">
+import { useTemplateRef } from 'vue';
+
+
+const button_el = useTemplateRef('btn')
+defineExpose({
+    button_el,
+})
+</script>
+
+
+
 <template>
-    <button class="btn" @keydown.enter.prevent>
+    <button ref="btn" class="btn" @keydown.enter.prevent>
         <slot></slot>
     </button>
 </template>

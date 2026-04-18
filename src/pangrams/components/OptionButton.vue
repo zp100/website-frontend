@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { autoTimeout } from '@/util';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
 import GenericButton from './GenericButton.vue';
 
 
@@ -35,21 +35,22 @@ function maybe_click(): void {
 }
 
 
-function start_dragging(ev: MouseEvent): void {
-    const button_el = ev.target as HTMLButtonElement
+const generic_button = useTemplateRef('generic-button')
+const button_el = computed(() => generic_button.value?.button_el)
+function start_dragging(): void {
     const drag_controller = new AbortController()
 
     const unwatch = watch(() => props.index, (index, old_index) => {
         autoTimeout(
-            () => button_el.classList.add(index - old_index > 0 ? 'slide-from-left' : 'slide-from-right'),
-            () => button_el.classList.remove('slide-from-left', 'slide-from-right'),
+            () => button_el.value?.classList.add(index - old_index > 0 ? 'slide-from-left' : 'slide-from-right'),
+            () => button_el.value?.classList.remove('slide-from-left', 'slide-from-right'),
             100,
         )
     })
 
     function move(ev: PointerEvent) {
         // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
-        const rect = button_el.getBoundingClientRect()
+        const rect = button_el.value!.getBoundingClientRect()
         const center_x = rect.x + (rect.width / 2)
 
         const spaces = Math.round((ev.clientX - center_x) / button_dist)
@@ -61,7 +62,7 @@ function start_dragging(ev: MouseEvent): void {
 
     function end() {
         unwatch()
-        button_el.classList.remove('slide-from-left', 'slide-from-right')
+        button_el.value!.classList.remove('slide-from-left', 'slide-from-right')
         setTimeout(() => is_dragging.value = false, 0)
         drag_controller.abort()
     }
@@ -76,10 +77,11 @@ function start_dragging(ev: MouseEvent): void {
 
 <template>
     <GenericButton
+        ref="generic-button"
         class="option-btn"
         :class="{ 'key-letter': is_key_letter }"
         @click="maybe_click()"
-        @pointerdown="start_dragging($event)"
+        @pointerdown="start_dragging()"
     >
         {{ display_letter }}
         <div class="letter-counter">
