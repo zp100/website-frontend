@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { autoTimeout } from '@/util';
+import { computed, onMounted, ref, watch } from 'vue';
 import GenericButton from './GenericButton.vue';
 
 
@@ -7,6 +8,7 @@ const props = defineProps<{
     letter: string
     is_key_letter: boolean
     count: number | undefined
+    index: number
 }>()
 const emit = defineEmits<{
     click: []
@@ -37,6 +39,14 @@ function start_dragging(ev: MouseEvent): void {
     const button_el = ev.target as HTMLButtonElement
     const drag_controller = new AbortController()
 
+    const unwatch = watch(() => props.index, (index, old_index) => {
+        autoTimeout(
+            () => button_el.classList.add(index - old_index > 0 ? 'slide-from-left' : 'slide-from-right'),
+            () => button_el.classList.remove('slide-from-left', 'slide-from-right'),
+            100,
+        )
+    })
+
     function move(ev: PointerEvent) {
         // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
         const rect = button_el.getBoundingClientRect()
@@ -50,6 +60,7 @@ function start_dragging(ev: MouseEvent): void {
     }
 
     function end() {
+        unwatch()
         setTimeout(() => is_dragging.value = false, 0)
         drag_controller.abort()
     }
