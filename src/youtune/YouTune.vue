@@ -19,6 +19,8 @@ function load_player(): void {
 }
 </script>
 
+
+
 <template>
     Hello from YouTune page!
 

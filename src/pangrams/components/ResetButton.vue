@@ -4,11 +4,9 @@ import { ref } from 'vue';
 import GenericButton from './GenericButton.vue';
 import GenericDialog from './GenericDialog.vue';
 
-
 const emit = defineEmits<{
     reset: []
 }>()
-
 
 const show_dialog = ref(false)
 function reset(): void {

@@ -24,7 +24,6 @@ const props = defineProps<{
     background-color: var(--bg-color);
 }
 
-
 .progress {
     display: block;
     height: 100%;

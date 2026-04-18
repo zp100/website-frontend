@@ -3,7 +3,6 @@ import { autoTimeout } from '@/util';
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
 import GenericButton from './GenericButton.vue';
 
-
 const props = defineProps<{
     letter: string
     is_key_letter: boolean
@@ -16,7 +15,6 @@ const emit = defineEmits<{
 }>()
 const display_letter = computed(() => props.letter.toLocaleUpperCase())
 
-
 let button_dist: number
 onMounted(() => {
     const button_el_list = document.querySelectorAll('.option-btn')
@@ -25,7 +23,6 @@ onMounted(() => {
     }
     button_dist = button_el_list[1]!.getBoundingClientRect().x - button_el_list[0]!.getBoundingClientRect().x
 })
-
 
 const generic_button = useTemplateRef('generic-button')
 const button_el = computed(() => generic_button.value?.button_el)
@@ -37,14 +34,12 @@ watch(() => props.index, (index, old_index) => {
     )
 })
 
-
 const is_dragging = ref(false)
 function maybe_click(): void {
     if (!is_dragging.value) {
         emit('click')
     }
 }
-
 
 function start_dragging(): void {
     const drag_controller = new AbortController()
@@ -124,7 +119,6 @@ function start_dragging(): void {
     }
 }
 
-
 @keyframes slide-from-left {
     from {
         transform: translateX(-20px);
@@ -135,7 +129,6 @@ function start_dragging(): void {
     }
 }
 
-
 @keyframes slide-from-right {
     from {
         transform: translateX(20px);
@@ -145,7 +138,6 @@ function start_dragging(): void {
         transform: translateX(0);
     }
 }
-
 
 .letter-counter {
     position: absolute;

@@ -2,9 +2,7 @@
 import { onMounted } from 'vue';
 import GenericButton from './GenericButton.vue';
 
-
 type Action = 'cancel' | 'negative' | 'affirmative'
-
 
 const props = defineProps<{
     action_buttons: Partial<Record<Action, string>>
@@ -12,7 +10,6 @@ const props = defineProps<{
 const emit = defineEmits<{
     [K in Action]: []
 }>()
-
 
 let dialog_el: HTMLDialogElement
 onMounted(() => {
@@ -26,7 +23,6 @@ onMounted(() => {
     dialog_el.showModal()
 })
 
-
 function register_key_handler() {
     dialog_el.addEventListener('keydown', (ev: KeyboardEvent) => {
         if (ev.key === 'Escape') {
@@ -38,7 +34,6 @@ function register_key_handler() {
         }
     })
 }
-
 
 function select_action(action: Action): void {
     dialog_el.close()
@@ -80,7 +75,6 @@ function select_action(action: Action): void {
     border: 1px solid var(--off-white);
     border-radius: var(--roundness);
 }
-
 
 .button-row {
     display: flex;

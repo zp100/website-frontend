@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import ProgressBar from './ProgressBar.vue';
 
-
 const props = defineProps<{
     words: number
     words_total: number
@@ -55,7 +54,6 @@ const percent = computed(() => Math.floor(100 * props.score / props.score_total)
     top: 0;
 }
 
-
 .popup {
     width: max-content;
     color: var(--off-white);
@@ -69,7 +67,6 @@ const percent = computed(() => Math.floor(100 * props.score / props.score_total)
 
     cursor: pointer;
 }
-
 
 .full {
     color: yellow;

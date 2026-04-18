@@ -17,6 +17,8 @@ function get_player(): YT.Player {
 }
 </script>
 
+
+
 <template>
     <YouTube
         ref="youtube"

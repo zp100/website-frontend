@@ -2,7 +2,6 @@
 import { computed, onMounted, ref } from 'vue';
 import GenericDialog from './GenericDialog.vue';
 
-
 const props = defineProps<{
     found_word: string
     is_pangram: boolean
@@ -11,12 +10,10 @@ const props = defineProps<{
 const display_found_word = computed(() => props.found_word.toLocaleUpperCase())
 const is_guess_prefix = computed(() => props.found_word.startsWith(props.guess_word))
 
-
 const show_dialog = ref(false)
 onMounted(async () => {
     await fetch_definition()
 })
-
 
 type Definition = {
     variants: Array<{
@@ -133,7 +130,6 @@ async function fetch_definition(): Promise<void> {
     }
 }
 
-
 @keyframes flash-in {
     from {
         background-color: var(--muted);
@@ -144,11 +140,9 @@ async function fetch_definition(): Promise<void> {
     }
 }
 
-
 .prefix {
     background-color: var(--muted);
 }
-
 
 .header-line {
     display: flex;
@@ -159,12 +153,10 @@ async function fetch_definition(): Promise<void> {
     color: var(--muted);
 }
 
-
 .header-main {
     color: var(--off-white);
     font-weight: bold;
 }
-
 
 ul {
     padding-left: 20px;

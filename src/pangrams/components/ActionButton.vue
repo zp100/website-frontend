@@ -2,7 +2,6 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import GenericButton from './GenericButton.vue';
 
-
 const props = defineProps<{
     title: string
     icon: string

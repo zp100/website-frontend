@@ -2,12 +2,10 @@
 import { autoTimeout } from '@/util';
 import { computed, ref, watch } from 'vue';
 
-
 const props = defineProps<{
     messages: string[]
 }>()
 const new_message = computed(() => props.messages.at(-1) ?? '')
-
 
 const is_showing_popup = ref(false)
 watch(() => props.messages.length, () => {
@@ -48,7 +46,6 @@ watch(() => props.messages.length, () => {
     animation: fade-in 2s linear 2 alternate forwards;
 }
 
-
 .popup {
     width: max-content;
     color: var(--off-white);
@@ -60,7 +57,6 @@ watch(() => props.messages.length, () => {
     align-items: center;
     gap: 8px;
 }
-
 
 @keyframes fade-in {
     0% {

@@ -19,6 +19,8 @@ async function get_status(): Promise<void> {
 }
 </script>
 
+
+
 <template>
     <h2>Hello world! :3</h2>
     <p>Status: {{server_status}}</p>
