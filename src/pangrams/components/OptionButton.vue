@@ -61,6 +61,7 @@ function start_dragging(ev: MouseEvent): void {
 
     function end() {
         unwatch()
+        button_el.classList.remove('slide-from-left', 'slide-from-right')
         setTimeout(() => is_dragging.value = false, 0)
         drag_controller.abort()
     }
