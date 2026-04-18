@@ -37,7 +37,7 @@ function start_dragging(ev: MouseEvent): void {
     const button_el = ev.target as HTMLButtonElement
     const drag_controller = new AbortController()
 
-    window.addEventListener('pointermove', (ev) => {
+    function move(ev: PointerEvent) {
         // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
         const rect = button_el.getBoundingClientRect()
         const center_x = rect.x + (rect.width / 2)
@@ -47,12 +47,16 @@ function start_dragging(ev: MouseEvent): void {
             emit('drag', spaces)
             is_dragging.value = true
         }
-    }, { signal: drag_controller.signal })
+    }
 
-    window.addEventListener('pointerup', () => {
+    function end() {
         setTimeout(() => is_dragging.value = false, 0)
         drag_controller.abort()
-    }, { signal: drag_controller.signal })
+    }
+
+    window.addEventListener('pointermove', (ev) => move(ev), { signal: drag_controller.signal })
+    window.addEventListener('pointerup', () => end(), { signal: drag_controller.signal })
+    window.addEventListener('pointercancel', () => end(), { signal: drag_controller.signal })
 }
 </script>
 

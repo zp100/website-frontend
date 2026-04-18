@@ -451,6 +451,9 @@ function submit_guess(): void {
 
 
 #options {
+    touch-action: none;
+    overscroll-behavior: none;
+
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
