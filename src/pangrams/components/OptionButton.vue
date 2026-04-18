@@ -38,13 +38,6 @@ function start_dragging(ev: MouseEvent): void {
     const drag_controller = new AbortController()
 
     window.addEventListener('pointermove', (ev) => {
-        // Abort if user stops clicking without firing `pointerup`, somehow.
-        if (ev.buttons !== 1) {
-            setTimeout(() => is_dragging.value = false, 0)
-            drag_controller.abort()
-            return
-        }
-
         // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
         const rect = button_el.getBoundingClientRect()
         const center_x = rect.x + (rect.width / 2)
