@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { autoTimeout } from '@/util';
+import { autoTimeout } from '@/pangrams/util';
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{

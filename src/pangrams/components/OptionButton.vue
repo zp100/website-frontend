@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { autoTimeout } from '@/util';
+import { autoTimeout } from '@/pangrams/util';
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
 import GenericButton from './GenericButton.vue';
 
