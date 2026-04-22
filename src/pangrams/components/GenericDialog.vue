@@ -6,6 +6,7 @@ type Action = 'cancel' | 'negative' | 'affirmative'
 
 const props = defineProps<{
     action_buttons: Partial<Record<Action, string>>
+    is_big?: boolean
 }>()
 const emit = defineEmits<{
     [K in Action]: []
@@ -52,7 +53,7 @@ function select_action(action: Action): void {
 
 
 <template>
-    <dialog class="dlg">
+    <dialog class="dlg" :class="{ big: is_big }">
         <slot></slot>
 
         <div class="button-row">
@@ -69,7 +70,13 @@ function select_action(action: Action): void {
 
 <style scoped>
 .dlg {
-    width: calc(var(--total-width) - 50px);
+    --dlg-margin: 50px;
+    &.big {
+        --dlg-margin: 25px;
+    }
+
+    width: calc(var(--total-width) - var(--dlg-margin));
+    max-height: calc(100% - var(--dlg-margin));
     color: var(--off-white);
     background-color: var(--off-black);
     border: 1px solid var(--off-white);

@@ -23,12 +23,13 @@ function reset(): void {
         title="Load new puzzle"
         @click="show_dialog = true"
     >
-        <FontAwesomeIcon icon="fa-solid fa-rotate" />
+        <FontAwesomeIcon icon="fa-solid fa-bars" />
     </GenericButton>
 
     <template v-if="show_dialog">
         <GenericDialog
             :action_buttons="{ cancel: 'Cancel', affirmative: 'Reset' }"
+            :is_big="true"
             @cancel="show_dialog = false"
             @affirmative="reset()"
         >
@@ -44,13 +45,12 @@ function reset(): void {
 
 <style scoped>
 #reset-btn {
-    border: none;
-    background-color: transparent;
-    color: var(--off-white);
-    cursor: pointer;
-
     position: absolute;
     top: 4px;
-    right: 0px;
+    right: 4px;
+
+    width: 30px;
+    height: 30px;
+    font-size: large;
 }
 </style>
