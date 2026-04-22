@@ -1,72 +1,30 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import ActionButton from './components/ActionButton.vue'
-import Answer from './components/Answer.vue'
-import DynamicPopup from './components/DynamicPopup.vue'
-import GuessLetter from './components/GuessLetter.vue'
-import OptionButton from './components/OptionButton.vue'
+import { onMounted, ref } from 'vue'
+import PuzzleInterface from './components/PuzzleInterface.vue'
 import ResetButton from './components/ResetButton.vue'
 import Spinner from './components/Spinner.vue'
-import Stats from './components/Stats.vue'
+import type { Puzzle } from './util'
 
 const is_loaded = ref(false)
 onMounted(async () => {
     document.title = 'Pangrams'
-    register_key_handler()
     await setup(true)
     is_loaded.value = true
 })
 
-const guess = ref<string[]>([])
-const guess_word = computed(() => guess.value.join(''))
-function register_key_handler() {
-    window.addEventListener('keydown', (ev: KeyboardEvent) => {
-        if (ev.key === 'Shift') {
-            shuffle_letters()
-            return
-        }
-
-        if (ev.key === 'Escape') {
-            clear_guess()
-            return
-        }
-
-        if (ev.key === 'Backspace') {
-            backspace_guess()
-            return
-        }
-
-        if (ev.key === 'Enter') {
-            submit_guess()
-            return
-        }
-
-        if (ev.repeat || ev.altKey || ev.ctrlKey || ev.metaKey) {
-            return
-        }
-
-        const isLetter = /^[A-Za-z]$/.test(ev.key)
-        if (isLetter) {
-            guess.value.push(ev.key)
-            return
-        }
-    })
-}
-
 type WordListResponse = {
-    min_len: number;
-    word_list: string[];
-    puzzle_list: string[];
+    min_len: number
+    word_list: string[]
+    puzzle_list: string[]
 }
 let word_list_response: WordListResponse
-const puzzle = ref({
-    letters: [] as string[],
+const puzzle = ref<Puzzle>({
+    letters: [],
     key_letter: '',
-    answer_word_list: [] as string[],
-    found_words: [] as string[],
+    answer_word_list: [],
+    found_words: [],
     score: 0,
 })
-let total_score: number
 async function setup(check_storage: boolean): Promise<void> {
     let is_puzzle_ready = false
 
@@ -86,9 +44,6 @@ async function setup(check_storage: boolean): Promise<void> {
         window.localStorage.setItem('word_list_response', JSON.stringify(word_list_response))
         window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
     }
-
-    set_letter_counts()
-    total_score = puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0)
 }
 
 async function fetch_word_list(): Promise<void> {
@@ -142,127 +97,15 @@ function is_valid(word: string, letters: string[], key_letter: string): boolean 
     return true
 }
 
-function get_score(word: string): number {
-    const base_score = word.length * (word.length + 1) / 2
-    return (is_pangram(word) ? base_score * 2 : base_score)
-}
-
-const letter_counts = ref<Record<string, number>>({})
-function set_letter_counts(): void {
-    letter_counts.value = {}
-
-    puzzle.value.answer_word_list.forEach((word) => {
-        word.split('').forEach((letter) => {
-            if (letter_counts.value[letter] !== undefined) {
-                letter_counts.value[letter] += 1
-            } else {
-                letter_counts.value[letter] = 1
-            }
-        })
-    })
-
-    puzzle.value.found_words.forEach((word) => {
-        word.split('').forEach((letter) => {
-            if (letter_counts.value[letter] !== undefined) {
-                letter_counts.value[letter] -= 1
-            }
-        })
-    })
-}
-
 async function reset_puzzle(): Promise<void> {
     is_loaded.value = false
     await setup(false)
     is_loaded.value = true
 }
 
-const popup_messages = ref<string[]>([])
-function show_stats(): void {
-    popup_messages.value.push(`
-        ${puzzle.value.answer_word_list.length - puzzle.value.found_words.length} word(s) remaining,
-        ${total_score - puzzle.value.score} score remaining
-    `)
-}
-
-function is_pangram(word: string): boolean {
-    return new Set(word.split('')).isSupersetOf(new Set(puzzle.value.letters))
-}
-
-function move_letter(old_index: number, spaces: number): void {
-    const new_index = old_index + spaces
-    if (new_index < 0 || new_index >= puzzle.value.letters.length) {
-        return
-    }
-
-    const removed = puzzle.value.letters.splice(old_index, 1)
-    const letter = removed[0]!
-    puzzle.value.letters.splice(new_index, 0, letter)
-}
-
-function shuffle_letters(): void {
-    for (let i = puzzle.value.letters.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1))
-
-        let temp = puzzle.value.letters[i]
-        puzzle.value.letters[i] = puzzle.value.letters[j]!;
-        puzzle.value.letters[j] = temp!;
-    }
-}
-
-function clear_guess(): void {
-    guess.value.length = 0
-}
-
-function backspace_guess(): void {
-    guess.value.pop()
-}
-
-const found_words_sorted = computed(() => puzzle.value.found_words.toSorted())
-function submit_guess(): void {
-    if (guess.value.length === 0) {
-        return
-    }
-
-    const guess_letters = guess.value
-    guess.value = []
-
-    if (guess_letters.length < word_list_response.min_len) {
-        popup_messages.value.push(`Must be at least ${word_list_response.min_len} letters long`)
-        return
-    }
-
-    const guess_word = guess_letters.join('')
-    if (!word_list_response.word_list.includes(guess_word)) {
-        popup_messages.value.push('Not in word list')
-        return
-    }
-
-    if (puzzle.value.found_words.includes(guess_word)) {
-        popup_messages.value.push('Already found')
-        return
-    }
-
-    if (!guess_letters.includes(puzzle.value.key_letter)) {
-        popup_messages.value.push('Must contain key letter')
-        return
-    }
-
-    const is_bad_input = guess_letters.some((letter) => !puzzle.value.letters.includes(letter))
-    if (is_bad_input) {
-        popup_messages.value.push('Must use listed letters')
-        return
-    }
-
-    const word_score = get_score(guess_word)
-    puzzle.value.score += word_score
-    puzzle.value.found_words.push(guess_word)
-    if (puzzle.value.found_words.length === puzzle.value.answer_word_list.length) {
-        popup_messages.value.push('All words found!')
-    } else {
-        popup_messages.value.push(`+${word_score}`)
-    }
-
-    set_letter_counts()
+function update_puzzle(found_words: string[], score: number): void {
+    puzzle.value.found_words = found_words
+    puzzle.value.score = score
     window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
 }
 </script>
@@ -274,60 +117,12 @@ function submit_guess(): void {
         <template v-if="is_loaded">
             <ResetButton @reset="reset_puzzle()" />
 
-            <div id="word-box">
-                <Stats @click="show_stats()"
-                    :words="puzzle.found_words.length"
-                    :words_total="puzzle.answer_word_list.length"
-                    :score="puzzle.score"
-                    :score_total="total_score"
-                />
-
-                <div id="found-words">
-                    <template v-for="word in found_words_sorted" :key="word">
-                        <Answer
-                            :found_word="word"
-                            :is_pangram="is_pangram(word)"
-                            :guess_word="guess_word"
-                        />
-                    </template>
-                </div>
-
-                <DynamicPopup
-                    :messages="popup_messages"
-                />
-            </div>
-
-            <div id="input">
-                <template v-for="letter in guess">
-                    <GuessLetter
-                        :letter="letter"
-                        :is_key="letter === puzzle.key_letter"
-                        :is_invalid="!puzzle.letters.includes(letter)"
-                    />
-                </template>
-
-                <div id="cursor"></div>
-            </div>
-
-            <div id="options">
-                <template v-for="(letter, index) in puzzle.letters" :key="letter">
-                    <OptionButton
-                        :letter="letter"
-                        :is_key_letter="letter === puzzle.key_letter"
-                        :count="letter_counts[letter]"
-                        :index="index"
-                        @click="guess.push(letter)"
-                        @drag="(spaces) => move_letter(index, spaces)"
-                    />
-                </template>
-            </div>
-
-            <div id="actions">
-                <ActionButton title="Shuffle letters (Shift)" icon="shuffle" @click="shuffle_letters()" />
-                <ActionButton title="Clear (Esc)" icon="trash-can" @click="clear_guess()" />
-                <ActionButton title="Backspace" icon="delete-left" @click="backspace_guess()" />
-                <ActionButton title="Submit word (Enter)" icon="circle-chevron-right" @click="submit_guess()" />
-            </div>
+            <PuzzleInterface
+                :puzzle="puzzle"
+                :min_len="word_list_response.min_len"
+                :word_list="word_list_response.word_list"
+                @update_puzzle="update_puzzle"
+            />
         </template>
 
         <template v-else>
@@ -366,83 +161,5 @@ function submit_guess(): void {
     justify-content: center;
     align-items: center;
     gap: 20px;
-}
-
-#word-box {
-    position: relative;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    align-items: center;
-}
-
-#found-words {
-    width: calc(var(--total-width) - 30px);
-    height: 250px;
-    overflow-y: auto;
-    border-radius: var(--roundness);
-    outline: 2px solid var(--border-color);
-    padding: 15px;
-
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    align-content: flex-start;
-}
-
-#score {
-    position: absolute;
-    width: 100%;
-    height: 0;
-    top: 0;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: center;
-    align-items: center;
-
-    div {
-        width: max-content;
-        color: var(--off-white);
-        background-color: var(--border-color);
-        padding: 5px 8px;
-        border-radius: var(--roundness);
-    }
-}
-
-#input {
-    margin: 20px;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    align-items: center;
-    gap: 1px;
-}
-
-#cursor {
-    height: 45px;
-    width: 4px;
-    margin: 0 -1px;
-    border-radius: 2px;
-    background-color: var(--border-color);
-}
-
-#options {
-    touch-action: none;
-    overscroll-behavior: none;
-
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    align-items: center;
-    gap: var(--gap-size);
-}
-
-#actions {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    align-items: center;
-    gap: var(--gap-size);
 }
 </style>
