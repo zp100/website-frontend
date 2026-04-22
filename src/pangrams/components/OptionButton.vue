@@ -153,8 +153,8 @@ function start_dragging(): void {
         width: max-content;
         color: var(--off-white);
         background-color: var(--border-color);
-        padding: 0 3px;
-        border-radius: var(--roundness);
+        padding: 0 5px;
+        border-radius: 999px;
 
         font-size: small;
     }
