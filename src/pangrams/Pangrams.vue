@@ -26,24 +26,20 @@ const puzzle = ref<Puzzle>({
     score: 0,
 })
 async function setup(check_storage: boolean): Promise<void> {
-    let is_puzzle_ready = false
-
     if (check_storage) {
         const local_word_list_response = window.localStorage.getItem('word_list_response')
         const local_puzzle = window.localStorage.getItem('puzzle')
         if (local_word_list_response && local_puzzle) {
             word_list_response = JSON.parse(local_word_list_response)
             puzzle.value = JSON.parse(local_puzzle)
-            is_puzzle_ready = true
+            return
         }
     }
 
-    if (!is_puzzle_ready) {
-        await fetch_word_list()
-        set_puzzle()
-        window.localStorage.setItem('word_list_response', JSON.stringify(word_list_response))
-        window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
-    }
+    await fetch_word_list()
+    set_puzzle()
+    window.localStorage.setItem('word_list_response', JSON.stringify(word_list_response))
+    window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
 }
 
 async function fetch_word_list(): Promise<void> {
@@ -73,12 +69,7 @@ function set_puzzle(): void {
 
 function sample<T>(items: T[]): T {
     const index = Math.floor(Math.random() * items.length)
-    const choice = items[index]
-    if (choice === undefined) {
-        throw new Error(`Index ${index} is out of bounds of array ${items}.`)
-    }
-
-    return choice
+    return items[index]!
 }
 
 function is_valid(word: string, letters: string[], key_letter: string): boolean {
