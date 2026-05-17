@@ -111,9 +111,17 @@ function move_letter(old_index: number, spaces: number): void {
     props.puzzle.letters.splice(new_index, 0, letter)
 }
 
+const locked_letters = ref<boolean[]>(Array(props.puzzle.letters.length).fill(false))
 function shuffle_letters(): void {
     for (let i = props.puzzle.letters.length - 1; i > 0; i--) {
+        if (locked_letters.value[i]) {
+            continue
+        }
+
         let j = Math.floor(Math.random() * (i + 1))
+        if (locked_letters.value[j]) {
+            continue
+        }
 
         let temp = props.puzzle.letters[i]
         props.puzzle.letters[i] = props.puzzle.letters[j]!
@@ -222,8 +230,10 @@ function submit_guess(): void {
                 :is_key_letter="letter === puzzle.key_letter"
                 :count="letter_counts[letter]"
                 :index="index"
+                :is_locked="locked_letters[index] ?? true"
                 @click="guess.push(letter)"
                 @drag="(spaces) => move_letter(index, spaces)"
+                @swipe="locked_letters[index] = !locked_letters[index]"
             />
         </template>
     </div>

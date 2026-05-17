@@ -2,16 +2,19 @@
 import { autoTimeout } from '@/pangrams/util';
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
 import GenericButton from './GenericButton.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const props = defineProps<{
     letter: string
     is_key_letter: boolean
     count: number | undefined
-    index: number
+    index: number,
+    is_locked: boolean
 }>()
 const emit = defineEmits<{
     click: []
     drag: [ spaces: number ]
+    swipe: []
 }>()
 const display_letter = computed(() => props.letter.toLocaleUpperCase())
 
@@ -34,9 +37,9 @@ watch(() => props.index, (index, old_index) => {
     )
 })
 
-const is_dragging = ref(false)
+const drag_state = ref<'none' | 'drag' | 'swipe'>('none')
 function maybe_click(): void {
-    if (!is_dragging.value) {
+    if (drag_state.value === 'none') {
         emit('click')
     }
 }
@@ -51,18 +54,30 @@ function start_dragging(): void {
 
         // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
         const rect = button_el.value.getBoundingClientRect()
-        const center_x = rect.x + (rect.width / 2)
 
-        const spaces = Math.round((ev.clientX - center_x) / button_dist)
-        if (spaces !== 0) {
-            emit('drag', spaces)
-            is_dragging.value = true
+        if (drag_state.value === 'none') {
+            const center_y = rect.y + (rect.height / 2)
+            const spaces_y = Math.round((ev.clientY - center_y) / button_dist)
+            if (spaces_y > 0) {
+                emit('swipe')
+                drag_state.value = 'swipe'
+                return
+            }
+        }
+
+        if (drag_state.value === 'none' || drag_state.value === 'drag') {
+            const center_x = rect.x + (rect.width / 2)
+            const spaces_x = Math.round((ev.clientX - center_x) / button_dist)
+            if (spaces_x !== 0) {
+                emit('drag', spaces_x)
+                drag_state.value = 'drag'
+            }
         }
     }
 
     function end() {
         button_el.value?.classList.remove('slide-from-left', 'slide-from-right')
-        setTimeout(() => is_dragging.value = false, 0)
+        setTimeout(() => drag_state.value = 'none', 0)
         drag_controller.abort()
     }
 
@@ -78,16 +93,23 @@ function start_dragging(): void {
     <GenericButton
         ref="generic-button"
         class="option-btn"
-        :class="{ 'key-letter': is_key_letter }"
+        :class="{ 'key-letter': is_key_letter, 'locked': is_locked }"
         @click="maybe_click()"
         @pointerdown="start_dragging()"
     >
         {{ display_letter }}
+
         <div class="letter-counter">
             <div>
                 {{ count }}
             </div>
         </div>
+
+        <template v-if="is_locked">
+            <div class="lock-indicator">
+                <FontAwesomeIcon icon="fa-solid fa-lock" />
+            </div>
+        </template>
     </GenericButton>
 </template>
 
@@ -106,6 +128,15 @@ function start_dragging(): void {
 
     &.key-letter {
         color: yellow;
+    }
+
+    &.locked {
+        background-color: #161616;
+        color: var(--bg-color);
+    }
+
+    &.key-letter.locked {
+        color: #220;
     }
 
     &.slide-from-left {
@@ -158,5 +189,15 @@ function start_dragging(): void {
 
         font-size: small;
     }
+}
+
+.lock-indicator {
+    position: absolute;
+    width: max-content;
+    height: 0;
+    top: 1px;
+    right: 1px;
+    color: var(--off-white);
+    font-size: x-small;
 }
 </style>
