@@ -63,7 +63,7 @@ async function fetch_definition(): Promise<void> {
                         </div>
 
                         <template v-if="main_variant.pronunciation">
-                            <div>
+                            <div class="separator">
                                 &bull;
                             </div>
 
@@ -73,7 +73,7 @@ async function fetch_definition(): Promise<void> {
                         </template>
 
                         <template v-if="main_variant.id !== found_word">
-                            <div>
+                            <div class="separator">
                                 &bull;
                             </div>
 
@@ -148,7 +148,7 @@ async function fetch_definition(): Promise<void> {
     display: flex;
     flex-flow: row wrap;
     align-items: baseline;
-    gap: 8px;
+    gap: var(--separator-gap-size);
 
     color: var(--muted);
 }

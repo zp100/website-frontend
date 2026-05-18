@@ -23,7 +23,7 @@ const percent = computed(() => Math.floor(100 * props.score / props.score_total)
                 </span>
             </div>
 
-            <div>
+            <div class="separator">
                &bull;
             </div>
 
@@ -63,7 +63,7 @@ const percent = computed(() => Math.floor(100 * props.score / props.score_total)
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    gap: 8px;
+    gap: var(--separator-gap-size);
 
     cursor: pointer;
 }

@@ -154,32 +154,32 @@ function submit_guess(): void {
     }
 
     const guess_letters = guess.value
+    const guess_word = guess_letters.join('')
     guess.value = []
 
     if (guess_letters.length < props.min_len) {
-        popup(`Must be at least ${props.min_len} letters long`)
+        popup(guess_word.toLocaleUpperCase(), `Must be at least ${props.min_len} letters long`)
         return
     }
 
-    const guess_word = guess_letters.join('')
     if (!props.word_list.includes(guess_word)) {
-        popup('Not in word list')
+        popup(guess_word.toLocaleUpperCase(), 'Not in word list')
         return
     }
 
     if (props.puzzle.found_words.includes(guess_word)) {
-        popup('Already found')
+        popup(guess_word.toLocaleUpperCase().toLocaleUpperCase(), 'Already found')
         return
     }
 
     if (!guess_letters.includes(props.puzzle.key_letter)) {
-        popup('Must contain key letter')
+        popup(guess_word.toLocaleUpperCase(), 'Must contain key letter')
         return
     }
 
     const is_bad_input = guess_letters.some((letter) => !props.puzzle.letters.includes(letter))
     if (is_bad_input) {
-        popup('Must use listed letters')
+        popup(guess_word.toLocaleUpperCase(), 'Must use listed letters')
         return
     }
 
@@ -188,7 +188,7 @@ function submit_guess(): void {
     if (props.puzzle.found_words.length === props.puzzle.answer_word_list.length) {
         popup('All words found!')
     } else {
-        popup(`+${word_score}`)
+        popup(guess_word.toLocaleUpperCase(), `+${word_score}`)
     }
 
     set_letter_counts()

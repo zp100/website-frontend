@@ -29,7 +29,7 @@ watch(() => props.messages.length, () => {
                         {{ fragment }}
                     </div>
 
-                    <div>
+                    <div class="separator">
                         &bull;
                     </div>
                 </template>
@@ -69,7 +69,7 @@ watch(() => props.messages.length, () => {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    gap: 8px;
+    gap: var(--separator-gap-size);
 }
 
 @keyframes fade-in {
