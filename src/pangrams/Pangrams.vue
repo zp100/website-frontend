@@ -49,6 +49,9 @@ async function fetch_word_list(): Promise<void> {
 }
 
 async function create_puzzle(): Promise<void> {
+    // DEBUG: Temporary fix to prevent infinite puzzles, until the menu is more-developed.
+    my_puzzle_list.value.length = 0
+
     while (true) {
         await sleep(0)
 
