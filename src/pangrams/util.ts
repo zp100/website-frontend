@@ -23,3 +23,12 @@ export function autoTimeout(setHandler: () => void, resetHandler: () => void, ti
         set()
     }
 }
+
+export function sample<T>(items: T[]): T {
+    const index = Math.floor(Math.random() * items.length)
+    return items[index]!
+}
+
+export async function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import PuzzleInterface from './components/PuzzleInterface.vue'
 import ResetButton from './components/ResetButton.vue'
 import Spinner from './components/Spinner.vue'
-import type { Puzzle } from './util'
+import { sample, sleep, type Puzzle } from './util'
 
 const is_loaded = ref(false)
 onMounted(async () => {
     document.title = 'Pangrams'
-    await setup(true)
+    await setup()
     is_loaded.value = true
 })
 
@@ -17,59 +17,58 @@ type WordListResponse = {
     word_list: string[]
     puzzle_list: string[]
 }
-let word_list_response: WordListResponse
-const puzzle = ref<Puzzle>({
-    letters: [],
-    key_letter: '',
-    answer_word_list: [],
-    found_words: [],
-    score: 0,
+const word_list_response = ref<WordListResponse>({
+    // Dummy values, will get overwritten.
+    min_len: 0,
+    word_list: [],
+    puzzle_list: [],
 })
-async function setup(check_storage: boolean): Promise<void> {
-    if (check_storage) {
-        const local_word_list_response = window.localStorage.getItem('word_list_response')
-        const local_puzzle = window.localStorage.getItem('puzzle')
-        if (local_word_list_response && local_puzzle) {
-            word_list_response = JSON.parse(local_word_list_response)
-            puzzle.value = JSON.parse(local_puzzle)
+const my_puzzle_list = ref<Puzzle[]>([])
+const current_puzzle = computed(() => my_puzzle_list.value.at(-1)!)
+async function setup(): Promise<void> {
+    const local_word_list_response = window.localStorage.getItem('word_list_response')
+    const local_my_puzzle_list = window.localStorage.getItem('my_puzzle_list')
+    if (local_word_list_response && local_my_puzzle_list) {
+        word_list_response.value = JSON.parse(local_word_list_response)
+        my_puzzle_list.value = JSON.parse(local_my_puzzle_list)
+        if (my_puzzle_list.value.length >= 1) {
             return
         }
     }
 
     await fetch_word_list()
-    set_puzzle()
-    window.localStorage.setItem('word_list_response', JSON.stringify(word_list_response))
-    window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
+    await create_puzzle()
 }
 
 async function fetch_word_list(): Promise<void> {
     const api_url = import.meta.env.VITE_BACKEND_URL
     const word_list_url = `${api_url}/pangrams/word_list`
     const response = await fetch(word_list_url)
-    word_list_response = await response.json()
+    word_list_response.value = await response.json()
+    window.localStorage.setItem('word_list_response', JSON.stringify(word_list_response.value))
 }
 
-function set_puzzle(): void {
+async function create_puzzle(): Promise<void> {
     while (true) {
-        const try_letters = sample(word_list_response.puzzle_list).split('')
+        await sleep(0)
+
+        const try_letters = sample(word_list_response.value.puzzle_list).split('')
         const try_key_letter = sample(try_letters)
-        const try_answer_word_list = word_list_response.word_list.filter((word) =>
+        const try_answer_word_list = word_list_response.value.word_list.filter((word) =>
             is_valid(word, try_letters, try_key_letter))
 
         if (try_answer_word_list.length >= 15 && try_answer_word_list.length <= 50) {
-            puzzle.value.letters = try_letters
-            puzzle.value.key_letter = try_key_letter
-            puzzle.value.answer_word_list = try_answer_word_list
-            puzzle.value.found_words = []
-            puzzle.value.score = 0
+            my_puzzle_list.value.push({
+                letters: try_letters,
+                key_letter: try_key_letter,
+                answer_word_list: try_answer_word_list,
+                found_words: [],
+                score: 0,
+            })
+            window.localStorage.setItem('my_puzzle_list', JSON.stringify(my_puzzle_list.value))
             return
         }
     }
-}
-
-function sample<T>(items: T[]): T {
-    const index = Math.floor(Math.random() * items.length)
-    return items[index]!
 }
 
 function is_valid(word: string, letters: string[], key_letter: string): boolean {
@@ -90,14 +89,14 @@ function is_valid(word: string, letters: string[], key_letter: string): boolean 
 
 async function reset_puzzle(): Promise<void> {
     is_loaded.value = false
-    await setup(false)
+    await create_puzzle()
     is_loaded.value = true
 }
 
 function update_puzzle(found_words: string[], score: number): void {
-    puzzle.value.found_words = found_words
-    puzzle.value.score = score
-    window.localStorage.setItem('puzzle', JSON.stringify(puzzle.value))
+    current_puzzle.value.found_words = found_words
+    current_puzzle.value.score = score
+    window.localStorage.setItem('my_puzzle_list', JSON.stringify(my_puzzle_list.value))
 }
 </script>
 
@@ -109,7 +108,7 @@ function update_puzzle(found_words: string[], score: number): void {
             <ResetButton @reset="reset_puzzle()" />
 
             <PuzzleInterface
-                :puzzle="puzzle"
+                :puzzle="current_puzzle"
                 :min_len="word_list_response.min_len"
                 :word_list="word_list_response.word_list"
                 @update_puzzle="update_puzzle"

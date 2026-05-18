@@ -17,7 +17,7 @@ const emit = defineEmits<{
     update_puzzle: [ found_words: string[], score: number ]
 }>()
 
-let total_score: number
+let total_score = 0
 onMounted(() => {
     register_key_handler()
     set_letter_counts()
