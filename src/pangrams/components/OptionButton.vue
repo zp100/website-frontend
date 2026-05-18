@@ -131,12 +131,12 @@ function start_dragging(): void {
     }
 
     &.locked {
-        background-color: #161616;
-        color: var(--bg-color);
+        background-color: #1a1a1a;
+        color: var(--border-color);
     }
 
     &.key-letter.locked {
-        color: #220;
+        color: #330;
     }
 
     &.slide-from-left {
@@ -197,7 +197,7 @@ function start_dragging(): void {
     height: 0;
     top: 1px;
     right: 1px;
-    color: var(--off-white);
+    color: var(--muted);
     font-size: x-small;
 }
 </style>
