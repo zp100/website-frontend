@@ -88,12 +88,12 @@ function set_letter_counts(): void {
     })
 }
 
-const popup_messages = ref<string[]>([])
+const popup_messages = ref<string[][]>([])
 function show_stats(): void {
-    popup_messages.value.push(`
-        ${props.puzzle.answer_word_list.length - props.puzzle.found_words.length} word(s) remaining,
-        ${total_score - props.puzzle.score} score remaining
-    `)
+    popup(
+        `${props.puzzle.answer_word_list.length - props.puzzle.found_words.length} word(s) remaining`,
+        `${total_score - props.puzzle.score} score remaining`,
+    )
 }
 
 function is_pangram(word: string): boolean {
@@ -147,41 +147,45 @@ function submit_guess(): void {
     guess.value = []
 
     if (guess_letters.length < props.min_len) {
-        popup_messages.value.push(`Must be at least ${props.min_len} letters long`)
+        popup(`Must be at least ${props.min_len} letters long`)
         return
     }
 
     const guess_word = guess_letters.join('')
     if (!props.word_list.includes(guess_word)) {
-        popup_messages.value.push('Not in word list')
+        popup('Not in word list')
         return
     }
 
     if (props.puzzle.found_words.includes(guess_word)) {
-        popup_messages.value.push('Already found')
+        popup('Already found')
         return
     }
 
     if (!guess_letters.includes(props.puzzle.key_letter)) {
-        popup_messages.value.push('Must contain key letter')
+        popup('Must contain key letter')
         return
     }
 
     const is_bad_input = guess_letters.some((letter) => !props.puzzle.letters.includes(letter))
     if (is_bad_input) {
-        popup_messages.value.push('Must use listed letters')
+        popup('Must use listed letters')
         return
     }
 
     const word_score = get_score(guess_word)
     emit('update_puzzle', props.puzzle.found_words.concat(guess_word), props.puzzle.score + word_score)
     if (props.puzzle.found_words.length === props.puzzle.answer_word_list.length) {
-        popup_messages.value.push('All words found!')
+        popup('All words found!')
     } else {
-        popup_messages.value.push(`+${word_score}`)
+        popup(`+${word_score}`)
     }
 
     set_letter_counts()
+}
+
+function popup(...text: string[]): void {
+    popup_messages.value.push(text)
 }
 </script>
 

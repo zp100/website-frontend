@@ -3,9 +3,9 @@ import { autoTimeout } from '@/pangrams/util';
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
-    messages: string[]
+    messages: string[][]
 }>()
-const new_message = computed(() => props.messages.at(-1) ?? '')
+const new_message = computed(() => props.messages.at(-1) ?? [])
 
 const is_showing_popup = ref(false)
 watch(() => props.messages.length, () => {
@@ -24,7 +24,21 @@ watch(() => props.messages.length, () => {
     <template v-if="is_showing_popup">
         <div id="popup-box">
             <div class="popup">
-                {{ new_message }}
+                <template v-for="fragment in new_message.slice(0, -1)">
+                    <div>
+                        {{ fragment }}
+                    </div>
+
+                    <div>
+                        &bull;
+                    </div>
+                </template>
+
+                <template v-if="new_message.length > 0">
+                    <div>
+                        {{ new_message.at(-1) }}
+                    </div>
+                </template>
             </div>
         </div>
     </template>
