@@ -58,14 +58,14 @@ function start_dragging(): void {
         if (drag_state.value === 'none') {
             const center_y = rect.y + (rect.height / 2)
             const spaces_y = Math.round((ev.clientY - center_y) / button_dist)
-            if (spaces_y === -1) {
+            if (spaces_y === 1) {
                 emit('swipe')
                 drag_state.value = 'swipe'
 
                 setTimeout(() => {
                     autoTimeout(
-                        () => button_el.value?.classList.add('bounce-up'),
-                        () => button_el.value?.classList.remove('bounce-up'),
+                        () => button_el.value?.classList.add('bounce-down'),
+                        () => button_el.value?.classList.remove('bounce-down'),
                         200,
                     )
                 }, 0)
@@ -157,9 +157,9 @@ function start_dragging(): void {
         animation: slide-from-right 100ms ease-out;
     }
 
-    &.bounce-up {
+    &.bounce-down {
         z-index: 1;
-        animation: bounce-up 75ms cubic-bezier(0.5, 1, 0.89, 1) 2 alternate;
+        animation: bounce-down 75ms cubic-bezier(0.5, 1, 0.89, 1) 2 alternate;
     }
 }
 
@@ -183,13 +183,13 @@ function start_dragging(): void {
     }
 }
 
-@keyframes bounce-up {
+@keyframes bounce-down {
     from {
         transform: translateY(0);
     }
 
     to {
-        transform: translateY(-5px);
+        transform: translateY(5px);
     }
 }
 
