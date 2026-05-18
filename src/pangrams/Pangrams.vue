@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import PuzzleInterface from './components/PuzzleInterface.vue'
-import ResetButton from './components/ResetButton.vue'
+import MenuButton from './components/MenuButton.vue'
 import Spinner from './components/Spinner.vue'
 import { sample, sleep, type Puzzle } from './util'
 
@@ -105,7 +105,7 @@ function update_puzzle(found_words: string[], score: number): void {
 <template>
     <div id="game">
         <template v-if="is_loaded">
-            <ResetButton @reset="reset_puzzle()" />
+            <MenuButton @reset="reset_puzzle()" />
 
             <PuzzleInterface
                 :puzzle="current_puzzle"

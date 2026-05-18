@@ -2,15 +2,16 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { ref } from 'vue';
 import GenericButton from './GenericButton.vue';
+import Menu from './Menu.vue';
 import GenericDialog from './GenericDialog.vue';
 
 const emit = defineEmits<{
     reset: []
 }>()
 
-const show_dialog = ref(false)
+const show_menu = ref(false)
 function reset(): void {
-    show_dialog.value = false
+    show_menu.value = false
     emit('reset')
 }
 </script>
@@ -19,24 +20,21 @@ function reset(): void {
 
 <template>
     <GenericButton
-        id="reset-btn"
-        title="Load new puzzle"
-        @click="show_dialog = true"
+        id="menu-btn"
+        title="Menu"
+        @click="show_menu = true"
     >
         <FontAwesomeIcon icon="fa-solid fa-bars" />
     </GenericButton>
 
-    <template v-if="show_dialog">
+    <template v-if="show_menu">
         <GenericDialog
-            :action_buttons="{ cancel: 'Cancel', affirmative: 'Reset' }"
-            :is_big="true"
-            @cancel="show_dialog = false"
-            @affirmative="reset()"
+            :action_buttons="{ cancel: 'Close' }"
+            @cancel="show_menu = false"
         >
-            <p>
-                Are you sure you want to reset?
-                New letters and words will be randomly picked.
-            </p>
+            <Menu
+                @reset="reset()"
+            />
         </GenericDialog>
     </template>
 </template>
@@ -44,7 +42,7 @@ function reset(): void {
 
 
 <style scoped>
-#reset-btn {
+#menu-btn {
     position: absolute;
     top: 4px;
     right: 4px;
