@@ -71,6 +71,12 @@ async function create_puzzle(): Promise<void> {
     }
 }
 
+async function reset_puzzle(): Promise<void> {
+    is_loaded.value = false
+    await create_puzzle()
+    is_loaded.value = true
+}
+
 function is_valid(word: string, letters: string[], key_letter: string): boolean {
     const word_letters = new Set(word.split(''))
 
@@ -85,12 +91,6 @@ function is_valid(word: string, letters: string[], key_letter: string): boolean 
     }
 
     return true
-}
-
-async function reset_puzzle(): Promise<void> {
-    is_loaded.value = false
-    await create_puzzle()
-    is_loaded.value = true
 }
 
 function update_puzzle(found_words: string[], score: number): void {
