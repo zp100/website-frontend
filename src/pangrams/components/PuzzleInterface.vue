@@ -17,6 +17,14 @@ const emit = defineEmits<{
     update_puzzle: [ found_words: string[], score: number ]
 }>()
 
+const options = ref<Array<{ letter: string; count: number; is_locked: boolean }>>(
+    props.puzzle.letters.map((letter) => ({
+        letter,
+        count: NaN,
+        is_locked: false,
+    }))
+)
+
 let total_score = 0
 onMounted(() => {
     register_key_handler()
@@ -65,26 +73,29 @@ function get_score(word: string): number {
     return (is_pangram(word) ? base_score * 2 : base_score)
 }
 
-const letter_counts = ref<Record<string, number>>({})
 function set_letter_counts(): void {
-    letter_counts.value = {}
+    const letter_counts: Record<string, number> = {}
 
     props.puzzle.answer_word_list.forEach((word) => {
         word.split('').forEach((letter) => {
-            if (letter_counts.value[letter] !== undefined) {
-                letter_counts.value[letter] += 1
+            if (letter_counts[letter] !== undefined) {
+                letter_counts[letter] += 1
             } else {
-                letter_counts.value[letter] = 1
+                letter_counts[letter] = 1
             }
         })
     })
 
     props.puzzle.found_words.forEach((word) => {
         word.split('').forEach((letter) => {
-            if (letter_counts.value[letter] !== undefined) {
-                letter_counts.value[letter] -= 1
+            if (letter_counts[letter] !== undefined) {
+                letter_counts[letter] -= 1
             }
         })
+    })
+
+    options.value.forEach((option) => {
+        option.count = letter_counts[option.letter] ?? 0
     })
 }
 
@@ -102,30 +113,29 @@ function is_pangram(word: string): boolean {
 
 function move_letter(old_index: number, spaces: number): void {
     const new_index = old_index + spaces
-    if (new_index < 0 || new_index >= props.puzzle.letters.length) {
+    if (new_index < 0 || new_index >= options.value.length) {
         return
     }
 
-    const removed = props.puzzle.letters.splice(old_index, 1)
-    const letter = removed[0]!
-    props.puzzle.letters.splice(new_index, 0, letter)
+    const removed = options.value.splice(old_index, 1)
+    const option = removed[0]!
+    options.value.splice(new_index, 0, option)
 }
 
-const locked_letters = ref<boolean[]>(Array(props.puzzle.letters.length).fill(false))
 function shuffle_letters(): void {
-    for (let i = props.puzzle.letters.length - 1; i > 0; i--) {
-        if (locked_letters.value[i]) {
+    for (let i = options.value.length - 1; i > 0; i--) {
+        if (options.value[i]?.is_locked) {
             continue
         }
 
         let j = Math.floor(Math.random() * (i + 1))
-        if (locked_letters.value[j]) {
+        if (options.value[j]?.is_locked) {
             continue
         }
 
-        let temp = props.puzzle.letters[i]
-        props.puzzle.letters[i] = props.puzzle.letters[j]!
-        props.puzzle.letters[j] = temp!
+        let temp = options.value[i]
+        options.value[i] = options.value[j]!
+        options.value[j] = temp!
     }
 }
 
@@ -228,16 +238,16 @@ function popup(...text: string[]): void {
     </div>
 
     <div id="options">
-        <template v-for="(letter, index) in puzzle.letters" :key="letter">
+        <template v-for="(option, index) in options" :key="option.letter">
             <OptionButton
-                :letter="letter"
-                :is_key_letter="letter === puzzle.key_letter"
-                :count="letter_counts[letter]"
+                :letter="option.letter"
+                :is_key_letter="option.letter === puzzle.key_letter"
+                :count="option.count"
                 :index="index"
-                :is_locked="locked_letters[index] ?? true"
-                @click="guess.push(letter)"
+                :is_locked="option.is_locked"
+                @click="guess.push(option.letter)"
                 @drag="(spaces) => move_letter(index, spaces)"
-                @swipe="locked_letters[index] = !locked_letters[index]"
+                @swipe="option.is_locked = !option.is_locked"
             />
         </template>
     </div>
