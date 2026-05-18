@@ -76,7 +76,7 @@ function select_action(action: Action): void {
     }
 
     width: calc(var(--total-width) - var(--dlg-margin));
-    max-height: calc(100% - var(--dlg-margin));
+    max-height: calc(100% - 2 * var(--dlg-margin));
     color: var(--off-white);
     background-color: var(--off-black);
     border: 1px solid var(--off-white);
