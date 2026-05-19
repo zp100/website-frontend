@@ -138,13 +138,13 @@ function start_dragging(): void {
         color: yellow;
     }
 
-    &.locked {
-        background-color: #1a1a1a;
+    &.locked {  
+        background-color: #181818;
         color: var(--border-color);
     }
 
     &.key-letter.locked {
-        color: #330;
+        color: #383800;
     }
 
     &.slide-from-left {
@@ -197,7 +197,7 @@ function start_dragging(): void {
     position: absolute;
     width: 100%;
     height: 0;
-    bottom: -4px;
+    bottom: -2px;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
@@ -207,7 +207,7 @@ function start_dragging(): void {
         width: max-content;
         color: var(--off-white);
         background-color: var(--border-color);
-        padding: 0 4.5px;
+        padding: 0 5px;
         border-radius: 999px;
 
         font-size: small;
