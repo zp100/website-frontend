@@ -126,6 +126,7 @@ function start_dragging(): void {
     width: var(--button-unit);
     height: var(--button-unit);
     font-size: var(--button-font-size);
+    user-select: none;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
