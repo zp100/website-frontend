@@ -126,7 +126,7 @@ async function fetch_definition(): Promise<void> {
 
     &.pangram {
         color: transparent;
-        background: linear-gradient(0.4turn, #f77, #7f7, #77f, #f77);
+        background: linear-gradient(135deg, #f77, #7f7, #77f, #f77);
         background-clip: text;
         font-weight: bold;
     }
