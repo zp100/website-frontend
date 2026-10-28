@@ -40,13 +40,12 @@ function register_key_handler(): void {
             return
         }
 
-        if (ev.key === 'Escape') {
-            clear_guess()
-            return
-        }
-
         if (ev.key === 'Backspace') {
-            backspace_guess()
+            if (ev.ctrlKey) {
+                clear_guess()
+            } else {
+                backspace_guess()
+            }
             return
         }
 
