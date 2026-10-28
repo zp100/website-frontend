@@ -319,7 +319,7 @@ function popup(...text: string[]): void {
 }
 
 #cursor {
-    height: 40px;
+    height: 45px;
     width: 3px;
     margin: 0 -1px;
     border-radius: 2px;
