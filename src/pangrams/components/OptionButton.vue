@@ -37,19 +37,19 @@ watch(() => props.index, (index, old_index) => {
     )
 })
 
-const drag_state = ref<'none' | 'start' | 'drag' | 'hold'>('none')
+const drag_state = ref<'none' | 'drag' | 'hold'>('none')
 function maybe_click(): void {
-    if (drag_state.value === 'start') {
+    console.log(drag_state.value)
+    if (drag_state.value === 'none') {
         emit('click')
     }
 }
 
 function start_dragging(): void {
-    drag_state.value = 'start'
     const drag_controller = new AbortController()
 
     const timeout_id = setTimeout(() => {
-        if (drag_state.value === 'start') {
+        if (drag_state.value === 'none') {
             emit('hold')
             drag_state.value = 'hold'
         }
@@ -63,7 +63,7 @@ function start_dragging(): void {
         // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
         const rect = button_el.value.getBoundingClientRect()
 
-        if (drag_state.value === 'start' || drag_state.value === 'drag') {
+        if (drag_state.value === 'none' || drag_state.value === 'drag') {
             const center_x = rect.x + (rect.width / 2)
             const spaces_x = Math.round((ev.clientX - center_x) / button_dist)
             if (spaces_x !== 0) {
