@@ -133,7 +133,7 @@ function update_puzzle(found_words: string[], score: number): void {
     --border-color: #333;
     --muted: #777;
     --off-white: #ddd;
-    --temporary: #07f;
+    --temporary: #37f;
     --separator-gap-size: 6px;
 
     --gap-size: 4px;
