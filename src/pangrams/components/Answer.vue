@@ -3,12 +3,12 @@ import { computed, onMounted, ref } from 'vue';
 import GenericDialog from './GenericDialog.vue';
 
 const props = defineProps<{
-    found_word: string
+    found_word: string | null
     is_pangram: boolean
     guess: string
 }>()
-const display_found_word = computed(() => props.found_word.toLocaleUpperCase())
-const is_guess_prefix = computed(() => props.found_word.startsWith(props.guess))
+const display_found_word = computed(() => props.found_word?.toLocaleUpperCase() ?? '???')
+const is_guess_prefix = computed(() => props.found_word?.startsWith(props.guess) ?? false)
 
 const show_dialog = ref(false)
 onMounted(async () => {
@@ -36,7 +36,7 @@ async function fetch_definition(): Promise<void> {
 
 
 <template>
-    <div class="answer" :class="{ pangram: is_pangram }" @click="show_dialog = true">
+    <div class="text-block answer" :class="{ pangram: is_pangram }" @click="show_dialog = true">
         <template v-if="is_guess_prefix">
             <span class="prefix">
                 {{ display_found_word.slice(0, guess.length) }}
@@ -120,7 +120,6 @@ async function fetch_definition(): Promise<void> {
 
 <style scoped>
 .answer {
-    margin: 5px 10px;
     color: var(--off-white);
     cursor: pointer;
     animation: flash-in 500ms linear;

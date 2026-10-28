@@ -146,7 +146,7 @@ function backspace_guess(): void {
     guess.value = guess.value.slice(0, -1)
 }
 
-const found_words_sorted = computed(() => props.puzzle.found_words.toSorted())
+const answer_words_sorted = computed(() => props.puzzle.answer_word_list.toSorted())
 function submit_guess(): void {
     if (guess.value === '') {
         return
@@ -209,12 +209,19 @@ function popup(...text: string[]): void {
         />
 
         <div id="found-words">
-            <template v-for="word in found_words_sorted" :key="word">
-                <Answer
-                    :found_word="word"
-                    :is_pangram="is_pangram(word)"
-                    :guess="guess"
-                />
+            <template v-for="word in answer_words_sorted" :key="word">
+                <template v-if="puzzle.found_words.includes(word)">
+                    <Answer
+                        :found_word="word"
+                        :is_pangram="is_pangram(word)"
+                        :guess="guess"
+                    />
+                </template>
+                <template v-else>
+                    <div class="text-block">
+                        ???
+                    </div>
+                </template>
             </template>
         </div>
 
@@ -279,7 +286,7 @@ function popup(...text: string[]): void {
 
     display: flex;
     flex-flow: row wrap;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: flex-start;
     align-content: flex-start;
 }

@@ -160,4 +160,9 @@ function update_puzzle(found_words: string[], score: number): void {
 .separator {
     color: var(--muted);
 }
+
+.text-block {
+    margin: 5px 10px;
+    color: var(--border-color);
+}
 </style>
