@@ -125,8 +125,8 @@ async function fetch_definition(): Promise<void> {
     animation: flash-in 500ms linear;
 
     &.pangram {
-        background: linear-gradient(135deg, #733, #373, #337, #733);
-        font-weight: bold;
+        background: linear-gradient(135deg, #633, #363, #336, #633);
+        color: white;
     }
 }
 
