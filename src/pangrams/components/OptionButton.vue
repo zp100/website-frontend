@@ -196,7 +196,7 @@ function start_dragging(): void {
         font-size: small;
 
         &.guess-count {
-            color: var(--temporary);
+            color: cyan;
         }
     }
 }
