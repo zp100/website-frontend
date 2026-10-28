@@ -32,8 +32,7 @@ onMounted(() => {
     total_score = props.puzzle.answer_word_list.reduce((score, word) => score + get_score(word), 0)
 })
 
-const guess = ref<string[]>([])
-const guess_word = computed(() => guess.value.join(''))
+const guess = ref<string>('')
 function register_key_handler(): void {
     window.addEventListener('keydown', (ev: KeyboardEvent) => {
         if (ev.key === 'Shift') {
@@ -62,7 +61,7 @@ function register_key_handler(): void {
 
         const isLetter = /^[A-Za-z]$/.test(ev.key)
         if (isLetter) {
-            guess.value.push(ev.key)
+            guess.value += ev.key
             return
         }
     })
@@ -140,24 +139,23 @@ function shuffle_letters(): void {
 }
 
 function clear_guess(): void {
-    guess.value.length = 0
+    guess.value = ''
 }
 
 function backspace_guess(): void {
-    guess.value.pop()
+    guess.value = guess.value.slice(0, -1)
 }
 
 const found_words_sorted = computed(() => props.puzzle.found_words.toSorted())
 function submit_guess(): void {
-    if (guess.value.length === 0) {
+    if (guess.value === '') {
         return
     }
 
-    const guess_letters = guess.value
-    const guess_word = guess_letters.join('')
-    guess.value = []
+    const guess_word = guess.value
+    guess.value = ''
 
-    if (guess_letters.length < props.min_len) {
+    if (guess_word.length < props.min_len) {
         popup(guess_word.toLocaleUpperCase(), `Must be at least ${props.min_len} letters long`)
         return
     }
@@ -172,12 +170,12 @@ function submit_guess(): void {
         return
     }
 
-    if (!guess_letters.includes(props.puzzle.key_letter)) {
+    if (!guess_word.includes(props.puzzle.key_letter)) {
         popup(guess_word.toLocaleUpperCase(), 'Must contain key letter')
         return
     }
 
-    const is_bad_input = guess_letters.some((letter) => !props.puzzle.letters.includes(letter))
+    const is_bad_input = guess_word.split('').some((letter) => !props.puzzle.letters.includes(letter))
     if (is_bad_input) {
         popup(guess_word.toLocaleUpperCase(), 'Must use listed letters')
         return
@@ -215,7 +213,7 @@ function popup(...text: string[]): void {
                 <Answer
                     :found_word="word"
                     :is_pangram="is_pangram(word)"
-                    :guess_word="guess_word"
+                    :guess="guess"
                 />
             </template>
         </div>
@@ -245,7 +243,7 @@ function popup(...text: string[]): void {
                 :count="option.count"
                 :index="index"
                 :is_locked="option.is_locked"
-                @click="guess.push(option.letter)"
+                @click="guess += option.letter"
                 @drag="(spaces) => move_letter(index, spaces)"
                 @swipe="option.is_locked = !option.is_locked"
             />

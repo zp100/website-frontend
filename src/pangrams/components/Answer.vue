@@ -5,10 +5,10 @@ import GenericDialog from './GenericDialog.vue';
 const props = defineProps<{
     found_word: string
     is_pangram: boolean
-    guess_word: string
+    guess: string
 }>()
 const display_found_word = computed(() => props.found_word.toLocaleUpperCase())
-const is_guess_prefix = computed(() => props.found_word.startsWith(props.guess_word))
+const is_guess_prefix = computed(() => props.found_word.startsWith(props.guess))
 
 const show_dialog = ref(false)
 onMounted(async () => {
@@ -39,10 +39,10 @@ async function fetch_definition(): Promise<void> {
     <div class="answer" :class="{ pangram: is_pangram }" @click="show_dialog = true">
         <template v-if="is_guess_prefix">
             <span class="prefix">
-                {{ display_found_word.slice(0, guess_word.length) }}
+                {{ display_found_word.slice(0, guess.length) }}
             </span>
             <span>
-                {{ display_found_word.slice(guess_word.length) }}
+                {{ display_found_word.slice(guess.length) }}
             </span>
         </template>
         <template v-else>
