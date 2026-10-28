@@ -29,7 +29,7 @@ const props = defineProps<{
     }
 
     &.invalid-letter {
-        color: var(--border-color);
+        color: red;
     }
 }
 </style>
