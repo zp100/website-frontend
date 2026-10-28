@@ -69,6 +69,6 @@ const percent = computed(() => Math.floor(100 * props.score / props.score_total)
 }
 
 .full {
-    color: yellow;
+    color: lime;
 }
 </style>

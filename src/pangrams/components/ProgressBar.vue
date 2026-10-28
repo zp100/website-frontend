@@ -31,7 +31,7 @@ const props = defineProps<{
     background-color: var(--off-white);
 
     &.full {
-        background-color: yellow;
+        background-color: lime;
     }
 }
 </style>
