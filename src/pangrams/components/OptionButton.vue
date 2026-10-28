@@ -39,7 +39,6 @@ watch(() => props.index, (index, old_index) => {
 
 const drag_state = ref<'none' | 'drag' | 'hold'>('none')
 function maybe_click(): void {
-    console.log(drag_state.value)
     if (drag_state.value === 'none') {
         emit('click')
     }
@@ -82,7 +81,7 @@ function start_dragging(): void {
     function end() {
         clearTimeout(timeout_id)
         button_el.value?.classList.remove('slide-from-left', 'slide-from-right')
-        setTimeout(() => drag_state.value = 'none', 0)
+        setTimeout(() => drag_state.value = 'none', 100)
         drag_controller.abort()
     }
 
