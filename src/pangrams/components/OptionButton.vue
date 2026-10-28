@@ -48,7 +48,7 @@ function start_dragging(): void {
     drag_state.value = 'start'
     const drag_controller = new AbortController()
 
-    setTimeout(() => {
+    const timeout_id = setTimeout(() => {
         if (drag_state.value === 'start') {
             emit('hold')
             drag_state.value = 'hold'
@@ -80,6 +80,7 @@ function start_dragging(): void {
     }
 
     function end() {
+        clearTimeout(timeout_id)
         button_el.value?.classList.remove('slide-from-left', 'slide-from-right')
         setTimeout(() => drag_state.value = 'none', 0)
         drag_controller.abort()
