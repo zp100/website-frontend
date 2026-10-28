@@ -7,9 +7,10 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 const props = defineProps<{
     letter: string
     is_key_letter: boolean
-    count: number | undefined
-    index: number,
+    count: number
+    guess_count: number
     is_locked: boolean
+    index: number,
 }>()
 const emit = defineEmits<{
     click: []
@@ -104,8 +105,8 @@ function start_dragging(): void {
         {{ display_letter }}
 
         <div class="letter-counter">
-            <div>
-                {{ count }}
+            <div :class="{ 'guess-count': guess_count > 0 }">
+                {{ count - guess_count }}
             </div>
         </div>
 
@@ -193,6 +194,10 @@ function start_dragging(): void {
         border-radius: 999px;
 
         font-size: small;
+
+        &.guess-count {
+            color: var(--temporary);
+        }
     }
 }
 

@@ -20,7 +20,7 @@ const emit = defineEmits<{
 const options = ref<Array<{ letter: string; count: number; is_locked: boolean }>>(
     props.puzzle.letters.map((letter) => ({
         letter,
-        count: NaN,
+        count: 0,
         is_locked: false,
     }))
 )
@@ -96,6 +96,20 @@ function set_letter_counts(): void {
         option.count = letter_counts[option.letter] ?? 0
     })
 }
+
+const guess_letter_counts = computed(() => {
+    const letter_counts: Record<string, number>  = {}
+
+    guess.value.split('').forEach((letter) => {
+        if (letter_counts[letter] !== undefined) {
+            letter_counts[letter] += 1
+        } else {
+            letter_counts[letter] = 1
+        }
+    })
+
+    return letter_counts
+})
 
 const popup_messages = ref<string[][]>([])
 function show_stats(): void {
@@ -247,8 +261,9 @@ function popup(...text: string[]): void {
                 :letter="option.letter"
                 :is_key_letter="option.letter === puzzle.key_letter"
                 :count="option.count"
-                :index="index"
+                :guess_count="guess_letter_counts[option.letter] ?? 0"
                 :is_locked="option.is_locked"
+                :index="index"
                 @click="guess += option.letter"
                 @drag="(spaces) => move_letter(index, spaces)"
                 @hold="option.is_locked = !option.is_locked"
