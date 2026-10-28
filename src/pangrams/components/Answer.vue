@@ -125,7 +125,10 @@ async function fetch_definition(): Promise<void> {
     animation: flash-in 500ms linear;
 
     &.pangram {
-        color: yellow;
+        color: transparent;
+        background: linear-gradient(0.4turn, #f77, #7f7, #77f, #f77);
+        background-clip: text;
+        font-weight: bold;
     }
 }
 
@@ -140,6 +143,7 @@ async function fetch_definition(): Promise<void> {
 }
 
 .prefix {
+    color: var(--off-white);
     background-color: var(--muted);
 }
 
