@@ -320,11 +320,11 @@ function popup(...text: string[]): void {
 }
 
 #cursor {
-    height: 45px;
-    width: 4px;
+    height: 40px;
+    width: 3px;
     margin: 0 -1px;
     border-radius: 2px;
-    background-color: var(--border-color);
+    background-color: var(--muted);
 }
 
 #options {
