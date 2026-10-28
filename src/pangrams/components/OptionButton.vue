@@ -14,7 +14,7 @@ const props = defineProps<{
 const emit = defineEmits<{
     click: []
     drag: [ spaces: number ]
-    swipe: []
+    hold: []
 }>()
 const display_letter = computed(() => props.letter.toLocaleUpperCase())
 
@@ -37,15 +37,23 @@ watch(() => props.index, (index, old_index) => {
     )
 })
 
-const drag_state = ref<'none' | 'drag' | 'swipe'>('none')
+const drag_state = ref<'none' | 'start' | 'drag' | 'hold'>('none')
 function maybe_click(): void {
-    if (drag_state.value === 'none') {
+    if (drag_state.value === 'start') {
         emit('click')
     }
 }
 
 function start_dragging(): void {
+    drag_state.value = 'start'
     const drag_controller = new AbortController()
+
+    setTimeout(() => {
+        if (drag_state.value === 'start') {
+            emit('hold')
+            drag_state.value = 'hold'
+        }
+    }, 250)
 
     function move(ev: PointerEvent) {
         if (!button_el.value) {
@@ -55,29 +63,17 @@ function start_dragging(): void {
         // Call `getBoundingClientRect` here so that it updates properly as the button is moved by Vue.
         const rect = button_el.value.getBoundingClientRect()
 
-        if (drag_state.value === 'none') {
-            const center_y = rect.y + (rect.height / 2)
-            const spaces_y = Math.round((ev.clientY - center_y) / button_dist)
-            if (spaces_y === 1) {
-                emit('swipe')
-                drag_state.value = 'swipe'
-
-                setTimeout(() => {
-                    autoTimeout(
-                        () => button_el.value?.classList.add('bounce-down'),
-                        () => button_el.value?.classList.remove('bounce-down'),
-                        200,
-                    )
-                }, 0)
-                return
-            }
-        }
-
-        if (drag_state.value === 'none' || drag_state.value === 'drag') {
+        if (drag_state.value === 'start' || drag_state.value === 'drag') {
             const center_x = rect.x + (rect.width / 2)
             const spaces_x = Math.round((ev.clientX - center_x) / button_dist)
             if (spaces_x !== 0) {
                 emit('drag', spaces_x)
+                drag_state.value = 'drag'
+            }
+
+            const center_y = rect.y + (rect.height / 2)
+            const spaces_y = Math.round((ev.clientY - center_y) / button_dist)
+            if (spaces_y !== 0) {
                 drag_state.value = 'drag'
             }
         }
@@ -156,11 +152,6 @@ function start_dragging(): void {
         z-index: 1;
         animation: slide-from-right 100ms ease-out;
     }
-
-    &.bounce-down {
-        z-index: 1;
-        animation: bounce-down 75ms cubic-bezier(0.5, 1, 0.89, 1) 2 alternate;
-    }
 }
 
 @keyframes slide-from-left {
@@ -180,16 +171,6 @@ function start_dragging(): void {
 
     to {
         transform: translateX(0);
-    }
-}
-
-@keyframes bounce-down {
-    from {
-        transform: translateY(0);
-    }
-
-    to {
-        transform: translateY(5px);
     }
 }
 

@@ -251,7 +251,7 @@ function popup(...text: string[]): void {
                 :is_locked="option.is_locked"
                 @click="guess += option.letter"
                 @drag="(spaces) => move_letter(index, spaces)"
-                @swipe="option.is_locked = !option.is_locked"
+                @hold="option.is_locked = !option.is_locked"
             />
         </template>
     </div>
