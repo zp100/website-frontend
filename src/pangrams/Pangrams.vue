@@ -131,9 +131,9 @@ function update_puzzle(found_words: string[], score: number): void {
     --off-black: #111;
     --bg-color: #222;
     --border-color: #333;
-    --muted: #777;
-    --off-white: #ddd;
-    --temporary: #77f;
+    --muted: #666;
+    --off-white: #ccc;
+    --temporary: #0cf;
     --separator-gap-size: 6px;
 
     --gap-size: 4px;
@@ -163,8 +163,8 @@ function update_puzzle(found_words: string[], score: number): void {
 }
 
 .text-block {
-    margin: 3px 5px;
-    padding: 2px 5px;
+    margin: 5px;
+    padding: 1px 3px;
     border-radius: var(--roundness);
     color: var(--border-color);
 }

@@ -300,7 +300,7 @@ function popup(...text: string[]): void {
 
     display: flex;
     flex-flow: row wrap;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
     align-content: flex-start;
 }

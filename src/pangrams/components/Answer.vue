@@ -36,18 +36,20 @@ async function fetch_definition(): Promise<void> {
 
 
 <template>
-    <div class="text-block answer" :class="{ pangram: is_pangram }" @click="show_dialog = true">
-        <template v-if="is_guess_prefix">
-            <span class="prefix">
-                {{ display_found_word.slice(0, guess.length) }}
-            </span>
-            <span>
-                {{ display_found_word.slice(guess.length) }}
-            </span>
-        </template>
-        <template v-else>
-            {{ display_found_word }}
-        </template>
+    <div class="text-block answer" @click="show_dialog = true">
+        <span :class="{ pangram: is_pangram }">
+            <template v-if="is_guess_prefix">
+                <span class="prefix">
+                    {{ display_found_word.slice(0, guess.length) }}
+                </span>
+                <span>
+                    {{ display_found_word.slice(guess.length) }}
+                </span>
+            </template>
+            <template v-else>
+                {{ display_found_word }}
+            </template>
+        </span>
     </div>
 
     <template v-if="show_dialog">
@@ -124,9 +126,11 @@ async function fetch_definition(): Promise<void> {
     cursor: pointer;
     animation: flash-in 500ms linear;
 
-    &.pangram {
-        background: linear-gradient(135deg, #633, #363, #336, #633);
-        color: white;
+    .pangram {
+        color: transparent;
+        background: linear-gradient(135deg, #f99, #9f9, #99f, #f99);
+        background-clip: text;
+        font-weight: bold;
     }
 }
 
