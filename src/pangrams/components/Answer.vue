@@ -125,13 +125,13 @@ async function fetch_definition(): Promise<void> {
     color: var(--off-white);
     cursor: pointer;
     animation: flash-in 500ms linear;
+}
 
-    .pangram {
-        color: transparent;
-        background: linear-gradient(135deg, #f99, #9f9, #99f, #f99);
-        background-clip: text;
-        font-weight: bold;
-    }
+.pangram {
+    color: transparent;
+    background: linear-gradient(135deg, #f99, #9f9, #99f, #f99);
+    background-clip: text;
+    font-weight: bold;
 }
 
 @keyframes flash-in {
