@@ -145,7 +145,7 @@ async function fetch_definition(): Promise<void> {
 }
 
 .prefix {
-    color: var(--off-white);
+    color: white;
     background-color: var(--muted);
 }
 
