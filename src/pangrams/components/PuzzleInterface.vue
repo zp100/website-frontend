@@ -30,6 +30,7 @@ onMounted(() => {
     register_key_handler()
     set_letter_counts()
     total_score = props.puzzle.answer_word_list.reduce((score, word) => score + get_score(word), 0)
+    setTimeout(() => document.querySelector('#found-words')?.scrollTo({ top: 0 }), 0)
 })
 
 const guess = ref<string>('')
