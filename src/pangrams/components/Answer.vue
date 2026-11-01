@@ -124,7 +124,7 @@ async function fetch_definition(): Promise<void> {
 
 <style scoped>
 .answer {
-    scroll-margin: 30px;
+    scroll-margin: 20px;
     color: var(--off-white);
     cursor: pointer;
     animation: flash-in 500ms linear;
