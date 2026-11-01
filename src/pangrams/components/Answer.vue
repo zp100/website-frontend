@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, useTemplateRef } from 'vue';
 import GenericDialog from './GenericDialog.vue';
 
 const props = defineProps<{
@@ -10,8 +10,10 @@ const props = defineProps<{
 const display_found_word = computed(() => props.found_word.toLocaleUpperCase())
 const is_guess_prefix = computed(() => props.found_word.startsWith(props.guess))
 
+const answer_el = useTemplateRef('answer')
 const show_dialog = ref(false)
 onMounted(async () => {
+    answer_el.value?.scrollIntoView({ block: 'center' })
     await fetch_definition()
 })
 
@@ -36,7 +38,7 @@ async function fetch_definition(): Promise<void> {
 
 
 <template>
-    <div class="text-block answer" @click="show_dialog = true">
+    <div ref="answer" class="text-block answer" @click="show_dialog = true">
         <span :class="{ pangram: is_pangram }">
             <template v-if="is_guess_prefix">
                 <span class="prefix">
