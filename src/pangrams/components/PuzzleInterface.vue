@@ -293,7 +293,7 @@ function popup(...text: string[]): void {
 
 #found-words {
     width: calc(var(--total-width) - 30px);
-    height: 225px;
+    height: 240px;
     overflow-y: auto;
     border-radius: var(--roundness);
     outline: 2px solid var(--border-color);
