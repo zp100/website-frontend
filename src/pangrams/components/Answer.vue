@@ -3,12 +3,12 @@ import { computed, onMounted, ref } from 'vue';
 import GenericDialog from './GenericDialog.vue';
 
 const props = defineProps<{
-    found_word: string | null
+    found_word: string
     is_pangram: boolean
     guess: string
 }>()
-const display_found_word = computed(() => props.found_word?.toLocaleUpperCase() ?? '???')
-const is_guess_prefix = computed(() => props.found_word?.startsWith(props.guess) ?? false)
+const display_found_word = computed(() => props.found_word.toLocaleUpperCase())
+const is_guess_prefix = computed(() => props.found_word.startsWith(props.guess))
 
 const show_dialog = ref(false)
 onMounted(async () => {
