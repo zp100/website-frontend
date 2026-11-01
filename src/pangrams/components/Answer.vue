@@ -13,7 +13,7 @@ const is_guess_prefix = computed(() => props.found_word.startsWith(props.guess))
 const answer_el = useTemplateRef('answer')
 const show_dialog = ref(false)
 onMounted(async () => {
-    answer_el.value?.scrollIntoView({ block: 'center' })
+    answer_el.value?.scrollIntoView({ block: 'nearest' })
     await fetch_definition()
 })
 
@@ -124,6 +124,7 @@ async function fetch_definition(): Promise<void> {
 
 <style scoped>
 .answer {
+    scroll-margin: 30px;
     color: var(--off-white);
     cursor: pointer;
     animation: flash-in 500ms linear;
