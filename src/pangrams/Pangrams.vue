@@ -166,6 +166,6 @@ function update_puzzle(found_words: string[], score: number): void {
     margin: 5px;
     padding: 1px 3px;
     border-radius: var(--roundness);
-    color: var(--border-color);
+    color: var(--muted);
 }
 </style>
