@@ -60,18 +60,6 @@ watch(() => props.messages.length, () => {
     animation: fade-in 2s linear 2 alternate forwards;
 }
 
-.popup {
-    width: max-content;
-    color: var(--off-white);
-    background-color: var(--border-color);
-    padding: 5px 8px;
-    border-radius: var(--roundness);
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    gap: var(--separator-gap-size);
-}
-
 @keyframes fade-in {
     0% {
         opacity: 0;

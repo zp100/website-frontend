@@ -54,20 +54,6 @@ const percent = computed(() => Math.floor(100 * props.score / props.score_total)
     top: 0;
 }
 
-.popup {
-    width: max-content;
-    color: var(--off-white);
-    background-color: var(--border-color);
-    padding: 5px 8px;
-    border-radius: var(--roundness);
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    gap: var(--separator-gap-size);
-
-    cursor: pointer;
-}
-
 .full {
     color: lime;
 }

@@ -158,6 +158,19 @@ function update_puzzle(found_words: string[], score: number): void {
     gap: 20px;
 }
 
+.popup {
+    width: max-content;
+    color: var(--off-white);
+    background-color: var(--border-color);
+    padding: 5px 8px;
+    border-radius: var(--roundness);
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: var(--separator-gap-size);
+    cursor: pointer;
+}
+
 .separator {
     color: var(--muted);
 }

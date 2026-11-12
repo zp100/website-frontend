@@ -26,6 +26,7 @@ const options = ref<Array<{ letter: string; count: number; is_locked: boolean }>
 )
 
 let total_score = 0
+const answer_words_sorted = computed(() => props.puzzle.answer_word_list.toSorted())
 onMounted(() => {
     register_key_handler()
     set_letter_counts()
@@ -160,47 +161,47 @@ function backspace_guess(): void {
     guess.value = guess.value.slice(0, -1)
 }
 
-const answer_words_sorted = computed(() => props.puzzle.answer_word_list.toSorted())
+const last_guess = ref<string>('')
 function submit_guess(): void {
     if (guess.value === '') {
         return
     }
 
-    const guess_word = guess.value
+    last_guess.value = guess.value
     guess.value = ''
 
-    if (guess_word.length < props.min_len) {
-        popup(guess_word.toLocaleUpperCase(), `Must be at least ${props.min_len} letters long`)
+    if (last_guess.value.length < props.min_len) {
+        popup(last_guess.value.toLocaleUpperCase(), `Must be at least ${props.min_len} letters long`)
         return
     }
 
-    if (!props.word_list.includes(guess_word)) {
-        popup(guess_word.toLocaleUpperCase(), 'Not in word list')
+    if (!props.word_list.includes(last_guess.value)) {
+        popup(last_guess.value.toLocaleUpperCase(), 'Not in word list')
         return
     }
 
-    if (props.puzzle.found_words.includes(guess_word)) {
-        popup(guess_word.toLocaleUpperCase().toLocaleUpperCase(), 'Already found')
+    if (props.puzzle.found_words.includes(last_guess.value)) {
+        popup(last_guess.value.toLocaleUpperCase(), 'Already found')
         return
     }
 
-    if (!guess_word.includes(props.puzzle.key_letter)) {
-        popup(guess_word.toLocaleUpperCase(), 'Must contain key letter')
+    if (!last_guess.value.includes(props.puzzle.key_letter)) {
+        popup(last_guess.value.toLocaleUpperCase(), 'Must contain key letter')
         return
     }
 
-    const is_bad_input = guess_word.split('').some((letter) => !props.puzzle.letters.includes(letter))
+    const is_bad_input = last_guess.value.split('').some((letter) => !props.puzzle.letters.includes(letter))
     if (is_bad_input) {
-        popup(guess_word.toLocaleUpperCase(), 'Must use listed letters')
+        popup(last_guess.value.toLocaleUpperCase(), 'Must use listed letters')
         return
     }
 
-    const word_score = get_score(guess_word)
-    emit('update_puzzle', props.puzzle.found_words.concat(guess_word), props.puzzle.score + word_score)
+    const word_score = get_score(last_guess.value)
+    emit('update_puzzle', props.puzzle.found_words.concat(last_guess.value), props.puzzle.score + word_score)
     if (props.puzzle.found_words.length === props.puzzle.answer_word_list.length) {
         popup('All words found!')
     } else {
-        popup(guess_word.toLocaleUpperCase(), `+${word_score}`)
+        popup(last_guess.value.toLocaleUpperCase(), `+${word_score}`)
     }
 
     set_letter_counts()
@@ -241,6 +242,7 @@ function popup(...text: string[]): void {
 
         <DynamicPopup
             :messages="popup_messages"
+            @click="guess = last_guess"
         />
     </div>
 
