@@ -57,8 +57,9 @@ async function create_puzzle(): Promise<void> {
 
         const try_letters = sample(word_list_response.value.puzzle_list).split('')
         const try_key_letter = sample(try_letters)
-        const try_answer_word_list = word_list_response.value.word_list.filter((word) =>
-            is_valid(word, try_letters, try_key_letter))
+        const try_answer_word_list = word_list_response.value.word_list.filter(
+            (word) => is_valid(word, try_letters, try_key_letter)
+        )
 
         if (try_answer_word_list.length >= 15 && try_answer_word_list.length <= 50) {
             my_puzzle_list.value.push({
