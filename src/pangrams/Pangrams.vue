@@ -61,7 +61,7 @@ async function create_puzzle(): Promise<void> {
             (word) => is_valid(word, try_letters, try_key_letter)
         )
 
-        if (try_answer_word_list.length >= 30 && try_answer_word_list.length <= 60) {
+        if (try_answer_word_list.length >= 25 && try_answer_word_list.length <= 50) {
             my_puzzle_list.value.push({
                 letters: try_letters,
                 key_letter: try_key_letter,
