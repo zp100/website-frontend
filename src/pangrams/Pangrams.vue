@@ -80,7 +80,6 @@ async function create_puzzle(): Promise<void> {
 const show_menu = ref(false)
 async function reset_puzzle(): Promise<void> {
     is_loaded.value = false
-    show_menu.value = false
     await create_puzzle()
     is_loaded.value = true
 }

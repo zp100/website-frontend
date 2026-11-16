@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { ref } from 'vue'
 import GenericButton from '../GenericButton.vue'
 import Rules from './Rules.vue';
+import GenericDialog from '../GenericDialog.vue';
 
 const emit = defineEmits<{
     close: []
@@ -10,6 +11,12 @@ const emit = defineEmits<{
 }>()
 
 const tab = ref<'rules' | 'games' | 'settings'>('rules')
+
+const show_reset_dialog = ref(false)
+function reset(): void {
+    show_reset_dialog.value = false
+    emit('reset')
+}
 </script>
 
 
@@ -62,10 +69,23 @@ const tab = ref<'rules' | 'games' | 'settings'>('rules')
                     title="Reset"
                     class="menu-button"
                     style="background-color: red;"
-                    @click="emit('reset')"
+                    @click="show_reset_dialog = true"
                 >
                     Reset
                 </GenericButton>
+
+                <template v-if="show_reset_dialog">
+                    <GenericDialog
+                        :action_buttons="{ cancel: 'Cancel', affirmative: 'Reset' }"
+                        @cancel="show_reset_dialog=false"
+                        @affirmative="reset()"
+                    >
+                        <p>
+                            Are you sure you want to reset?
+                            The current puzzle will be deleted.
+                        </p>
+                    </GenericDialog>
+                </template>
             </template>
 
             <template v-if="tab === 'settings'">
