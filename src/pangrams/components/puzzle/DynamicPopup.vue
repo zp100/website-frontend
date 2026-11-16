@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { autoTimeout } from '@/pangrams/util';
-import { computed, ref, watch } from 'vue';
+import { autoTimeout } from '@/pangrams/util'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps<{
     messages: string[][]

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef } from 'vue';
+import { useTemplateRef } from 'vue'
 
 const button_el = useTemplateRef('btn')
 defineExpose({

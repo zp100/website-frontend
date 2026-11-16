@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, useTemplateRef } from 'vue';
-import GenericDialog from './GenericDialog.vue';
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
+import GenericDialog from '../GenericDialog.vue'
 
 const props = defineProps<{
     found_word: string

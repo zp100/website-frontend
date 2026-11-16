@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { autoTimeout } from '@/pangrams/util';
-import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
-import GenericButton from './GenericButton.vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { autoTimeout } from '@/pangrams/util'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
+import GenericButton from '../GenericButton.vue'
 
 const props = defineProps<{
     letter: string

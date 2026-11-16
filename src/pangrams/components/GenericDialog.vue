@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import GenericButton from './GenericButton.vue';
+import { onMounted } from 'vue'
+import GenericButton from './GenericButton.vue'
 
 type Action = 'cancel' | 'negative' | 'affirmative'
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GenericButton from './GenericButton.vue';
+import GenericButton from './GenericButton.vue'
 
 const emit = defineEmits<{
     close: []

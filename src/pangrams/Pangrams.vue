@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { computed, onMounted, ref } from 'vue';
-import GenericButton from './components/GenericButton.vue';
-import Menu from './components/Menu.vue';
-import PuzzleInterface from './components/PuzzleInterface.vue';
-import Spinner from './components/Spinner.vue';
-import { sample, sleep, type Puzzle } from './util';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { computed, onMounted, ref } from 'vue'
+import GenericButton from './components/GenericButton.vue'
+import Menu from './components/Menu.vue'
+import PuzzleInterface from './components/puzzle/PuzzleInterface.vue'
+import Spinner from './components/Spinner.vue'
+import { sample, sleep, type Puzzle } from './util'
 
 const is_loaded = ref(false)
 onMounted(async () => {

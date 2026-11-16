@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import type { Puzzle } from '../util'
+import type { Puzzle } from '../../util.ts'
 import ActionButton from './ActionButton.vue'
 import Answer from './Answer.vue'
 import DynamicPopup from './DynamicPopup.vue'

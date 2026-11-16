@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import ProgressBar from './ProgressBar.vue';
+import { computed } from 'vue'
+import ProgressBar from './ProgressBar.vue'
 
 const props = defineProps<{
     words: number

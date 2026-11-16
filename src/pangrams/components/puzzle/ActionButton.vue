@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import GenericButton from './GenericButton.vue';
+import GenericButton from '../GenericButton.vue'
 
 const props = defineProps<{
     title: string
