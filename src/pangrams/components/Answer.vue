@@ -162,7 +162,6 @@ async function fetch_definition(): Promise<void> {
 }
 
 .header-main {
-    color: var(--off-white);
     font-weight: bold;
 }
 
