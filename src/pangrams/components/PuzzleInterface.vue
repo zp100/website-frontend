@@ -164,6 +164,8 @@ function backspace_guess(): void {
 const last_guess = ref<string>('')
 function submit_guess(): void {
     if (guess.value === '') {
+        // Re-fill the last submission.
+        guess.value = last_guess.value
         return
     }
 
@@ -242,7 +244,6 @@ function popup(...text: string[]): void {
 
         <DynamicPopup
             :messages="popup_messages"
-            @click="guess = last_guess"
         />
     </div>
 
