@@ -58,7 +58,10 @@ function select_action(action: Action): void {
 
         <div class="button-row">
             <template v-for="(label, action) in action_buttons">
-                <GenericButton @click="select_action(action)">
+                <GenericButton
+                    :title="label"
+                    @click="select_action(action)"
+                >
                     {{ label }}
                 </GenericButton>
             </template>
