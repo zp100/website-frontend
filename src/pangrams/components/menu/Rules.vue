@@ -48,7 +48,10 @@
         <li><span class="answer">S</span> → +5</li>
         <li>Total: 15</li>
     </ul>
-    <p>If a word uses every letter shown in the row at least once, it's a <span class="pangram">pangram</span> and earns double points!</p>
+    <p>
+        If a word uses every letter shown in the row at least once, it's a <span class="pangram">pangram</span> and earns double points!
+        Every puzzle has at least one pangram.
+    </p>
 
     <h3>Letter Row</h3>
     <p>
