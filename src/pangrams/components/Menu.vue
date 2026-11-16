@@ -18,7 +18,7 @@ const emit = defineEmits<{
         <div class="button-row">
             <GenericButton
                 class="btn"
-                title="Load new puzzle"
+                title="Exit menu"
                 @click="emit('close')"
             >
                 Close

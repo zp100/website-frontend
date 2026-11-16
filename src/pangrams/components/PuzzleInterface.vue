@@ -277,7 +277,7 @@ function popup(...text: string[]): void {
 
     <div id="actions">
         <ActionButton title="Shuffle letters (Shift)" icon="shuffle" @click="shuffle_letters()" />
-        <ActionButton title="Clear (Esc)" icon="trash-can" @click="clear_guess()" />
+        <ActionButton title="Clear (Ctrl + Backspace)" icon="trash-can" @click="clear_guess()" />
         <ActionButton title="Backspace" icon="delete-left" @click="backspace_guess()" />
         <ActionButton title="Submit word (Enter)" icon="circle-chevron-right" @click="submit_guess()" />
     </div>

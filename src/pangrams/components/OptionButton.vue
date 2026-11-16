@@ -97,6 +97,7 @@ function start_dragging(): void {
 <template>
     <GenericButton
         ref="generic-button"
+        :title="display_letter"
         class="option-btn"
         :class="{ 'key-letter': is_key_letter, 'locked': is_locked }"
         @click="maybe_click()"
