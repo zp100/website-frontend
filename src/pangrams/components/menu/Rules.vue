@@ -18,6 +18,10 @@
         Additionally, a limited word list is used to restrict the number of obscure words.
         If a word isn't in the word list, it's not allowed.
     </p>
+    <p>
+        If you're not sure if a word is allowed, try it!
+        There's no penalty for incorrect guesses.
+    </p>
 
     <h3>Answer List</h3>
     <p>
@@ -32,7 +36,7 @@
 
     <h3>Scoring</h3>
     <p>
-        When a valid word is entered, it earns points based on the length of the word.
+        When an allowed word is entered, it earns points based on the length of the word.
         Each letter in the word is worth 1 more point than the last.
         For example, the word <span class="answer">TREES</span> earns 15 points:
     </p>
