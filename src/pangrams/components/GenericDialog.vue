@@ -59,6 +59,7 @@ function select_action(action: Action): void {
         <div class="button-row">
             <template v-for="(label, action) in action_buttons">
                 <GenericButton
+                    class="menu-button"
                     :title="label"
                     @click="select_action(action)"
                 >
@@ -79,7 +80,7 @@ function select_action(action: Action): void {
     }
 
     width: calc(var(--total-width) - var(--dlg-margin));
-    max-height: calc(100% - var(--dlg-margin));
+    max-height: calc(100% - 50px);
     color: var(--off-white);
     background-color: var(--off-black);
     border: 1px solid var(--off-white);
@@ -91,10 +92,5 @@ function select_action(action: Action): void {
     flex-flow: row nowrap;
     justify-content: flex-end;
     gap: var(--gap-size);
-
-    button {
-        padding: 5px 10px;
-        font-size: medium;
-    }
 }
 </style>

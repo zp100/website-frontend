@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { computed, onMounted, ref } from 'vue'
 import GenericButton from './components/GenericButton.vue'
-import Menu from './components/Menu.vue'
+import Menu from './components/menu/Menu.vue'
 import PuzzleInterface from './components/puzzle/PuzzleInterface.vue'
 import Spinner from './components/Spinner.vue'
 import { sample, sleep, type Puzzle } from './util'
@@ -209,5 +209,10 @@ function update_puzzle(found_words: string[], score: number): void {
     padding: 1px 3px;
     border-radius: var(--roundness);
     color: var(--muted);
+}
+
+.menu-button {
+    padding: 5px 10px;
+    font-size: medium;
 }
 </style>
