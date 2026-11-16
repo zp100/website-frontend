@@ -10,7 +10,7 @@ const emit = defineEmits<{
     reset: []
 }>()
 
-const tab = ref<'rules' | 'games' | 'settings'>('rules')
+const tab = ref<'rules' | 'puzzles' | 'settings'>('rules')
 
 const show_reset_dialog = ref(false)
 function reset(): void {
@@ -33,11 +33,11 @@ function reset(): void {
             </GenericButton>
 
             <GenericButton
-                title="Games"
+                title="Puzzles"
                 class="menu-button tab"
-                @click="tab = 'games'"
+                @click="tab = 'puzzles'"
             >
-                Games
+                Puzzles
             </GenericButton>
 
             <GenericButton
@@ -62,8 +62,8 @@ function reset(): void {
                 <Rules />
             </template>
 
-            <template v-if="tab === 'games'">
-                <p>Games (WIP)</p>
+            <template v-if="tab === 'puzzles'">
+                <p>Puzzles (WIP)</p>
 
                 <GenericButton
                     title="Reset"
