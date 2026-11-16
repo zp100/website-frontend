@@ -127,7 +127,7 @@ async function fetch_definition(): Promise<void> {
     scroll-margin: 20px;
     color: var(--off-white);
     cursor: pointer;
-    animation: flash-in 500ms linear;
+    animation: flash-in 1000ms linear;
 }
 
 .pangram {
