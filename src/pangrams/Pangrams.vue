@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import PuzzleInterface from './components/PuzzleInterface.vue'
-import MenuButton from './components/MenuButton.vue'
-import Spinner from './components/Spinner.vue'
-import { sample, sleep, type Puzzle } from './util'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { computed, onMounted, ref } from 'vue';
+import GenericButton from './components/GenericButton.vue';
+import Menu from './components/Menu.vue';
+import PuzzleInterface from './components/PuzzleInterface.vue';
+import Spinner from './components/Spinner.vue';
+import { sample, sleep, type Puzzle } from './util';
 
 const is_loaded = ref(false)
 onMounted(async () => {
@@ -75,8 +77,10 @@ async function create_puzzle(): Promise<void> {
     }
 }
 
+const show_menu = ref(false)
 async function reset_puzzle(): Promise<void> {
     is_loaded.value = false
+    show_menu.value = false
     await create_puzzle()
     is_loaded.value = true
 }
@@ -108,8 +112,21 @@ function update_puzzle(found_words: string[], score: number): void {
 
 <template>
     <div id="game">
-        <template v-if="is_loaded">
-            <MenuButton @reset="reset_puzzle()" />
+        <template v-if="show_menu">
+            <Menu
+                @close="show_menu = false"
+                @reset="reset_puzzle()"
+            />
+        </template>
+
+        <template v-else-if="is_loaded">
+            <GenericButton
+                id="menu-btn"
+                title="Menu"
+                @click="show_menu = true"
+            >
+                <FontAwesomeIcon icon="fa-solid fa-bars" />
+            </GenericButton>
 
             <PuzzleInterface
                 :puzzle="current_puzzle"
@@ -145,6 +162,7 @@ function update_puzzle(found_words: string[], score: number): void {
     --guess-font-size: xx-large;
     --button-font-size: x-large;
 
+    color: var(--off-white);
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -157,6 +175,16 @@ function update_puzzle(found_words: string[], score: number): void {
     justify-content: center;
     align-items: center;
     gap: 20px;
+}
+
+#menu-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+
+    width: 30px;
+    height: 30px;
+    font-size: large;
 }
 
 .popup {
