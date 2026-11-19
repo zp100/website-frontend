@@ -3,22 +3,15 @@ import { puzzles_key } from '@/pangrams/util.ts'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { inject, ref } from 'vue'
 import GenericButton from '../GenericButton.vue'
-import GenericDialog from '../GenericDialog.vue'
 import Rules from './Rules.vue'
+import Puzzle from './Puzzle.vue'
 
 const emit = defineEmits<{
     close: []
-    reset: []
 }>()
 const puzzles = inject(puzzles_key)!
 
-const tab = ref<'rules' | 'puzzles' | 'settings'>('rules')
-
-const show_reset_dialog = ref(false)
-function reset(): void {
-    show_reset_dialog.value = false
-    emit('reset')
-}
+const tab = ref<'rules' | 'puzzles' | 'new' | 'settings'>('rules')
 </script>
 
 
@@ -40,6 +33,14 @@ function reset(): void {
                 @click="tab = 'puzzles'"
             >
                 Puzzles
+            </GenericButton>
+
+            <GenericButton
+                title="New"
+                class="menu-button tab"
+                @click="tab = 'new'"
+            >
+                New
             </GenericButton>
 
             <GenericButton
@@ -65,29 +66,16 @@ function reset(): void {
             </template>
 
             <template v-if="tab === 'puzzles'">
-                <p>Puzzles (WIP)</p>
-
-                <GenericButton
-                    title="Reset"
-                    class="menu-button"
-                    style="background-color: red;"
-                    @click="show_reset_dialog = true"
-                >
-                    Reset
-                </GenericButton>
-
-                <template v-if="show_reset_dialog">
-                    <GenericDialog
-                        :action_buttons="{ cancel: 'Cancel', affirmative: 'Reset' }"
-                        @cancel="show_reset_dialog=false"
-                        @affirmative="reset()"
-                    >
-                        <p>
-                            Are you sure you want to reset?
-                            The current puzzle will be deleted.
-                        </p>
-                    </GenericDialog>
+                <template v-for="(puzzles, index) in puzzles.my_puzzle_list.value" :key="puzzles.letters.join()">
+                    <Puzzle
+                        :puzzle_num="index"
+                        @close_menu="emit('close')"
+                    />
                 </template>
+            </template>
+
+            <template v-if="tab === 'new'">
+                <p>New (WIP)</p>
             </template>
 
             <template v-if="tab === 'settings'">

@@ -17,6 +17,7 @@ onMounted(async () => {
 const my_puzzle_list = ref<Puzzle[]>([])
 function set_my_puzzle_list(list: Puzzle[]): void {
     my_puzzle_list.value = list;
+    window.localStorage.setItem('my_puzzle_list', JSON.stringify(my_puzzle_list.value))
 }
 const current_puzzle_num = ref(0)
 function set_current_puzzle_num(num: number): void {
@@ -28,8 +29,9 @@ provide(puzzles_key, {
     current_puzzle_num,
     set_current_puzzle_num,
 })
-const current_puzzle = computed(() => my_puzzle_list.value[current_puzzle_num.value] ?? my_puzzle_list.value.at(-1)!)
+const current_puzzle = computed(() => my_puzzle_list.value[current_puzzle_num.value]!)
 
+const show_menu = ref(false)
 type WordListResponse = {
     min_len: number
     word_list: string[]
@@ -91,13 +93,6 @@ async function create_puzzle(): Promise<void> {
     }
 }
 
-const show_menu = ref(false)
-async function reset_puzzle(): Promise<void> {
-    is_loaded.value = false
-    await create_puzzle()
-    is_loaded.value = true
-}
-
 function is_valid(word: string, letters: string[], key_letter: string): boolean {
     const word_letters = new Set(word.split(''))
 
@@ -126,10 +121,7 @@ function update_puzzle(found_words: string[], score: number): void {
 <template>
     <div id="game">
         <template v-if="show_menu">
-            <Menu
-                @close="show_menu = false"
-                @reset="reset_puzzle()"
-            />
+            <Menu @close="show_menu = false" />
         </template>
 
         <template v-else-if="is_loaded">
