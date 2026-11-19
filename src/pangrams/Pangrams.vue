@@ -79,14 +79,14 @@ async function create_puzzle(): Promise<void> {
         )
 
         if (try_answer_word_list.length >= 25 && try_answer_word_list.length <= 50) {
-            my_puzzle_list.value.push({
+            const new_puzzle = {
                 letters: try_letters,
                 key_letter: try_key_letter,
                 answer_word_list: try_answer_word_list,
                 found_words: [],
                 score: 0,
-            })
-            window.localStorage.setItem('my_puzzle_list', JSON.stringify(my_puzzle_list.value))
+            }
+            set_my_puzzle_list(my_puzzle_list.value.concat(new_puzzle))
             return
         }
     }
