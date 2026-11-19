@@ -29,7 +29,6 @@ provide(puzzles_key, {
     current_puzzle_num,
     set_current_puzzle_num,
 })
-const current_puzzle = computed(() => my_puzzle_list.value[current_puzzle_num.value]!)
 
 const show_menu = ref(false)
 type WordListResponse = {
@@ -108,12 +107,6 @@ function is_valid(word: string, letters: string[], key_letter: string): boolean 
 
     return true
 }
-
-function update_puzzle(found_words: string[], score: number): void {
-    current_puzzle.value.found_words = found_words
-    current_puzzle.value.score = score
-    window.localStorage.setItem('my_puzzle_list', JSON.stringify(my_puzzle_list.value))
-}
 </script>
 
 
@@ -134,10 +127,8 @@ function update_puzzle(found_words: string[], score: number): void {
             </GenericButton>
 
             <PuzzleInterface
-                :puzzle="current_puzzle"
                 :min_len="word_list_response.min_len"
                 :word_list="word_list_response.word_list"
-                @update_puzzle="update_puzzle"
             />
         </template>
 

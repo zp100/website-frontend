@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import type { Puzzle } from '../../util.ts'
+import { computed, inject, onMounted, ref } from 'vue'
+import { puzzles_key, type Puzzle } from '../../util.ts'
 import ActionButton from './ActionButton.vue'
 import Answer from './Answer.vue'
 import DynamicPopup from './DynamicPopup.vue'
@@ -9,16 +9,14 @@ import OptionButton from './OptionButton.vue'
 import Stats from './Stats.vue'
 
 const props = defineProps<{
-    puzzle: Puzzle
     min_len: number
     word_list: string[]
 }>()
-const emit = defineEmits<{
-    update_puzzle: [ found_words: string[], score: number ]
-}>()
+const puzzles = inject(puzzles_key)!
+const current_puzzle = computed(() => puzzles.my_puzzle_list.value[puzzles.current_puzzle_num.value]!)
 
 const options = ref<Array<{ letter: string; count: number; is_locked: boolean }>>(
-    props.puzzle.letters.map((letter) => ({
+    current_puzzle.value.letters.map((letter) => ({
         letter,
         count: 0,
         is_locked: false,
@@ -26,11 +24,11 @@ const options = ref<Array<{ letter: string; count: number; is_locked: boolean }>
 )
 
 let total_score = 0
-const answer_words_sorted = computed(() => props.puzzle.answer_word_list.toSorted())
+const answer_words_sorted = computed(() => current_puzzle.value.answer_word_list.toSorted())
 onMounted(() => {
     register_key_handler()
     set_letter_counts()
-    total_score = props.puzzle.answer_word_list.reduce((score, word) => score + get_score(word), 0)
+    total_score = current_puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0)
     setTimeout(() => document.querySelector('#found-words')?.scrollTo({ top: 0 }), 0)
 })
 
@@ -76,7 +74,7 @@ function get_score(word: string): number {
 function set_letter_counts(): void {
     const letter_counts: Record<string, number> = {}
 
-    props.puzzle.answer_word_list.forEach((word) => {
+    current_puzzle.value.answer_word_list.forEach((word) => {
         word.split('').forEach((letter) => {
             if (letter_counts[letter] !== undefined) {
                 letter_counts[letter] += 1
@@ -86,7 +84,7 @@ function set_letter_counts(): void {
         })
     })
 
-    props.puzzle.found_words.forEach((word) => {
+    current_puzzle.value.found_words.forEach((word) => {
         word.split('').forEach((letter) => {
             if (letter_counts[letter] !== undefined) {
                 letter_counts[letter] -= 1
@@ -116,13 +114,13 @@ const guess_letter_counts = computed(() => {
 const popup_messages = ref<string[][]>([])
 function show_stats(): void {
     popup(
-        `${props.puzzle.answer_word_list.length - props.puzzle.found_words.length} word(s) remaining`,
-        `${total_score - props.puzzle.score} score remaining`,
+        `${current_puzzle.value.answer_word_list.length - current_puzzle.value.found_words.length} word(s) remaining`,
+        `${total_score - current_puzzle.value.score} score remaining`,
     )
 }
 
 function is_pangram(word: string): boolean {
-    return new Set(word.split('')).isSupersetOf(new Set(props.puzzle.letters))
+    return new Set(word.split('')).isSupersetOf(new Set(current_puzzle.value.letters))
 }
 
 function move_letter(old_index: number, spaces: number): void {
@@ -182,25 +180,30 @@ function submit_guess(): void {
         return
     }
 
-    if (props.puzzle.found_words.includes(last_guess.value)) {
+    if (current_puzzle.value.found_words.includes(last_guess.value)) {
         popup(last_guess.value.toLocaleUpperCase(), 'Already found')
         return
     }
 
-    if (!last_guess.value.includes(props.puzzle.key_letter)) {
+    if (!last_guess.value.includes(current_puzzle.value.key_letter)) {
         popup(last_guess.value.toLocaleUpperCase(), 'Must contain key letter')
         return
     }
 
-    const is_bad_input = last_guess.value.split('').some((letter) => !props.puzzle.letters.includes(letter))
+    const is_bad_input = last_guess.value.split('').some((letter) => !current_puzzle.value.letters.includes(letter))
     if (is_bad_input) {
         popup(last_guess.value.toLocaleUpperCase(), 'Must use listed letters')
         return
     }
 
     const word_score = get_score(last_guess.value)
-    emit('update_puzzle', props.puzzle.found_words.concat(last_guess.value), props.puzzle.score + word_score)
-    if (props.puzzle.found_words.length === props.puzzle.answer_word_list.length) {
+    const updated_puzzle = { ...current_puzzle.value }
+    updated_puzzle.found_words.push(last_guess.value)
+    updated_puzzle.score += word_score
+    const new_my_puzzle_list = puzzles.my_puzzle_list.value.toSpliced(puzzles.current_puzzle_num.value, 1, updated_puzzle)
+    puzzles.set_my_puzzle_list(new_my_puzzle_list)
+
+    if (current_puzzle.value.found_words.length === current_puzzle.value.answer_word_list.length) {
         popup('All words found!')
     } else {
         popup(last_guess.value.toLocaleUpperCase(), `+${word_score}`)
@@ -219,15 +222,15 @@ function popup(...text: string[]): void {
 <template>
     <div id="word-box">
         <Stats @click="show_stats()"
-            :words="puzzle.found_words.length"
-            :words_total="puzzle.answer_word_list.length"
-            :score="puzzle.score"
+            :words="current_puzzle.found_words.length"
+            :words_total="current_puzzle.answer_word_list.length"
+            :score="current_puzzle.score"
             :score_total="total_score"
         />
 
         <div id="found-words">
             <template v-for="word in answer_words_sorted" :key="word">
-                <template v-if="puzzle.found_words.includes(word)">
+                <template v-if="current_puzzle.found_words.includes(word)">
                     <Answer
                         :found_word="word"
                         :is_pangram="is_pangram(word)"
@@ -252,8 +255,8 @@ function popup(...text: string[]): void {
         <template v-for="letter in guess">
             <GuessLetter
                 :letter="letter"
-                :is_key="letter === puzzle.key_letter"
-                :is_invalid="!puzzle.letters.includes(letter)"
+                :is_key="letter === current_puzzle.key_letter"
+                :is_invalid="!current_puzzle.letters.includes(letter)"
             />
         </template>
 
@@ -264,7 +267,7 @@ function popup(...text: string[]): void {
         <template v-for="(option, index) in options" :key="option.letter">
             <OptionButton
                 :letter="option.letter"
-                :is_key_letter="option.letter === puzzle.key_letter"
+                :is_key_letter="option.letter === current_puzzle.key_letter"
                 :count="option.count"
                 :guess_count="guess_letter_counts[option.letter] ?? 0"
                 :is_locked="option.is_locked"
