@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { puzzles_key, type Puzzle } from '@/pangrams/util'
-import { computed, inject, onMounted, ref } from 'vue'
+import { puzzles_key } from '@/pangrams/util'
+import { computed, inject, ref } from 'vue'
 import GenericButton from '../GenericButton.vue'
 import GenericDialog from '../GenericDialog.vue'
 
@@ -22,6 +22,9 @@ const show_delete_dialog = ref(false)
 function delete_puzzle(): void {
     const new_my_puzzle_list = puzzles.my_puzzle_list.value.filter((_, i) => i !== props.puzzle_num)
     puzzles.set_my_puzzle_list(new_my_puzzle_list)
+    if (puzzles.current_puzzle_num.value >= props.puzzle_num) {
+        puzzles.set_current_puzzle_num(puzzles.current_puzzle_num.value - 1)
+    }
     show_delete_dialog.value = false
 }
 </script>
