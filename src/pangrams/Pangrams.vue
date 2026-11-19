@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, provide, readonly, ref } from 'vue'
 import GenericButton from './components/GenericButton.vue'
 import Menu from './components/menu/Menu.vue'
 import PuzzleInterface from './components/puzzle/PuzzleInterface.vue'
@@ -14,6 +14,26 @@ onMounted(async () => {
     is_loaded.value = true
 })
 
+const my_puzzle_list = ref<Puzzle[]>([])
+const current_puzzle_num = ref(0)
+function set_my_puzzle_list(list: Puzzle[]): void {
+    my_puzzle_list.value = list;
+}
+function set_current_puzzle_num(num: number): void {
+    current_puzzle_num.value = num;
+}
+const current_puzzle = computed(() => my_puzzle_list.value[current_puzzle_num.value] ?? my_puzzle_list.value.at(-1)!)
+provide(
+    'puzzles',
+    readonly({
+        my_puzzle_list,
+        current_puzzle_num,
+        set_my_puzzle_list,
+        set_current_puzzle_num,
+        current_puzzle,
+    })
+)
+
 type WordListResponse = {
     min_len: number
     word_list: string[]
@@ -25,8 +45,6 @@ const word_list_response = ref<WordListResponse>({
     word_list: [],
     puzzle_list: [],
 })
-const my_puzzle_list = ref<Puzzle[]>([])
-const current_puzzle = computed(() => my_puzzle_list.value.at(-1)!)
 async function setup(): Promise<void> {
     const local_word_list_response = window.localStorage.getItem('word_list_response')
     const local_my_puzzle_list = window.localStorage.getItem('my_puzzle_list')
