@@ -12,6 +12,11 @@ const emit = defineEmits<{
 const puzzles = inject(puzzles_key)!
 
 const tab = ref<'rules' | 'puzzles' | 'new' | 'settings'>('rules')
+
+async function create_puzzle(): Promise<void> {
+    emit('close')
+    await puzzles.create_puzzle()
+}
 </script>
 
 
@@ -71,11 +76,21 @@ const tab = ref<'rules' | 'puzzles' | 'new' | 'settings'>('rules')
                         :puzzle_num="index"
                         @close_menu="emit('close')"
                     />
+
+                    <br />
                 </template>
             </template>
 
             <template v-if="tab === 'new'">
                 <p>New (WIP)</p>
+
+                <GenericButton
+                    title="Create"
+                    class="menu-button"
+                    @click="create_puzzle()"
+                >
+                    Create
+                </GenericButton>
             </template>
 
             <template v-if="tab === 'settings'">

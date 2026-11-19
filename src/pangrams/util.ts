@@ -40,4 +40,5 @@ export const puzzles_key: InjectionKey<{
     set_my_puzzle_list: (list: Puzzle[]) => void
     current_puzzle_num: Ref<number>
     set_current_puzzle_num: (num: number) => void
+    create_puzzle: () => Promise<void>
 }> = Symbol()

@@ -11,23 +11,8 @@ const is_loaded = ref(false)
 onMounted(async () => {
     document.title = 'Pangrams'
     await setup()
+    set_current_puzzle_num(my_puzzle_list.value.length - 1)
     is_loaded.value = true
-})
-
-const my_puzzle_list = ref<Puzzle[]>([])
-function set_my_puzzle_list(list: Puzzle[]): void {
-    my_puzzle_list.value = list;
-    window.localStorage.setItem('my_puzzle_list', JSON.stringify(my_puzzle_list.value))
-}
-const current_puzzle_num = ref(0)
-function set_current_puzzle_num(num: number): void {
-    current_puzzle_num.value = num;
-}
-provide(puzzles_key, {
-    my_puzzle_list,
-    set_my_puzzle_list,
-    current_puzzle_num,
-    set_current_puzzle_num,
 })
 
 const show_menu = ref(false)
@@ -65,10 +50,17 @@ async function fetch_word_list(): Promise<void> {
     window.localStorage.setItem('word_list_response', JSON.stringify(word_list_response.value))
 }
 
+const my_puzzle_list = ref<Puzzle[]>([])
+function set_my_puzzle_list(list: Puzzle[]): void {
+    my_puzzle_list.value = list;
+    window.localStorage.setItem('my_puzzle_list', JSON.stringify(my_puzzle_list.value))
+}
+const current_puzzle_num = ref(0)
+function set_current_puzzle_num(num: number): void {
+    current_puzzle_num.value = num;
+}
 async function create_puzzle(): Promise<void> {
-    // DEBUG: Temporary fix to prevent infinite puzzles, until the menu is more-developed.
-    my_puzzle_list.value.length = 0
-
+    is_loaded.value = false
     while (true) {
         await sleep(0)
 
@@ -87,10 +79,19 @@ async function create_puzzle(): Promise<void> {
                 score: 0,
             }
             set_my_puzzle_list(my_puzzle_list.value.concat(new_puzzle))
+            set_current_puzzle_num(my_puzzle_list.value.length - 1)
+            is_loaded.value = true
             return
         }
     }
 }
+provide(puzzles_key, {
+    my_puzzle_list,
+    set_my_puzzle_list,
+    current_puzzle_num,
+    set_current_puzzle_num,
+    create_puzzle,
+})
 
 function is_valid(word: string, letters: string[], key_letter: string): boolean {
     const word_letters = new Set(word.split(''))
