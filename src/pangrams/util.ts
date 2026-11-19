@@ -1,3 +1,5 @@
+import type { ComputedRef, InjectionKey, Ref } from "vue"
+
 export type Puzzle = {
     letters: string[]
     key_letter: string
@@ -32,3 +34,10 @@ export function sample<T>(items: T[]): T {
 export async function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }
+
+export const puzzles_key: InjectionKey<{
+    my_puzzle_list: Ref<Puzzle[]>
+    set_my_puzzle_list: (list: Puzzle[]) => void
+    current_puzzle_num: Ref<number>
+    set_current_puzzle_num: (num: number) => void
+}> = Symbol()

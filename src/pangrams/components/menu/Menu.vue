@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import { puzzles_key } from '@/pangrams/util.ts'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 import GenericButton from '../GenericButton.vue'
-import Rules from './Rules.vue';
-import GenericDialog from '../GenericDialog.vue';
+import GenericDialog from '../GenericDialog.vue'
+import Rules from './Rules.vue'
 
 const emit = defineEmits<{
     close: []
     reset: []
 }>()
+const puzzles = inject(puzzles_key)!
 
 const tab = ref<'rules' | 'puzzles' | 'settings'>('rules')
 

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { computed, onMounted, provide, readonly, ref } from 'vue'
+import { computed, onMounted, provide, ref } from 'vue'
 import GenericButton from './components/GenericButton.vue'
 import Menu from './components/menu/Menu.vue'
 import PuzzleInterface from './components/puzzle/PuzzleInterface.vue'
 import Spinner from './components/Spinner.vue'
-import { sample, sleep, type Puzzle } from './util'
+import { puzzles_key, sample, sleep, type Puzzle } from './util'
 
 const is_loaded = ref(false)
 onMounted(async () => {
@@ -15,24 +15,20 @@ onMounted(async () => {
 })
 
 const my_puzzle_list = ref<Puzzle[]>([])
-const current_puzzle_num = ref(0)
 function set_my_puzzle_list(list: Puzzle[]): void {
     my_puzzle_list.value = list;
 }
+const current_puzzle_num = ref(0)
 function set_current_puzzle_num(num: number): void {
     current_puzzle_num.value = num;
 }
+provide(puzzles_key, {
+    my_puzzle_list,
+    set_my_puzzle_list,
+    current_puzzle_num,
+    set_current_puzzle_num,
+})
 const current_puzzle = computed(() => my_puzzle_list.value[current_puzzle_num.value] ?? my_puzzle_list.value.at(-1)!)
-provide(
-    'puzzles',
-    readonly({
-        my_puzzle_list,
-        current_puzzle_num,
-        set_my_puzzle_list,
-        set_current_puzzle_num,
-        current_puzzle,
-    })
-)
 
 type WordListResponse = {
     min_len: number
