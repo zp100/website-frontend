@@ -20,11 +20,16 @@ function play_puzzle(): void {
 
 const show_delete_dialog = ref(false)
 function delete_puzzle(): void {
-    const new_my_puzzle_list = puzzles.my_puzzle_list.value.filter((_, i) => i !== props.puzzle_num)
-    puzzles.set_my_puzzle_list(new_my_puzzle_list)
     if (puzzles.current_puzzle_num.value >= props.puzzle_num) {
         puzzles.set_current_puzzle_num(puzzles.current_puzzle_num.value - 1)
     }
+    const new_my_puzzle_list = puzzles.my_puzzle_list.value.filter((_, i) => i !== props.puzzle_num)
+    puzzles.set_my_puzzle_list(new_my_puzzle_list)
+
+    if (puzzles.my_puzzle_list.value.length < 1) {
+        puzzles.create_puzzle()
+    }
+
     show_delete_dialog.value = false
 }
 </script>
