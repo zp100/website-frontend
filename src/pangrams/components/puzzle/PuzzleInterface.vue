@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, ref } from 'vue'
+import { computed, inject, onMounted, onUnmounted, ref } from 'vue'
 import { puzzles_key, type Puzzle } from '../../util.ts'
 import ActionButton from './ActionButton.vue'
 import Answer from './Answer.vue'
@@ -26,44 +26,45 @@ const options = ref<Array<{ letter: string; count: number; is_locked: boolean }>
 let total_score = 0
 const answer_words_sorted = computed(() => current_puzzle.value.answer_word_list.toSorted())
 onMounted(() => {
-    register_key_handler()
+    window.addEventListener('keydown', key_handler)
     set_letter_counts()
     total_score = current_puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0)
     setTimeout(() => document.querySelector('#found-words')?.scrollTo({ top: 0 }), 0)
 })
+onUnmounted(() => {
+    window.removeEventListener('keydown', key_handler)
+})
 
 const guess = ref<string>('')
-function register_key_handler(): void {
-    window.addEventListener('keydown', (ev: KeyboardEvent) => {
-        if (ev.key === 'Shift') {
-            shuffle_letters()
-            return
-        }
+function key_handler(ev: KeyboardEvent): void {
+    if (ev.key === 'Shift') {
+        shuffle_letters()
+        return
+    }
 
-        if (ev.key === 'Backspace') {
-            if (ev.ctrlKey) {
-                clear_guess()
-            } else {
-                backspace_guess()
-            }
-            return
+    if (ev.key === 'Backspace') {
+        if (ev.ctrlKey) {
+            clear_guess()
+        } else {
+            backspace_guess()
         }
+        return
+    }
 
-        if (ev.key === 'Enter') {
-            submit_guess()
-            return
-        }
+    if (ev.key === 'Enter') {
+        submit_guess()
+        return
+    }
 
-        if (ev.repeat || ev.altKey || ev.ctrlKey || ev.metaKey) {
-            return
-        }
+    if (ev.repeat || ev.altKey || ev.ctrlKey || ev.metaKey) {
+        return
+    }
 
-        const isLetter = /^[A-Za-z]$/.test(ev.key)
-        if (isLetter) {
-            guess.value += ev.key
-            return
-        }
-    })
+    const isLetter = /^[A-Za-z]$/.test(ev.key)
+    if (isLetter) {
+        guess.value += ev.key
+        return
+    }
 }
 
 function get_score(word: string): number {
