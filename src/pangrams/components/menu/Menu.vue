@@ -11,7 +11,7 @@ const emit = defineEmits<{
 }>()
 const puzzles = inject(puzzles_key)!
 
-const tab = ref<'rules' | 'puzzles' | 'new' | 'settings'>('rules')
+const tab = ref<'puzzles' | 'new' | 'rules' | 'settings'>('puzzles')
 
 async function create_puzzle(): Promise<void> {
     emit('close')
@@ -24,14 +24,6 @@ async function create_puzzle(): Promise<void> {
 <template>
     <div id="menu" class="dlg big">
         <div class="button-row">
-            <GenericButton
-                title="Rules"
-                class="menu-button tab"
-                @click="tab = 'rules'"
-            >
-                Rules
-            </GenericButton>
-
             <GenericButton
                 title="Puzzles"
                 class="menu-button tab"
@@ -46,6 +38,14 @@ async function create_puzzle(): Promise<void> {
                 @click="tab = 'new'"
             >
                 New
+            </GenericButton>
+
+            <GenericButton
+                title="Rules"
+                class="menu-button tab"
+                @click="tab = 'rules'"
+            >
+                Rules
             </GenericButton>
 
             <GenericButton
@@ -66,10 +66,6 @@ async function create_puzzle(): Promise<void> {
         </div>
 
         <div class="content">
-            <template v-if="tab === 'rules'">
-                <Rules />
-            </template>
-
             <template v-if="tab === 'puzzles'">
                 <template v-for="(puzzles, index) in puzzles.my_puzzle_list.value" :key="puzzles.letters.join()">
                     <Puzzle
@@ -91,6 +87,10 @@ async function create_puzzle(): Promise<void> {
                 >
                     Create
                 </GenericButton>
+            </template>
+
+            <template v-if="tab === 'rules'">
+                <Rules />
             </template>
 
             <template v-if="tab === 'settings'">
