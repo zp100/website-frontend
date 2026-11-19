@@ -5,6 +5,7 @@ import GenericDialog from '../GenericDialog.vue'
 const props = defineProps<{
     found_word: string
     is_pangram: boolean
+    is_flash_in: boolean
     guess: string
 }>()
 const display_found_word = computed(() => props.found_word.toLocaleUpperCase())
@@ -38,7 +39,12 @@ async function fetch_definition(): Promise<void> {
 
 
 <template>
-    <div ref="answer" class="text-block answer" @click="show_dialog = true">
+    <div
+        ref="answer"
+        class="text-block answer"
+        :class="{ 'flash-in': is_flash_in }"
+        @click="show_dialog = true"
+    >
         <span :class="{ pangram: is_pangram }">
             <template v-if="is_guess_prefix">
                 <span class="prefix">
@@ -127,14 +133,10 @@ async function fetch_definition(): Promise<void> {
     scroll-margin: 20px;
     color: var(--off-white);
     cursor: pointer;
-    animation: flash-in 1000ms linear;
 }
 
-.pangram {
-    color: transparent;
-    background: linear-gradient(135deg, #f99, #9f9, #99f, #f99);
-    background-clip: text;
-    font-weight: bold;
+.flash-in {
+    animation: flash-in 1000ms linear;
 }
 
 @keyframes flash-in {
@@ -145,6 +147,13 @@ async function fetch_definition(): Promise<void> {
     to {
         background-color: transparent;
     }
+}
+
+.pangram {
+    color: transparent;
+    background: linear-gradient(135deg, #f99, #9f9, #99f, #f99);
+    background-clip: text;
+    font-weight: bold;
 }
 
 .prefix {

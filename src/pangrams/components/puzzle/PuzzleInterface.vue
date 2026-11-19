@@ -231,6 +231,7 @@ function popup(...text: string[]): void {
                     <Answer
                         :found_word="word"
                         :is_pangram="is_pangram(word)"
+                        :is_flash_in="word === last_guess"
                         :guess="guess"
                     />
                 </template>
