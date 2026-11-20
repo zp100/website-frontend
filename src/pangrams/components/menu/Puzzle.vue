@@ -3,6 +3,7 @@ import { puzzles_key } from '@/pangrams/util'
 import { computed, inject, ref } from 'vue'
 import GenericButton from '../GenericButton.vue'
 import GenericDialog from '../GenericDialog.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const props = defineProps<{
     puzzle_num: number
@@ -60,7 +61,13 @@ function delete_puzzle(): void {
         </div>
 
         <div class="info">
-            <span>Words: {{ puzzle.found_words.length }}</span>
+            <span>
+                Words: {{ puzzle.found_words.length }}
+
+                <template v-if="is_solved">
+                    <FontAwesomeIcon icon="fa-solid fa-circle-check" />
+                </template>
+            </span>
 
             <template v-if="is_solved">
                 <GenericButton
