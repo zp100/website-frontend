@@ -18,6 +18,18 @@ function play_puzzle(): void {
     emit('close_menu')
 }
 
+const show_reveal_dialog = ref(false)
+function reveal_puzzle(): void {
+    const updated_puzzle = { ...puzzle.value }
+    updated_puzzle.found_words = updated_puzzle.answer_word_list
+    const new_my_puzzle_list = puzzles.my_puzzle_list.value.toSpliced(props.puzzle_num, 1, updated_puzzle)
+    puzzles.set_my_puzzle_list(new_my_puzzle_list)
+
+    show_reveal_dialog.value = false
+    puzzles.set_current_puzzle_num(props.puzzle_num)
+    emit('close_menu')
+}
+
 const show_delete_dialog = ref(false)
 function delete_puzzle(): void {
     if (puzzles.current_puzzle_num.value >= props.puzzle_num) {
@@ -56,6 +68,24 @@ function delete_puzzle(): void {
             >
                 Play
             </GenericButton>
+
+            <GenericButton
+                title="Reveal"
+                class="menu-button"
+                @click="show_reveal_dialog = true"
+            >
+                Reveal
+            </GenericButton>
+
+            <template v-if="show_reveal_dialog">
+                <GenericDialog
+                    :action_buttons="{ cancel: 'Cancel', affirmative: 'Reveal' }"
+                    @cancel="show_reveal_dialog=false"
+                    @affirmative="reveal_puzzle()"
+                >
+                    <p>Are you sure you want to reveal all of the words for this puzzle?</p>
+                </GenericDialog>
+            </template>
 
             <GenericButton
                 title="Delete"
