@@ -12,8 +12,9 @@ const emit = defineEmits<{
 }>()
 const puzzles = inject(puzzles_key)!
 const puzzle = computed(() => puzzles.my_puzzle_list.value[props.puzzle_num]!)
+const is_solved = computed(() => puzzle.value.found_words.length === puzzle.value.answer_word_list.length)
 
-function play_puzzle(): void {
+function play_or_view_puzzle(): void {
     puzzles.set_current_puzzle_num(props.puzzle_num)
     emit('close_menu')
 }
@@ -61,48 +62,60 @@ function delete_puzzle(): void {
         <div class="info">
             <span>Words: {{ puzzle.found_words.length }}</span>
 
-            <GenericButton
-                title="Play"
-                class="menu-button"
-                @click="play_puzzle()"
-            >
-                Play
-            </GenericButton>
-
-            <GenericButton
-                title="Reveal"
-                class="menu-button"
-                @click="show_reveal_dialog = true"
-            >
-                Reveal
-            </GenericButton>
-
-            <template v-if="show_reveal_dialog">
-                <GenericDialog
-                    :action_buttons="{ cancel: 'Cancel', affirmative: 'Reveal' }"
-                    @cancel="show_reveal_dialog=false"
-                    @affirmative="reveal_puzzle()"
+            <template v-if="is_solved">
+                <GenericButton
+                    title="View"
+                    class="menu-button"
+                    @click="play_or_view_puzzle()"
                 >
-                    <p>Are you sure you want to reveal all of the words for this puzzle?</p>
-                </GenericDialog>
+                    View
+                </GenericButton>
+
+                <GenericButton
+                    title="Delete"
+                    class="menu-button"
+                    @click="show_delete_dialog = true"
+                >
+                    Delete
+                </GenericButton>
+
+                <template v-if="show_delete_dialog">
+                    <GenericDialog
+                        :action_buttons="{ cancel: 'Cancel', affirmative: 'Delete' }"
+                        @cancel="show_delete_dialog=false"
+                        @affirmative="delete_puzzle()"
+                    >
+                        <p>Are you sure you want to delete this puzzle?</p>
+                    </GenericDialog>
+                </template>
             </template>
 
-            <GenericButton
-                title="Delete"
-                class="menu-button"
-                @click="show_delete_dialog = true"
-            >
-                Delete
-            </GenericButton>
-
-            <template v-if="show_delete_dialog">
-                <GenericDialog
-                    :action_buttons="{ cancel: 'Cancel', affirmative: 'Delete' }"
-                    @cancel="show_delete_dialog=false"
-                    @affirmative="delete_puzzle()"
+            <template v-else>
+                <GenericButton
+                    title="Play"
+                    class="menu-button"
+                    @click="play_or_view_puzzle()"
                 >
-                    <p>Are you sure you want to delete this puzzle?</p>
-                </GenericDialog>
+                    Play
+                </GenericButton>
+
+                <GenericButton
+                    title="Reveal"
+                    class="menu-button"
+                    @click="show_reveal_dialog = true"
+                >
+                    Reveal
+                </GenericButton>
+
+                <template v-if="show_reveal_dialog">
+                    <GenericDialog
+                        :action_buttons="{ cancel: 'Cancel', affirmative: 'Reveal' }"
+                        @cancel="show_reveal_dialog=false"
+                        @affirmative="reveal_puzzle()"
+                    >
+                        <p>Are you sure you want to reveal all of the words for this puzzle?</p>
+                    </GenericDialog>
+                </template>
             </template>
         </div>
     </div>
