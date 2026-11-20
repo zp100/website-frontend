@@ -65,7 +65,7 @@ function delete_puzzle(): void {
                 Words: {{ puzzle.found_words.length }}
 
                 <template v-if="is_solved">
-                    <FontAwesomeIcon icon="fa-solid fa-circle-check" />
+                    <FontAwesomeIcon icon="fa-solid fa-circle-check" class="full" />
                 </template>
             </span>
 
@@ -159,5 +159,9 @@ function delete_puzzle(): void {
     span {
         flex: 1;
     }
+}
+
+.full {
+    color: lime;
 }
 </style>

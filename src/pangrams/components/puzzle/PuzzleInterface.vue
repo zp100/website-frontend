@@ -23,12 +23,11 @@ const options = ref<Array<{ letter: string; count: number; is_locked: boolean }>
     }))
 )
 
-let total_score = 0
 const answer_words_sorted = computed(() => current_puzzle.value.answer_word_list.toSorted())
+const total_score = computed(() => current_puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0))
 onMounted(() => {
     window.addEventListener('keydown', key_handler)
     set_letter_counts()
-    total_score = current_puzzle.value.answer_word_list.reduce((score, word) => score + get_score(word), 0)
     setTimeout(() => document.querySelector('#found-words')?.scrollTo({ top: 0 }), 0)
 })
 onUnmounted(() => {
@@ -116,7 +115,7 @@ const popup_messages = ref<string[][]>([])
 function show_stats(): void {
     popup(
         `${current_puzzle.value.answer_word_list.length - current_puzzle.value.found_words.length} word(s) remaining`,
-        `${total_score - current_puzzle.value.score} score remaining`,
+        `${total_score.value - current_puzzle.value.score} score remaining`,
     )
 }
 
